@@ -90,8 +90,8 @@ export default class AxisManager extends EventEmitter {
 	setEvents() {
 		Axis.addEventListener('keydown', this.keydownHandler.bind(this))
 		Axis.addEventListener('keyup', this.keyupHandler.bind(this))
-		this.controls.left.stick.addEventListener('joystick:move', this.sickLeftHandler.bind(this))
-		this.controls.right.stick.addEventListener('joystick:move', this.sickRightHandler.bind(this))
+		Axis.joystick1.addEventListener('joystick:move', this.sickLeftHandler.bind(this))
+		Axis.joystick1.addEventListener('joystick:move', this.sickRightHandler.bind(this))
 	}
 
 	/**
