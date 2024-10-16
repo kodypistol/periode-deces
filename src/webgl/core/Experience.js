@@ -35,6 +35,8 @@ export default class Experience {
 		this.axis = new AxisManager()
 		this.renderer = new Renderer()
 
+		this.setLeds()
+
 		// Resize event
 		this.sizes.on('resize', () => {
 			this.resize()
@@ -43,6 +45,23 @@ export default class Experience {
 		// Time tick event
 		this.time.on('tick', () => {
 			this.update()
+		})
+	}
+
+	/**
+	 * Set leds events
+	 */
+	setLeds() {
+		const left = Object.values(this.axis.controls.left)
+		const right = Object.values(this.axis.controls.right)
+		const values = [...left, ...right].filter((v) => v.led)
+		const colors = ['red', 'green', 'blue', 'yellow', 'purple', 'cyan', 'white']
+
+		this.ledEvents = []
+		values.forEach((val) => {
+			val.addEventListener('keydown', () => {
+				val.led.setLedColor(colors[Math.floor(Math.random() * colors.length)])
+			})
 		})
 	}
 
