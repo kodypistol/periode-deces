@@ -10,7 +10,7 @@ import {
 } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js'
+import { OutlinePass } from 'webgl/effects/OutlinePass.js'
 
 export default class Renderer {
 	constructor() {
@@ -50,14 +50,7 @@ export default class Renderer {
 			this.scene,
 			this.camera.instance,
 		)
-		this.outlinePass.edgeGlow = 0
-		// this.outlinePass.pulsePeriod = 10
-		this.outlinePass.visibleEdgeColor.set(new Color('white'))
 		this._composer.addPass(this.outlinePass)
-
-		// setTimeout(() => {
-		// 	this.outlinePass.selectedObjects = [this.scene.getObjectByName('fan')]
-		// }, 1000)
 	}
 
 	resize() {
