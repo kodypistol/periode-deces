@@ -120,7 +120,7 @@ export default class AxisManager extends EventEmitter {
 	 */
 	sickLeftHandler(evt) {
 		this.trigger('stick:left', evt)
-		this.values[side]['left'] = evt
+		this.values.left.stick = evt
 	}
 
 	/**
@@ -129,7 +129,7 @@ export default class AxisManager extends EventEmitter {
 	 */
 	sickRightHandler(evt) {
 		this.trigger('stick:right', evt)
-		this.values[side]['right'] = evt
+		this.values.right.stick = evt
 	}
 
 	/**
