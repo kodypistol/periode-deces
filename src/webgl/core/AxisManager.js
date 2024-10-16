@@ -1,5 +1,8 @@
 import Axis from 'axis-api'
 import EventEmitter from './EventEmitter'
+import Experience from './Experience'
+import Stats from 'stats.js'
+import { TpEvent } from '@tweakpane/core'
 
 /**
  * Preset controls to apply
@@ -24,6 +27,9 @@ const DESKTOP_CONTROLS = {
 export default class AxisManager extends EventEmitter {
 	constructor() {
 		super()
+		// Experience
+		this.experience = new Experience()
+		this.debug = this.experience.debug
 
 		// Initialize
 		this.controls = {}
@@ -31,6 +37,7 @@ export default class AxisManager extends EventEmitter {
 		this.setControls()
 		this.setValues()
 		this.setEvents()
+		this.setDebug()
 	}
 
 	/**
@@ -66,7 +73,9 @@ export default class AxisManager extends EventEmitter {
 	setValues() {
 		this.values = {
 			left: {
-				stick: {},
+				stick: {
+					position: { x: 0, y: 0 },
+				},
 				a: false,
 				x: false,
 				i: false,
@@ -74,7 +83,9 @@ export default class AxisManager extends EventEmitter {
 				w: false,
 			},
 			right: {
-				stick: {},
+				stick: {
+					position: { x: 0, y: 0 },
+				},
 				a: false,
 				x: false,
 				i: false,
@@ -92,6 +103,109 @@ export default class AxisManager extends EventEmitter {
 		Axis.addEventListener('keyup', this.keyupHandler.bind(this))
 		Axis.joystick1.addEventListener('joystick:move', this.sickLeftHandler.bind(this))
 		Axis.joystick2.addEventListener('joystick:move', this.sickRightHandler.bind(this))
+	}
+
+	/**
+	 * Set debug
+	 */
+	setDebug() {
+		this.setAxisStats()
+
+		if (!this.debug.active) return
+
+		this.debugFolder = this.debug.ui.addFolder({
+			title: 'Axis Manager',
+			expanded: false,
+		})
+
+		this.debugStickL = this.debugFolder.addBinding(this.values.left.stick, 'position', {
+			picker: 'inline',
+			expanded: true,
+			x: { min: -1, max: 1 },
+			y: { min: -1, max: 1, inverted: true },
+		})
+		this.debugStickL.on('change', (evt) => {
+			if (evt.last) {
+				this.values.left.stick.position = { x: 0, y: 0 }
+				this.debugStickL.refresh()
+			}
+		})
+
+		this.debugStickR = this.debugFolder.addBinding(this.values.right.stick, 'position', {
+			picker: 'inline',
+			expanded: true,
+			x: { min: -1, max: 1 },
+			y: { min: -1, max: 1, inverted: true },
+		})
+		this.debugStickR.on('change', (evt) => {
+			if (evt.last) {
+				this.values.right.stick.position = { x: 0, y: 0 }
+				this.debugStickR.refresh()
+			}
+		})
+	}
+
+	/**
+	 * Set axis stats
+	 */
+	setAxisStats() {
+		this.axisJsPanel = new Stats()
+		document.body.appendChild(this.axisJsPanel.domElement)
+
+		const keys = ['a', 'x', 'i', 's', 'w']
+		const monitoringValues = [
+			{
+				name: 'L-stick',
+				value: () => JSON.stringify(this.values?.left?.stick ?? {}),
+			},
+			...keys.map((key) => ({
+				name: `L-${key}`,
+				value: () => this.values?.left?.[key],
+			})),
+			{
+				name: 'R-stick',
+				value: () => JSON.stringify(this.values?.right?.stick ?? {}),
+			},
+			...keys.map((key) => ({
+				name: `R-${key}`,
+				value: () => this.values?.right?.[key],
+			})),
+		]
+
+		this.axisMonitoringSection = document.createElement('section')
+		Object.assign(this.axisMonitoringSection.style, {
+			position: 'fixed',
+			bottom: '1rem',
+			left: '1rem',
+			pointerEvents: 'none',
+			userSelect: 'none',
+			zIndex: '1000',
+			display: 'flex',
+			gap: '1rem',
+			fontSize: '12px',
+			mixBlendMode: 'difference',
+		})
+
+		monitoringValues.forEach((monitoringValue) => {
+			const monitoringValueElement = document.createElement('span')
+			monitoringValueElement.id = monitoringValue.name.toLowerCase()
+			monitoringValue.element = monitoringValueElement
+			this.axisMonitoringSection.appendChild(monitoringValueElement)
+		})
+
+		document.body.appendChild(this.axisMonitoringSection)
+
+		this.axisStats = {
+			monitoringValues,
+			update: () => {
+				this.axisJsPanel.update()
+				monitoringValues.forEach((monitoringValue) => {
+					if (monitoringValue.value() === monitoringValue.lastValue) return
+					monitoringValue.lastValue = monitoringValue.value()
+					monitoringValue.element.innerHTML = `<b>${monitoringValue.lastValue}</b> ${monitoringValue.name}`
+				})
+			},
+		}
 	}
 
 	/**
@@ -138,6 +252,10 @@ export default class AxisManager extends EventEmitter {
 	update() {
 		this.controls.left.stick.update()
 		this.controls.right.stick.update()
+
+		// if (this.debug.active && this.debug.debugParams) {
+		this.axisStats?.update()
+		// }
 	}
 
 	/**
@@ -148,5 +266,7 @@ export default class AxisManager extends EventEmitter {
 		Axis.removeEventListener('keyup', this.keyupHandler)
 		this.controls.left.stick.removeEventListener('joystick:move', this.sickLeftHandler)
 		this.controls.right.stick.removeEventListener('joystick:move', this.sickRightHandler)
+		this.axisJsPanel.domElement.remove()
+		this.axisMonitoringSection.remove()
 	}
 }

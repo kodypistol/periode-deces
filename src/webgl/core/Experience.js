@@ -25,7 +25,6 @@ export default class Experience {
 		this.canvas = _canvas
 
 		// Setup
-		this.axis = new AxisManager()
 		this.sizes = new Sizes()
 		this.time = new Time()
 		this.scene = new Scene()
@@ -33,6 +32,7 @@ export default class Experience {
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
 		this.activeScene = new SceneManager()
+		this.axis = new AxisManager()
 		this.renderer = new Renderer()
 
 		// Resize event

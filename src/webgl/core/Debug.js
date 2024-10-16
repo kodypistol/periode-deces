@@ -10,7 +10,6 @@ export default class Debug {
 		this.axis = this.experience.axis
 		this.active = window.location.hash === '#debug'
 
-		this.setAxisStats()
 		if (this.active) {
 			this.ui = new Pane({ title: '⚙️ Debug' })
 			const uiContainer = this.ui.containerElem_
@@ -30,7 +29,6 @@ export default class Debug {
 
 			if (this.debugParams.SceneLog) this.setSceneLog()
 			if (this.debugParams.Stats) this.setStats()
-			// if (this.debugParams.Axis) this.setAxisStats()
 		} else {
 			sessionStorage.removeItem('debugParams')
 		}
@@ -346,84 +344,9 @@ export default class Debug {
 		this.monitoringSection.remove()
 	}
 
-	setAxisStats() {
-		this.axisJsPanel = new Stats()
-		document.body.appendChild(this.axisJsPanel.domElement)
-
-		const keys = ['a', 'x', 'i', 's', 'w']
-
-		const monitoringValues = [
-			{
-				name: 'L-stick',
-				value: () => {
-					const pos = this.axis.values.left?.stick?.position
-					return JSON.stringify(this.axis.values.left?.stick ?? {})
-					return `${pos?.x ?? '-'};${pos?.y ?? '-'}`
-				},
-			},
-			...keys.map((key) => ({
-				name: `L-${key}`,
-				value: () => this.axis.values.left[key],
-			})),
-			{
-				name: 'R-stick',
-				value: () => {
-					return JSON.stringify(this.axis.values.right?.stick ?? {})
-					const pos = this.axis.values.right?.stick?.position
-					return `${pos?.x ?? '-'};${pos?.y ?? '-'}`
-				},
-			},
-			...keys.map((key) => ({
-				name: `R-${key}`,
-				value: () => this.axis.values.right[key],
-			})),
-		]
-
-		this.axisMonitoringSection = document.createElement('section')
-		Object.assign(this.axisMonitoringSection.style, {
-			position: 'fixed',
-			bottom: '1rem',
-			left: '1rem',
-			pointerEvents: 'none',
-			userSelect: 'none',
-			zIndex: '1000',
-			display: 'flex',
-			gap: '1rem',
-			fontSize: '12px',
-			mixBlendMode: 'difference',
-		})
-
-		monitoringValues.forEach((monitoringValue) => {
-			const monitoringValueElement = document.createElement('span')
-			monitoringValueElement.id = monitoringValue.name.toLowerCase()
-			monitoringValue.element = monitoringValueElement
-			this.axisMonitoringSection.appendChild(monitoringValueElement)
-		})
-
-		document.body.appendChild(this.axisMonitoringSection)
-
-		this.axisStats = {
-			monitoringValues,
-			update: () => {
-				this.axisJsPanel.update()
-				monitoringValues.forEach((monitoringValue) => {
-					if (monitoringValue.value() === monitoringValue.lastValue) return
-					monitoringValue.lastValue = monitoringValue.value()
-					monitoringValue.element.innerHTML = `<b>${monitoringValue.lastValue}</b> ${monitoringValue.name}`
-				})
-			},
-		}
-	}
-	unsetAxisStats() {
-		this.axisJsPanel.domElement.remove()
-		this.axisMonitoringSection.remove()
-	}
-
 	update() {
 		if (this.active) {
 			if (this.debugParams.Stats) this.stats.update()
-			// if (this.debugParams.Axis) this.axisStats.update()
 		}
-		this.axisStats.update()
 	}
 }
