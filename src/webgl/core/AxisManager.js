@@ -2,12 +2,11 @@ import Axis from 'axis-api'
 import EventEmitter from './EventEmitter'
 import Experience from './Experience'
 import Stats from 'stats.js'
-import { TpEvent } from '@tweakpane/core'
 
 /**
- * Preset controls to apply
+ * Preset controls to apply for desktop
  */
-const DESKTOP_CONTROLS = {
+const PARAMS = {
 	left: {
 		a: ['a'],
 		x: ['z'],
@@ -44,8 +43,8 @@ export default class AxisManager extends EventEmitter {
 	 * This method initializes the axis controls for the joysticks.
 	 */
 	setControls() {
-		const left = DESKTOP_CONTROLS.left
-		const right = DESKTOP_CONTROLS.right
+		const left = PARAMS.left
+		const right = PARAMS.right
 
 		this.controls = {
 			left: {
@@ -101,8 +100,8 @@ export default class AxisManager extends EventEmitter {
 	setEvents() {
 		Axis.addEventListener('keydown', this.keydownHandler.bind(this))
 		Axis.addEventListener('keyup', this.keyupHandler.bind(this))
-		Axis.joystick1.addEventListener('joystick:move', this.sickLeftHandler.bind(this))
-		Axis.joystick2.addEventListener('joystick:move', this.sickRightHandler.bind(this))
+		Axis.joystick1.addEventListener('joystick:move', this.stickLeftHandler.bind(this))
+		Axis.joystick2.addEventListener('joystick:move', this.stickRightHandler.bind(this))
 	}
 
 	/**
@@ -118,7 +117,8 @@ export default class AxisManager extends EventEmitter {
 			expanded: false,
 		})
 
-		this.debugStickL = this.debugFolder.addBinding(this.values.left.stick, 'position', {
+		const valueL = { ...this.values.left.stick }
+		this.debugStickL = this.debugFolder.addBinding(valueL, 'position', {
 			picker: 'inline',
 			expanded: true,
 			x: { min: -1, max: 1 },
@@ -126,12 +126,14 @@ export default class AxisManager extends EventEmitter {
 		})
 		this.debugStickL.on('change', (evt) => {
 			if (evt.last) {
-				this.values.left.stick.position = { x: 0, y: 0 }
+				valueL.position = { x: 0, y: 0 }
 				this.debugStickL.refresh()
 			}
+			this.stickLeftHandler(valueL)
 		})
 
-		this.debugStickR = this.debugFolder.addBinding(this.values.right.stick, 'position', {
+		const valueR = { ...this.values.right.stick }
+		this.debugStickR = this.debugFolder.addBinding(valueR, 'position', {
 			picker: 'inline',
 			expanded: true,
 			x: { min: -1, max: 1 },
@@ -139,9 +141,10 @@ export default class AxisManager extends EventEmitter {
 		})
 		this.debugStickR.on('change', (evt) => {
 			if (evt.last) {
-				this.values.right.stick.position = { x: 0, y: 0 }
+				valueR.position = { x: 0, y: 0 }
 				this.debugStickR.refresh()
 			}
+			this.stickRightHandler(valueR)
 		})
 	}
 
@@ -232,7 +235,7 @@ export default class AxisManager extends EventEmitter {
 	 * On sick left
 	 * @param {*} evt
 	 */
-	sickLeftHandler(evt) {
+	stickLeftHandler(evt) {
 		this.trigger('stick:left', evt)
 		this.values.left.stick = evt
 	}
@@ -241,7 +244,7 @@ export default class AxisManager extends EventEmitter {
 	 * On sick right
 	 * @param {*} evt
 	 */
-	sickRightHandler(evt) {
+	stickRightHandler(evt) {
 		this.trigger('stick:right', evt)
 		this.values.right.stick = evt
 	}
@@ -262,10 +265,15 @@ export default class AxisManager extends EventEmitter {
 	 * Destroy
 	 */
 	destroy() {
+		// Remove event listeners
 		Axis.removeEventListener('keydown', this.keydownHandler)
 		Axis.removeEventListener('keyup', this.keyupHandler)
-		this.controls.left.stick.removeEventListener('joystick:move', this.sickLeftHandler)
-		this.controls.right.stick.removeEventListener('joystick:move', this.sickRightHandler)
+
+		// Remove joystick event listeners
+		this.controls.left.stick.removeEventListener('joystick:move', this.stickLeftHandler)
+		this.controls.right.stick.removeEventListener('joystick:move', this.stickRightHandler)
+
+		// Remove stats
 		this.axisJsPanel.domElement.remove()
 		this.axisMonitoringSection.remove()
 	}
