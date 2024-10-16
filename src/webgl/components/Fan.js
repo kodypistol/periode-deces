@@ -35,7 +35,7 @@ export default class Fan {
 	playTask(side = 'left') {
 		let lastAngle = new Vector2()
 
-		this.experience.axis.on(`stick:${side}`, (event) => {
+		this.experience.axis.on(`joystick:move:${side}`, (event) => {
 			const distanceFromCenter = event.position.distanceTo(new Vector2())
 			const angle = event.position.angle()
 			const angleDelta = angle - lastAngle
