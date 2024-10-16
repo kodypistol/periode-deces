@@ -10,6 +10,7 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"axis-api": "github:gobelins-axis/axis-api",
 		"three": "^0.169.0"
 	},
 	"devDependencies": {

@@ -6,6 +6,7 @@ import Renderer from './Renderer.js'
 import SceneManager from 'core/SceneManager.js'
 import { Mesh, Scene } from 'three'
 import InteractionManager from 'core/InteractionManager.js'
+import AxisManager from './AxisManager.js'
 
 let instance = null
 
@@ -24,6 +25,7 @@ export default class Experience {
 		this.canvas = _canvas
 
 		// Setup
+		this.axis = new AxisManager()
 		this.sizes = new Sizes()
 		this.time = new Time()
 		this.scene = new Scene()
@@ -54,6 +56,7 @@ export default class Experience {
 		this.renderer.update()
 		this.debug.update()
 		this.interactionManager.update()
+		this.axis.update()
 	}
 
 	destroy() {
@@ -82,5 +85,6 @@ export default class Experience {
 		this.renderer.instance.dispose()
 
 		if (this.debug.active) this.debug.ui.destroy()
+		this.axis.destroy()
 	}
 }
