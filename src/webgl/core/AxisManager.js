@@ -35,7 +35,7 @@ export default class AxisManager extends EventEmitter {
 		this.controls = {}
 		this.leds = Axis.ledManager.leds
 		this.setControls()
-		this.setStickValues()
+		this.setValues()
 		this.setEvents()
 		this.setDebug()
 	}
@@ -70,7 +70,7 @@ export default class AxisManager extends EventEmitter {
 	/**
 	 * Set values object
 	 */
-	setStickValues() {
+	setValues() {
 		this.values = {
 			left: {
 				stick: {
