@@ -10,6 +10,7 @@ export default class Debug {
 		this.axis = this.experience.axis
 		this.active = window.location.hash === '#debug'
 
+		this.setAxisStats()
 		if (this.active) {
 			this.ui = new Pane({ title: '⚙️ Debug' })
 			const uiContainer = this.ui.containerElem_
@@ -30,7 +31,6 @@ export default class Debug {
 			if (this.debugParams.SceneLog) this.setSceneLog()
 			if (this.debugParams.Stats) this.setStats()
 			// if (this.debugParams.Axis) this.setAxisStats()
-			this.setAxisStats()
 		} else {
 			sessionStorage.removeItem('debugParams')
 		}
@@ -403,7 +403,8 @@ export default class Debug {
 	update() {
 		if (this.active) {
 			if (this.debugParams.Stats) this.stats.update()
-			if (this.debugParams.Axis) this.axisStats.update()
+			// if (this.debugParams.Axis) this.axisStats.update()
 		}
+		this.axisStats.update()
 	}
 }
