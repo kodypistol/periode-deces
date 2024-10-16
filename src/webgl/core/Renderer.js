@@ -1,5 +1,16 @@
 import Experience from 'core/Experience.js'
-import { CineonToneMapping, PCFSoftShadowMap, SRGBColorSpace, WebGLRenderer } from 'three'
+import {
+	ACESFilmicToneMapping,
+	CineonToneMapping,
+	Color,
+	PCFSoftShadowMap,
+	SRGBColorSpace,
+	Vector2,
+	WebGLRenderer,
+} from 'three'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js'
 
 export default class Renderer {
 	constructor() {
@@ -9,22 +20,44 @@ export default class Renderer {
 		this.scene = this.experience.scene
 		this.camera = this.experience.camera
 
-		this.setInstance()
+		this._createInstance()
+		this._createPostprocessing()
 	}
 
-	setInstance() {
+	_createInstance() {
 		this.instance = new WebGLRenderer({
 			canvas: this.canvas,
 			powerPreference: 'high-performance',
 		})
 		this.instance.outputColorSpace = SRGBColorSpace
-		this.instance.toneMapping = CineonToneMapping
-		this.instance.toneMappingExposure = 1.75
-		this.instance.shadowMap.enabled = true
-		this.instance.shadowMap.type = PCFSoftShadowMap
+		this.instance.toneMapping = ACESFilmicToneMapping
+		// this.instance.toneMappingExposure = 1.75
+		// this.instance.shadowMap.enabled = true
+		// this.instance.shadowMap.type = PCFSoftShadowMap
 		this.instance.setClearColor('#211d20')
 		this.instance.setSize(this.sizes.width, this.sizes.height)
 		this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2))
+	}
+
+	_createPostprocessing() {
+		this._composer = new EffectComposer(this.instance)
+
+		const renderPass = new RenderPass(this.scene, this.camera.instance)
+		this._composer.addPass(renderPass)
+
+		this.outlinePass = new OutlinePass(
+			new Vector2(this.sizes.width, this.sizes.height),
+			this.scene,
+			this.camera.instance,
+		)
+		this.outlinePass.edgeGlow = 0
+		// this.outlinePass.pulsePeriod = 10
+		this.outlinePass.visibleEdgeColor.set(new Color('white'))
+		this._composer.addPass(this.outlinePass)
+
+		// setTimeout(() => {
+		// 	this.outlinePass.selectedObjects = [this.scene.getObjectByName('fan')]
+		// }, 1000)
 	}
 
 	resize() {
@@ -33,6 +66,7 @@ export default class Renderer {
 	}
 
 	update() {
-		this.instance.render(this.scene, this.camera.instance)
+		this._composer.render()
+		// this.instance.render(this.scene, this.camera.instance)
 	}
 }

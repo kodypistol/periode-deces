@@ -1,5 +1,5 @@
 import Experience from 'core/Experience.js'
-import { BoxGeometry, Mesh, Vector2 } from 'three'
+import { BoxGeometry, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
 
 export default class Fan {
@@ -9,6 +9,7 @@ export default class Fan {
 		this.debug = this.experience.debug
 
 		this._createGeometry()
+		this._createMaterial()
 		this._createMesh()
 
 		this.targetRotation = 0
@@ -18,9 +19,14 @@ export default class Fan {
 		this._geometry = new BoxGeometry()
 	}
 
+	_createMaterial() {
+		this._material = new MeshBasicMaterial({ color: 'red' })
+	}
+
 	_createMesh() {
-		this._mesh = new Mesh(this._geometry)
-		this.scene.add(this._mesh)
+		this.mesh = new Mesh(this._geometry, this._material)
+		this.mesh.name = 'fan'
+		this.scene.add(this.mesh)
 	}
 
 	/**
@@ -42,6 +48,6 @@ export default class Fan {
 	}
 
 	update() {
-		this._mesh.rotation.y = lerp(this._mesh.rotation.y, this.targetRotation, 0.01 * this.experience.time.delta)
+		this.mesh.rotation.y = lerp(this.mesh.rotation.y, this.targetRotation, 0.01 * this.experience.time.delta)
 	}
 }
