@@ -357,6 +357,7 @@ export default class Debug {
 				name: 'L-stick',
 				value: () => {
 					const pos = this.axis.values.left?.stick?.position
+					return JSON.stringify(this.axis.values.left?.stick ?? {})
 					return `${pos?.x ?? '-'};${pos?.y ?? '-'}`
 				},
 			},
@@ -367,6 +368,7 @@ export default class Debug {
 			{
 				name: 'R-stick',
 				value: () => {
+					return JSON.stringify(this.axis.values.right?.stick ?? {})
 					const pos = this.axis.values.right?.stick?.position
 					return `${pos?.x ?? '-'};${pos?.y ?? '-'}`
 				},
