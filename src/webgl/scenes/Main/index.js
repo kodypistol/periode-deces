@@ -12,11 +12,17 @@ export default class Main {
 		// Wait for resources
 		this.scene.resources.on('ready', () => {
 			// Setup
-			this.fan = new Fan()
+			this.fanLeft = new Fan()
+			this.fanLeft.playTask('left')
+			this.fanLeft._mesh.position.x -= 2
+			this.fanRight = new Fan()
+			this.fanRight.playTask('right')
+			this.fanRight._mesh.position.x += 2
 		})
 	}
 
 	update() {
-		if (this.fan) this.fan.update()
+		if (this.fanLeft) this.fanLeft.update()
+		if (this.fanRight) this.fanRight.update()
 	}
 }
