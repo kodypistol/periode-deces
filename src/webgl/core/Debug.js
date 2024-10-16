@@ -349,12 +349,29 @@ export default class Debug {
 	setAxisStats() {
 		this.axisJsPanel = new Stats()
 		document.body.appendChild(this.axisJsPanel.domElement)
+
+		const keys = ['a', 'x', 'i', 's', 'w']
+
 		const monitoringValues = [
-			...Object.keys(this.axis.values.left).map((key) => ({
+			{
+				name: 'L-stick',
+				value: () => {
+					const pos = this.axis.values.left?.stick?.position
+					return `${pos?.x ?? '-'};${pos?.y ?? '-'}`
+				},
+			},
+			...keys.map((key) => ({
 				name: `L-${key}`,
 				value: () => this.axis.values.left[key],
 			})),
-			...Object.keys(this.axis.values.right).map((key) => ({
+			{
+				name: 'R-stick',
+				value: () => {
+					const pos = this.axis.values.right?.stick?.position
+					return `${pos?.x ?? '-'};${pos?.y ?? '-'}`
+				},
+			},
+			...keys.map((key) => ({
 				name: `R-${key}`,
 				value: () => this.axis.values.right[key],
 			})),
