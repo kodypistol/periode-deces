@@ -2,6 +2,7 @@ import Axis from 'axis-api'
 import EventEmitter from './EventEmitter'
 import Experience from './Experience'
 import Stats from 'stats.js'
+import { Vector2 } from 'three'
 
 /**
  * Preset controls to apply for desktop
@@ -73,7 +74,7 @@ export default class AxisManager extends EventEmitter {
 		this.values = {
 			left: {
 				stick: {
-					position: { x: 0, y: 0 },
+					position: new Vector2(0, 0),
 				},
 				a: false,
 				x: false,
@@ -83,7 +84,7 @@ export default class AxisManager extends EventEmitter {
 			},
 			right: {
 				stick: {
-					position: { x: 0, y: 0 },
+					position: new Vector2(0, 0),
 				},
 				a: false,
 				x: false,
@@ -117,7 +118,7 @@ export default class AxisManager extends EventEmitter {
 			expanded: false,
 		})
 
-		const valueL = { ...this.values.left.stick }
+		const valueL = { position: { x: 0, y: 0 } }
 		this.debugStickL = this.debugFolder.addBinding(valueL, 'position', {
 			picker: 'inline',
 			expanded: true,
@@ -126,13 +127,15 @@ export default class AxisManager extends EventEmitter {
 		})
 		this.debugStickL.on('change', (evt) => {
 			if (evt.last) {
-				valueL.position = { x: 0, y: 0 }
+				valueL.position.x = 0
+				valueL.position.y = 0
 				this.debugStickL.refresh()
 			}
-			this.stickLeftHandler(valueL)
+
+			this.stickLeftHandler({ position: evt.value })
 		})
 
-		const valueR = { ...this.values.right.stick }
+		const valueR = { position: { x: 0, y: 0 } }
 		this.debugStickR = this.debugFolder.addBinding(valueR, 'position', {
 			picker: 'inline',
 			expanded: true,
@@ -141,10 +144,11 @@ export default class AxisManager extends EventEmitter {
 		})
 		this.debugStickR.on('change', (evt) => {
 			if (evt.last) {
-				valueR.position = { x: 0, y: 0 }
+				valueR.position.x = 0
+				valueR.position.y = 0
 				this.debugStickR.refresh()
 			}
-			this.stickRightHandler(valueR)
+			this.stickRightHandler({ position: evt.value })
 		})
 	}
 
@@ -236,8 +240,10 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickLeftHandler(evt) {
-		this.trigger('stick:left', evt)
-		this.values.left.stick = evt
+		const pos = evt.position
+		this.values.left.stick.position.set(pos.x, pos.y)
+
+		this.trigger('stick:left', [this.values.left.stick])
 	}
 
 	/**
@@ -245,8 +251,10 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickRightHandler(evt) {
-		this.trigger('stick:right', evt)
-		this.values.right.stick = evt
+		const pos = evt.position
+		this.values.right.stick.position.set(pos.x, pos.y)
+
+		this.trigger('stick:right', [this.values.right.stick])
 	}
 
 	/**
