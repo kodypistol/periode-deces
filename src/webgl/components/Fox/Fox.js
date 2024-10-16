@@ -39,8 +39,8 @@ export default class Fox {
 
 	update() {
 		this.animation.update(this.time.delta * 0.001)
-		const aLValues = this.axis.values.left.position
-		const aRValues = this.axis.values.right.position
+		const aLValues = this.axis.values.left.stick.position
+		const aRValues = this.axis.values.right.stick.position
 
 		const values = {
 			x: (aLValues?.x ?? 0) + (aRValues?.x ?? 0),
