@@ -29,7 +29,8 @@ export default class Debug {
 
 			if (this.debugParams.SceneLog) this.setSceneLog()
 			if (this.debugParams.Stats) this.setStats()
-			if (this.debugParams.Axis) this.setAxisStats()
+			// if (this.debugParams.Axis) this.setAxisStats()
+			this.setAxisStats()
 		} else {
 			sessionStorage.removeItem('debugParams')
 		}
