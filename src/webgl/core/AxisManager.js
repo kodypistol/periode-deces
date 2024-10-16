@@ -66,7 +66,7 @@ export default class AxisManager extends EventEmitter {
 	setValues() {
 		this.values = {
 			left: {
-				stick: 0,
+				stick: {},
 				a: false,
 				x: false,
 				i: false,
@@ -74,7 +74,7 @@ export default class AxisManager extends EventEmitter {
 				w: false,
 			},
 			right: {
-				stick: 0,
+				stick: {},
 				a: false,
 				x: false,
 				i: false,
