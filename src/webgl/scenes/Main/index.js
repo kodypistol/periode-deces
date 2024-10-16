@@ -1,11 +1,7 @@
 import Experience from 'core/Experience.js'
-import Environment from 'components/Environment.js'
-import Floor from 'components/Floor.js'
-import Fox from 'components/Fox/Fox.js'
-import Cube from 'components/Cube/Cube.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
-import AudioManager from 'utils/AudioManager.js'
+import Fan from 'components/Fan.js'
 
 export default class Main {
 	constructor() {
@@ -16,16 +12,11 @@ export default class Main {
 		// Wait for resources
 		this.scene.resources.on('ready', () => {
 			// Setup
-			this.floor = new Floor()
-			this.fox = new Fox()
-			this.cube = new Cube()
-			this.environment = new Environment()
+			this.fan = new Fan()
 		})
-
-		const audioManager = new AudioManager()
 	}
 
 	update() {
-		if (this.fox) this.fox.update()
+		if (this.fan) this.fan.update()
 	}
 }
