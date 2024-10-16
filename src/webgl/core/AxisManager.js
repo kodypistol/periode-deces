@@ -114,7 +114,6 @@ export default class AxisManager extends EventEmitter {
 	 */
 	setDebug() {
 		this.setAxisStats()
-
 		if (!this.debug.active) return
 
 		this.debugFolder = this.debug.ui.addFolder({
@@ -137,6 +136,7 @@ export default class AxisManager extends EventEmitter {
 			}
 
 			this.stickLeftHandler({ position: evt.value })
+			this.stickLeftQuickHandler({ position: evt.value })
 		})
 
 		const valueR = { position: { x: 0, y: 0 } }
@@ -152,7 +152,9 @@ export default class AxisManager extends EventEmitter {
 				valueR.position.y = 0
 				this.debugStickR.refresh()
 			}
+
 			this.stickRightHandler({ position: evt.value })
+			this.stickRightQuickHandler({ position: evt.value })
 		})
 	}
 

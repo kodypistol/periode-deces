@@ -42,7 +42,7 @@ export default class Main {
 		})
 
 		this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
-		this.experience.axis.on('joystick:move:left', (event) => {
+		this.experience.axis.on('joystick:quickmove:left', (event) => {
 			if (!leftSelectionMode) return
 			if (event.position.x > 0.9 || event.position.x < -0.9) {
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
