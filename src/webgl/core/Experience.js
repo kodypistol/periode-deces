@@ -54,13 +54,13 @@ export default class Experience {
 	setLeds() {
 		const left = Object.values(this.axis.controls.left)
 		const right = Object.values(this.axis.controls.right)
-		const values = [...left, ...right].filter((v) => v.led)
+		const values = [...left, ...right]
 		const colors = ['red', 'green', 'blue', 'yellow', 'purple', 'cyan', 'white']
 
 		values?.forEach((val) => {
 			val.addEventListener('keydown', () => {
 				console.log(val)
-				val.setLedColor(colors[Math.floor(Math.random() * colors.length)])
+				val.setLedColor?.(colors[Math.floor(Math.random() * colors.length)])
 			})
 		})
 	}

@@ -101,8 +101,12 @@ export default class AxisManager extends EventEmitter {
 	setEvents() {
 		Axis.addEventListener('keydown', this.keydownHandler.bind(this))
 		Axis.addEventListener('keyup', this.keyupHandler.bind(this))
+
 		Axis.joystick1.addEventListener('joystick:move', this.stickLeftHandler.bind(this))
 		Axis.joystick2.addEventListener('joystick:move', this.stickRightHandler.bind(this))
+
+		Axis.joystick1.addEventListener('joystick:quickmove', this.stickLeftQuickHandler.bind(this))
+		Axis.joystick2.addEventListener('joystick:quickmove', this.stickRightQuickHandler.bind(this))
 	}
 
 	/**
@@ -221,7 +225,7 @@ export default class AxisManager extends EventEmitter {
 	 */
 	keydownHandler(evt) {
 		const side = evt.id === 1 ? 'left' : 'right'
-		this.trigger('down:' + side, evt)
+		this.trigger('down:' + side, [evt])
 		this.values[side][evt.key] = true
 	}
 
@@ -231,7 +235,7 @@ export default class AxisManager extends EventEmitter {
 	 */
 	keyupHandler(evt) {
 		const side = evt.id === 1 ? 'left' : 'right'
-		this.trigger('up:' + side, evt)
+		this.trigger('up:' + side, [evt])
 		this.values[side][evt.key] = false
 	}
 
@@ -240,10 +244,8 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickLeftHandler(evt) {
-		const pos = evt.position
-		this.values.left.stick.position.set(pos.x, pos.y)
-
-		this.trigger('stick:left', [this.values.left.stick])
+		this.setValues('left', evt)
+		this.trigger('joystick:move:left', [this.values.left.stick])
 	}
 
 	/**
@@ -251,10 +253,37 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickRightHandler(evt) {
-		const pos = evt.position
-		this.values.right.stick.position.set(pos.x, pos.y)
+		this.setValues('right', evt)
+		this.trigger('joystick:move:right', [this.values.right.stick])
+	}
 
-		this.trigger('stick:right', [this.values.right.stick])
+	/**
+	 * On sick left
+	 * @param {*} evt
+	 */
+	stickLeftQuickHandler(evt) {
+		this.setValues('left', evt)
+		this.trigger('joystick:quickmove:left', [this.values.left.stick])
+	}
+
+	/**
+	 * On sick right
+	 * @param {*} evt
+	 */
+	stickRightQuickHandler(evt) {
+		this.setValues('right', evt)
+		this.trigger('joystick:quickmove:right', [this.values.right.stick])
+	}
+
+	/**
+	 * Set values
+	 */
+	setValues(side, evt) {
+		const pos = evt.position
+		this.values[side].stick = {
+			...evt,
+			position: this.values[side].stick.position.set(pos.x, pos.y),
+		}
 	}
 
 	/**
