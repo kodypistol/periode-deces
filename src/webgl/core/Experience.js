@@ -55,9 +55,7 @@ export default class Experience {
 		const left = Object.values(this.axis.controls.left)
 		const right = Object.values(this.axis.controls.right)
 		const values = [...left, ...right]
-		const colors = ['red', 'green', 'blue', 'yellow', 'purple', 'cyan', 'white']
-
-		this.axis.controls.left.a.setLedColor('yellow')
+		const colors = ['#ff00ff', '#88ff00', '#000000', '#ff8800', '#00ddff']
 
 		values?.forEach((val) => {
 			val.addEventListener('keydown', () => {
@@ -78,6 +76,7 @@ export default class Experience {
 		this.debug.update()
 		this.interactionManager.update()
 		this.axis.update()
+		this.axis?.controls?.left?.a?.setLedColor('#ff00ff')
 	}
 
 	destroy() {
