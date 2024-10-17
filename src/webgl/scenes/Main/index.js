@@ -69,16 +69,21 @@ export default class Main {
 
 		clonedMeshes[leftIndexSelection].visible = true
 		clonedMeshes[leftIndexSelection].material = selectLeftMaterial
-		this.experience.axis.on('joystick:move:left', (event) => {
+		this.experience.axis.on('joystick:quickmove:left', (event) => {
 			if (!leftSelectionMode) return
-			if (event.position.x > 0.9 || event.position.x < -0.9) {
-				clonedMeshes[leftIndexSelection].visible = false
+			clonedMeshes[leftIndexSelection].visible = false
+			if (event.direction === 'left') {
+				leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
+				if (rightIndexSelection === leftIndexSelection)
+					leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
+			}
+			if (event.direction === 'right') {
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
 				if (rightIndexSelection === leftIndexSelection)
 					leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
-				clonedMeshes[leftIndexSelection].visible = true
-				clonedMeshes[leftIndexSelection].material = selectLeftMaterial
 			}
+			clonedMeshes[leftIndexSelection].visible = true
+			clonedMeshes[leftIndexSelection].material = selectLeftMaterial
 		})
 
 		let rightIndexSelection = 1
@@ -93,16 +98,21 @@ export default class Main {
 
 		clonedMeshes[rightIndexSelection].visible = true
 		clonedMeshes[rightIndexSelection].material = selectRightMaterial
-		this.experience.axis.on('joystick:move:right', (event) => {
+		this.experience.axis.on('joystick:quickmove:right', (event) => {
 			if (!rightSelectionMode) return
-			if (event.position.x > 0.9 || event.position.x < -0.9) {
-				clonedMeshes[rightIndexSelection].visible = false
+			clonedMeshes[rightIndexSelection].visible = false
+			if (event.direction === 'left') {
+				rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
+				if (rightIndexSelection === leftIndexSelection)
+					rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
+			}
+			if (event.direction === 'right') {
 				rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
 				if (rightIndexSelection === leftIndexSelection)
 					rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
-				clonedMeshes[rightIndexSelection].visible = true
-				clonedMeshes[rightIndexSelection].material = selectRightMaterial
 			}
+			clonedMeshes[rightIndexSelection].visible = true
+			clonedMeshes[rightIndexSelection].material = selectRightMaterial
 		})
 	}
 
