@@ -19,13 +19,14 @@ export default class Camera {
 		this.options = {
 			fov: 35,
 			frustum: { min: 1, max: 100 },
-			position: new Vector3(6, 4, 8),
-			target: new Vector3(0, 0, 0),
+			position: new Vector3(0, 3, -4.3),
+			target: new Vector3(0, 1.8, 0),
 			currentCamera: 'sceneCamera',
 		}
 
 		this.setInstance()
 		if (this.options.currentCamera === 'controlsCamera') this.setControlsCamera()
+		// this.setControlsCamera()
 		if (this.options.currentCamera === 'fpsCamera') this.setFpsCamera()
 
 		if (this.debug.active) this.setDebug()

@@ -24,3 +24,6 @@ npm run dev
 - `Audio management`: Add audios and positional audios with a complete debug panel
 - `Input management`: Minimal input management
 - `addObjectDebug or addMaterialDebug`: Auto debug parameters of a mesh or a material
+
+
+// TODO: ecrire la doc en fait ce serais pas mal je pense
