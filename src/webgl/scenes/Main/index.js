@@ -28,20 +28,24 @@ export default class Main {
 		this.fanLeft = new Fan()
 		this.tasks.push(this.fanLeft)
 		this.fanLeft.mesh.position.x -= 2
+		this.fanLeft.mesh.position.z = 5
 
 		this.fanRight = new Fan()
 		this.tasks.push(this.fanRight)
 		this.fanRight.mesh.position.x += 2
+		this.fanRight.mesh.position.z = 5
 
 		this.fanLeft1 = new Fan()
 		this.tasks.push(this.fanLeft1)
 		this.fanLeft1.mesh.position.x -= 2
 		this.fanLeft1.mesh.position.y -= 2
+		this.fanLeft1.mesh.position.z = 5
 
 		this.fanRight1 = new Fan()
 		this.tasks.push(this.fanRight1)
 		this.fanRight1.mesh.position.x += 2
 		this.fanRight1.mesh.position.y -= 2
+		this.fanRight1.mesh.position.z = 5
 
 		this.computer = new Computer()
 		// this.tasks.push(this.computer)

@@ -266,7 +266,6 @@ export default class AxisManager extends EventEmitter {
 	 */
 	stickLeftQuickHandler(evt) {
 		// this.setStickValues('left', evt)
-		console.log(evt)
 		this.trigger('joystick:quickmove:left', [evt])
 	}
 
@@ -276,7 +275,6 @@ export default class AxisManager extends EventEmitter {
 	 */
 	stickRightQuickHandler(evt) {
 		// this.setStickValues('right', evt)
-		console.log(evt)
 		this.trigger('joystick:quickmove:right', [evt])
 	}
 

@@ -1,6 +1,7 @@
 import Experience from 'core/Experience.js'
 import { BoxGeometry, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
+import addObjectDebug from 'utils/addObjectDebug.js'
 
 export default class Fan {
 	constructor() {
@@ -27,6 +28,7 @@ export default class Fan {
 		this.mesh = new Mesh(this._geometry, this._material)
 		this.mesh.name = 'fan'
 		this.scene.add(this.mesh)
+		addObjectDebug(this.debug.ui, this.mesh)
 	}
 
 	/**
