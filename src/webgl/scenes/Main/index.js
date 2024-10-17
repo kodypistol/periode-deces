@@ -2,7 +2,7 @@ import Experience from 'core/Experience.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
-import { BackSide, MeshBasicMaterial } from 'three'
+import { BackSide, Mesh, MeshBasicMaterial } from 'three'
 
 export default class Main {
 	constructor() {
@@ -21,21 +21,37 @@ export default class Main {
 	_createSceneElements() {
 		this.fanLeft = new Fan()
 		this.tasks.push(this.fanLeft)
-		// this.fanLeft.playTask('left')
 		this.fanLeft.mesh.position.x -= 2
+
 		this.fanRight = new Fan()
 		this.tasks.push(this.fanRight)
-		// this.fanRight.playTask('right')
 		this.fanRight.mesh.position.x += 2
+
+		this.fanLeft1 = new Fan()
+		this.tasks.push(this.fanLeft1)
+		this.fanLeft1.mesh.position.x -= 2
+		this.fanLeft1.mesh.position.y -= 2
+
+		this.fanRight1 = new Fan()
+		this.tasks.push(this.fanRight1)
+		this.fanRight1.mesh.position.x += 2
+		this.fanRight1.mesh.position.y -= 2
 	}
 
 	_selectionBehavior() {
-		const basicMaterial = new MeshBasicMaterial({ color: 'white', side: BackSide })
+		const selectLeftMaterial = new MeshBasicMaterial({ color: 'blue', side: BackSide })
+		const selectRightMaterial = new MeshBasicMaterial({ color: 'green', side: BackSide })
 		const clonedMeshes = []
 		this.tasks.forEach((task) => {
-			const clonedMesh = task.mesh.clone()
-			clonedMesh.scale.set(1.01, 1.01, 1.01)
-			clonedMesh.material = basicMaterial
+			const geometry = task.mesh.geometry
+			const clonedMesh = new Mesh(geometry, selectLeftMaterial)
+			clonedMesh.position.copy(task.mesh.position)
+			clonedMesh.rotation.copy(task.mesh.rotation)
+			clonedMesh.quaternion.copy(task.mesh.quaternion)
+			clonedMesh.scale.copy(task.mesh.scale)
+			clonedMesh.name = 'clonedMesh'
+			clonedMesh.scale.addScalar(0.02)
+			clonedMesh.material = selectLeftMaterial
 			clonedMesh.visible = false
 			clonedMeshes.push(clonedMesh)
 			this.scene.add(clonedMesh)
@@ -47,17 +63,45 @@ export default class Main {
 			if (event.key === 'a') {
 				this.tasks[leftIndexSelection].playTask('left')
 				leftSelectionMode = false
+				clonedMeshes[leftIndexSelection].visible = false
 			}
 		})
 
 		clonedMeshes[leftIndexSelection].visible = true
+		clonedMeshes[leftIndexSelection].material = selectLeftMaterial
 		this.experience.axis.on('joystick:move:left', (event) => {
 			if (!leftSelectionMode) return
 			if (event.position.x > 0.9 || event.position.x < -0.9) {
 				clonedMeshes[leftIndexSelection].visible = false
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
+				if (rightIndexSelection === leftIndexSelection)
+					leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
 				clonedMeshes[leftIndexSelection].visible = true
-				// if (rightIndexSelection === leftIndexSelection) leftIndexSelection = (leftIndexSelection + 1) % tasks.length
+				clonedMeshes[leftIndexSelection].material = selectLeftMaterial
+			}
+		})
+
+		let rightIndexSelection = 1
+		let rightSelectionMode = true
+		this.experience.axis.on('down:right', (event) => {
+			if (event.key === 'a') {
+				this.tasks[rightIndexSelection].playTask('right')
+				rightSelectionMode = false
+				clonedMeshes[rightIndexSelection].visible = false
+			}
+		})
+
+		clonedMeshes[rightIndexSelection].visible = true
+		clonedMeshes[rightIndexSelection].material = selectRightMaterial
+		this.experience.axis.on('joystick:move:right', (event) => {
+			if (!rightSelectionMode) return
+			if (event.position.x > 0.9 || event.position.x < -0.9) {
+				clonedMeshes[rightIndexSelection].visible = false
+				rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
+				if (rightIndexSelection === leftIndexSelection)
+					rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
+				clonedMeshes[rightIndexSelection].visible = true
+				clonedMeshes[rightIndexSelection].material = selectRightMaterial
 			}
 		})
 	}
