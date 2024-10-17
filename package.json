@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"axis-api": "github:gobelins-axis/axis-api",
+		"gsap": "^3.12.5",
 		"three": "^0.169.0"
 	},
 	"devDependencies": {
