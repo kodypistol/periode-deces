@@ -2,8 +2,12 @@ import Experience from 'core/Experience.js'
 import { BoxGeometry, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
 import addObjectDebug from 'utils/addObjectDebug.js'
+import EventEmitter from '../core/EventEmitter'
 
-export default class Fan {
+const SETTINGS = {
+	TURNS: 4,
+}
+export default class Fan extends EventEmitter {
 	constructor() {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
@@ -31,22 +35,29 @@ export default class Fan {
 		addObjectDebug(this.debug.ui, this.mesh)
 	}
 
+	_handleMove(event) {
+		let lastAngle = new Vector2()
+
+		const distanceFromCenter = event.position.distanceTo(new Vector2())
+		const angle = event.position.angle()
+		const angleDelta = angle - lastAngle
+
+		if (distanceFromCenter > 0.75 && angleDelta > 0 && angleDelta < 1) {
+			this.targetRotation += angleDelta
+		}
+		lastAngle = angle
+
+		if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
+			this.trigger('task:complete')
+			this.experience.axis.off(`joystick:move:${side}`, this._handleMove)
+		}
+	}
+
 	/**
 	 * @param {'left' | 'right'} side
 	 */
 	playTask(side = 'left') {
-		let lastAngle = new Vector2()
-
-		this.experience.axis.on(`joystick:move:${side}`, (event) => {
-			const distanceFromCenter = event.position.distanceTo(new Vector2())
-			const angle = event.position.angle()
-			const angleDelta = angle - lastAngle
-
-			if (distanceFromCenter > 0.75 && angleDelta > 0 && angleDelta < 1) {
-				this.targetRotation += angleDelta
-			}
-			lastAngle = angle
-		})
+		this.experience.axis.on(`joystick:move:${side}`, this._handleMove)
 	}
 
 	update() {
