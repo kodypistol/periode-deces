@@ -4,8 +4,6 @@ import sources from './sources.json'
 import Fan from 'components/Fan.js'
 import Computer from 'components/Computer/index.js'
 import { BackSide, Mesh, MeshBasicMaterial } from 'three'
-import Fox from 'components/Fox/Fox.js'
-import Environment from 'components/Environment.js'
 
 export default class Main {
 	constructor() {
@@ -22,9 +20,6 @@ export default class Main {
 	}
 
 	_createSceneElements() {
-		this.fox = new Fox()
-		this.environment = new Environment()
-
 		this.fanLeft = new Fan()
 		this.tasks.push(this.fanLeft)
 		this.fanLeft.mesh.position.x -= 2
@@ -80,10 +75,12 @@ export default class Main {
 			}
 		})
 
+		//TODO: need refactor
 		clonedMeshes[leftIndexSelection].visible = true
 		clonedMeshes[leftIndexSelection].material = selectLeftMaterial
 		this.experience.axis.on('joystick:quickmove:left', (event) => {
 			if (!leftSelectionMode) return
+			if (event.direction === 'up' || event.direction === 'up') return
 			clonedMeshes[leftIndexSelection].visible = false
 			if (event.direction === 'left') {
 				leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
@@ -113,6 +110,7 @@ export default class Main {
 		clonedMeshes[rightIndexSelection].material = selectRightMaterial
 		this.experience.axis.on('joystick:quickmove:right', (event) => {
 			if (!rightSelectionMode) return
+			if (event.direction === 'up' || event.direction === 'up') return
 			clonedMeshes[rightIndexSelection].visible = false
 			if (event.direction === 'left') {
 				rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
