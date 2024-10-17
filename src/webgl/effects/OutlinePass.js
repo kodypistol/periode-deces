@@ -150,21 +150,16 @@ class OutlinePass extends Pass {
 
 	render(renderer, writeBuffer, readBuffer, deltaTime, maskActive) {
 		if (this.selectedObjects.length > 0) {
-			renderer.getClearColor(this._oldClearColor)
-			this.oldClearAlpha = renderer.getClearAlpha()
-			const oldAutoClear = renderer.autoClear
-
-			renderer.autoClear = false
-
+			// renderer.getClearColor(this._oldClearColor)
+			// this.oldClearAlpha = renderer.getClearAlpha()
+			// const oldAutoClear = renderer.autoClear
+			//
+			// renderer.autoClear = false
 			// if (maskActive) renderer.state.buffers.stencil.setTest(false)
-
-			renderer.setClearColor(0xffffff, 1)
-
-			this.updateSelectionCache()
-
-			const currentBackground = this.renderScene.background
-			this.renderScene.background = null
-
+			// renderer.setClearColor(0xffffff, 1)
+			// this.updateSelectionCache()
+			// const currentBackground = this.renderScene.background
+			// this.renderScene.background = null
 			// Make non selected objects invisible, and draw only the selected objects, by comparing the depth buffer of non selected objects
 			// this.changeVisibilityOfNonSelectedObjects(false)
 			// this.renderScene.overrideMaterial = new MeshBasicMaterial({ color: 'black' })
@@ -177,7 +172,6 @@ class OutlinePass extends Pass {
 			// this._selectionCache.clear()
 			//
 			// this.renderScene.background = currentBackground
-
 			// 3. Apply Edge Detection Pass
 			// this.fsQuad.material = this.edgeDetectionMaterial
 			// this.edgeDetectionMaterial.uniforms['maskTexture'].value = this.renderTargetMaskBuffer.texture
@@ -189,28 +183,24 @@ class OutlinePass extends Pass {
 			// renderer.setRenderTarget(this.renderTargetEdgeBuffer)
 			// renderer.clear()
 			// this.fsQuad.render(renderer)
-
 			// Blend it additively over the input texture
-			this.fsQuad.material = this.overlayMaterial
-			this.overlayMaterial.uniforms['maskTexture'].value = this.renderTargetMaskBuffer.texture
-			this.overlayMaterial.uniforms['edgeTexture'].value = this.renderTargetEdgeBuffer.texture
-			this.overlayMaterial.uniforms['edgeStrength'].value = this.edgeStrength
-
+			// this.fsQuad.material = this.overlayMaterial
+			// this.overlayMaterial.uniforms['maskTexture'].value = this.renderTargetMaskBuffer.texture
+			// this.overlayMaterial.uniforms['edgeTexture'].value = this.renderTargetEdgeBuffer.texture
+			// this.overlayMaterial.uniforms['edgeStrength'].value = this.edgeStrength
 			// if (maskActive) renderer.state.buffers.stencil.setTest(true)
-
 			// renderer.setRenderTarget(readBuffer)
 			// this.fsQuad.render(renderer)
-
-			renderer.setClearColor(this._oldClearColor, this.oldClearAlpha)
-			renderer.autoClear = oldAutoClear
+			// renderer.setClearColor(this._oldClearColor, this.oldClearAlpha)
+			// renderer.autoClear = oldAutoClear
 		}
 
-		if (this.renderToScreen) {
-			this.fsQuad.material = this.materialCopy
-			this.copyUniforms['tDiffuse'].value = readBuffer.texture
-			renderer.setRenderTarget(null)
-			this.fsQuad.render(renderer)
-		}
+		// if (this.renderToScreen) {
+		// 	this.fsQuad.material = this.materialCopy
+		// 	this.copyUniforms['tDiffuse'].value = readBuffer.texture
+		// 	renderer.setRenderTarget(null)
+		// 	this.fsQuad.render(renderer)
+		// }
 	}
 
 	getEdgeDetectionMaterial() {

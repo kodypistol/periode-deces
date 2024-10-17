@@ -21,7 +21,7 @@ export default class Renderer {
 		this.camera = this.experience.camera
 
 		this._createInstance()
-		this._createPostprocessing()
+		// this._createPostprocessing()
 	}
 
 	_createInstance() {
@@ -45,11 +45,11 @@ export default class Renderer {
 		const renderPass = new RenderPass(this.scene, this.camera.instance)
 		this._composer.addPass(renderPass)
 
-		this.outlinePass = new OutlinePass(
-			new Vector2(this.sizes.width, this.sizes.height),
-			this.scene,
-			this.camera.instance,
-		)
+		// this.outlinePass = new OutlinePass(
+		// 	new Vector2(this.sizes.width, this.sizes.height),
+		// 	this.scene,
+		// 	this.camera.instance,
+		// )
 		// this._composer.addPass(this.outlinePass)
 	}
 
@@ -59,7 +59,7 @@ export default class Renderer {
 	}
 
 	update() {
-		this._composer.render()
-		// this.instance.render(this.scene, this.camera.instance)
+		// this._composer.render()
+		this.instance.render(this.scene, this.camera.instance)
 	}
 }

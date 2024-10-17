@@ -2,9 +2,7 @@ import Experience from 'core/Experience.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
-import { Vector2 } from 'three'
-import throttle from 'axis-api/src/utils/throttle.js'
-import Axis from 'axis-api'
+import { BackSide, MeshBasicMaterial } from 'three'
 
 export default class Main {
 	constructor() {
@@ -32,6 +30,17 @@ export default class Main {
 	}
 
 	_selectionBehavior() {
+		const basicMaterial = new MeshBasicMaterial({ color: 'white', side: BackSide })
+		const clonedMeshes = []
+		this.tasks.forEach((task) => {
+			const clonedMesh = task.mesh.clone()
+			clonedMesh.scale.set(1.01, 1.01, 1.01)
+			clonedMesh.material = basicMaterial
+			clonedMesh.visible = false
+			clonedMeshes.push(clonedMesh)
+			this.scene.add(clonedMesh)
+		})
+
 		let leftIndexSelection = 0
 		let leftSelectionMode = true
 		this.experience.axis.on('down:left', (event) => {
@@ -41,15 +50,18 @@ export default class Main {
 			}
 		})
 
-		this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
+		// this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
+		clonedMeshes[leftIndexSelection].visible = true
 		this.experience.axis.on('joystick:move:left', (event) => {
 			if (!leftSelectionMode) return
 			if (event.position.x > 0.9 || event.position.x < -0.9) {
+				clonedMeshes[leftIndexSelection].visible = false
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
+				clonedMeshes[leftIndexSelection].visible = true
 				// if (rightIndexSelection === leftIndexSelection) leftIndexSelection = (leftIndexSelection + 1) % tasks.length
 
-				this.experience.renderer.outlinePass.selectedObjects = []
-				this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
+				// this.experience.renderer.outlinePass.selectedObjects = []
+				// this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
 			}
 		})
 	}
