@@ -37,5 +37,10 @@
 		"name": "phoneModel",
 		"type": "gltf",
 		"path": "models/Phone/Phone.glb"
+	},
+	{
+		"name": "typeAudio",
+		"type": "audio",
+		"path": "audio/type.mp3"
 	}
 ]

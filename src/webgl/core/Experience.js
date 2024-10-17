@@ -7,6 +7,7 @@ import SceneManager from 'core/SceneManager.js'
 import { Mesh, Scene } from 'three'
 import InteractionManager from 'core/InteractionManager.js'
 import AxisManager from './AxisManager.js'
+import { SubtitleManager } from 'core/SubtitleManager.js'
 
 let instance = null
 
@@ -34,6 +35,14 @@ export default class Experience {
 		this.activeScene = new SceneManager()
 		this.axis = new AxisManager()
 		this.renderer = new Renderer()
+		this.subtitlesManager = new SubtitleManager()
+
+		this.subtitlesManager.playSubtitle('colleague')
+		this.axis.on('down:left', (event) => {
+			if (event.key === 'a') {
+				this.subtitlesManager.next()
+			}
+		})
 
 		// Resize event
 		this.sizes.on('resize', () => {
