@@ -1,16 +1,7 @@
 import Experience from 'core/Experience.js'
-import {
-	ACESFilmicToneMapping,
-	CineonToneMapping,
-	Color,
-	PCFSoftShadowMap,
-	SRGBColorSpace,
-	Vector2,
-	WebGLRenderer,
-} from 'three'
+import { WebGLRenderer } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { OutlinePass } from 'webgl/effects/OutlinePass.js'
 
 export default class Renderer {
 	constructor() {
@@ -44,13 +35,6 @@ export default class Renderer {
 
 		const renderPass = new RenderPass(this.scene, this.camera.instance)
 		this._composer.addPass(renderPass)
-
-		// this.outlinePass = new OutlinePass(
-		// 	new Vector2(this.sizes.width, this.sizes.height),
-		// 	this.scene,
-		// 	this.camera.instance,
-		// )
-		// this._composer.addPass(this.outlinePass)
 	}
 
 	resize() {

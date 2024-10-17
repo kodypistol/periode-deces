@@ -50,7 +50,6 @@ export default class Main {
 			}
 		})
 
-		// this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
 		clonedMeshes[leftIndexSelection].visible = true
 		this.experience.axis.on('joystick:move:left', (event) => {
 			if (!leftSelectionMode) return
@@ -59,9 +58,6 @@ export default class Main {
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
 				clonedMeshes[leftIndexSelection].visible = true
 				// if (rightIndexSelection === leftIndexSelection) leftIndexSelection = (leftIndexSelection + 1) % tasks.length
-
-				// this.experience.renderer.outlinePass.selectedObjects = []
-				// this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
 			}
 		})
 	}
