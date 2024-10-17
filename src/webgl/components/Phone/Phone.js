@@ -1,21 +1,36 @@
-import addObjectDebug from '@/webgl/utils/addObjectDebug'
+import EventEmitter from '@/webgl/core/EventEmitter'
 import Experience from 'core/Experience.js'
 import { gsap } from 'gsap'
 import { Vector2 } from 'three'
 
-export default class Phone {
+const CALL = {
+	DURATION: 4, // seconds
+	VOLUMES: {
+		CALLING: 0.2,
+		TALKING: 1,
+	},
+}
+export default class Phone extends EventEmitter {
 	/**
 	 *
 	 * @param {'left' | 'right'} _side
 	 */
-	constructor(_side = 'right') {
+	constructor({ duration = 10, side = 'right' } = {}) {
+		super()
+
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.camera = this.experience.camera.instance
 		this.resources = this.scene.resources
 		this.debug = this.experience.debug
 		this.axis = this.experience.axis
-		this.side = _side
+		this.calling = new Audio('/audio/phone/calling.wav')
+		this.calling.loop = true
+		this.talking = new Audio('/audio/phone/talking.mp3')
+		this.talking.loop = true
+		this.closeCall = new Audio('/audio/phone/close_call.mp3')
+		this.side = side
+		this.duration = duration
 
 		this._setModel()
 		this._setDebug()
@@ -31,8 +46,13 @@ export default class Phone {
 		// this.model.position.z += 5
 
 		this.telModel = this.model.children.find(({ name }) => name === 'tel')
+		this.baseTalValues = {
+			rotation: this.telModel.rotation.clone(),
+			position: this.telModel.position.clone(),
+		}
 		this._setShakeAnim()
 		this._setAnswerAnim()
+		this._setResetAnim()
 		this.pickMe()
 
 		this.scene.add(this.model)
@@ -43,39 +63,22 @@ export default class Phone {
 	 */
 	pickMe() {
 		this.shakeAnim.play()
+		this.calling.volume = CALL.VOLUMES.CALLING
+		this.calling.play()
 		this.playTask()
+
+		this.outCall = setTimeout(() => {
+			this.shakeAnim.pause()
+			this.resetAnim.play()
+			this.trigger('task:fail')
+		}, this.duration * 1000)
 	}
 
+	/**
+	 * Deactivate the CTA of the call (ringing)
+	 */
 	ratio() {
 		this.answerAnim.reverse()
-	}
-
-	_setShakeAnim() {
-		const duration = 0.5
-		this.shakeAnim = gsap.timeline({ repeat: -1, yoyo: true, paused: true })
-
-		this.shakeAnim.to(
-			this.telModel.rotation,
-			{
-				duration: duration - duration / 3,
-				delay: duration / 3,
-				x: this.telModel.rotation.x + 0.1,
-				y: this.telModel.rotation.y + 0.1,
-				z: this.telModel.rotation.z - 0.05,
-				ease: 'bounce.out',
-			},
-			0
-		)
-
-		this.shakeAnim.to(
-			this.telModel.position,
-			{
-				duration,
-				y: this.telModel.position.y + 0.1,
-				ease: 'bounce.out',
-			},
-			0
-		)
 	}
 
 	/**
@@ -88,11 +91,22 @@ export default class Phone {
 	_handlePlayTask(e) {
 		if (e.key !== 'a') return
 		this.axis.off('down:' + this.side, this._handlePlayTask)
+		gsap.to(this.calling, { volume: 0, duration: 0.25, onComplete: () => this.calling.pause() })
 
-		this.shakeAnim.reverse().then(() => {
-			setTimeout(() => this.ratio(), 2000)
-			this.answerAnim.play()
-		})
+		this.shakeAnim.pause()
+		this.answerAnim.play()
+
+		this.talking.volume = CALL.VOLUMES.TALKING
+		this.talking.play()
+
+		setTimeout(() => {
+			gsap.to(this.talking, { volume: 0, duration: 0.25, onComplete: () => this.talking.pause() })
+
+			this.answerAnim.pause()
+			this.resetAnim.play()
+
+			this.trigger('task:complete')
+		}, CALL.DURATION * 1000)
 	}
 
 	_setAnswerAnim() {
@@ -128,13 +142,66 @@ export default class Phone {
 			)
 	}
 
-	_setDebug() {
-		const debugFolder = addObjectDebug(this.debug.ui, this.model)
+	_setShakeAnim() {
+		const duration = 0.5
+		this.shakeAnim = gsap.timeline({ repeat: -1, yoyo: true, paused: true })
+
+		this.shakeAnim.to(
+			this.telModel.rotation,
+			{
+				duration: duration - duration / 3,
+				delay: duration / 3,
+				x: this.telModel.rotation.x + 0.1,
+				y: this.telModel.rotation.y + 0.1,
+				z: this.telModel.rotation.z - 0.05,
+				ease: 'bounce.out',
+			},
+			0
+		)
+
+		this.shakeAnim.to(
+			this.telModel.position,
+			{
+				duration,
+				y: this.telModel.position.y + 0.1,
+				ease: 'bounce.out',
+			},
+			0
+		)
 	}
 
-	update() {
-		if (this.telModel) {
-			// this.telModel.position.y += this.animValues.shake.factor * 0.01
-		}
+	_setResetAnim() {
+		const duration = 1.25
+		this.resetAnim = gsap
+			.timeline({ paused: true })
+			.to(
+				this.telModel.rotation,
+				{
+					duration,
+					x: this.baseTalValues.rotation.x,
+					y: this.baseTalValues.rotation.y,
+					z: this.baseTalValues.rotation.z,
+					ease: 'power2.inOut',
+				},
+				0
+			)
+			.to(
+				this.telModel.position,
+				{
+					duration,
+					x: this.baseTalValues.position.x,
+					y: this.baseTalValues.position.y,
+					z: this.baseTalValues.position.z,
+					ease: 'power2.inOut',
+					onComplete: () => {
+						this.closeCall.play()
+					},
+				},
+				0
+			)
+	}
+
+	_setDebug() {
+		// const debugFolder = addObjectDebug(this.debug.ui, this.model)
 	}
 }

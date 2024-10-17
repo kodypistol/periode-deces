@@ -6,7 +6,7 @@ import Cube from 'components/Cube/Cube.js'
 import Computer from 'components/Computer/index.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
-import AudioManager from 'utils/AudioManager.js'
+import Phone from '@/webgl/components/Phone/Phone'
 
 export default class Main {
 	constructor() {
@@ -20,11 +20,10 @@ export default class Main {
 			// this.floor = new Floor()
 			// this.fox = new Fox()
 			// this.cube = new Cube()
-			this.computer = new Computer()
 			// this.environment = new Environment()
+			this.computer = new Computer()
+			this.phone = new Phone()
 		})
-
-		// const audioManager = new AudioManager()
 	}
 
 	update() {
