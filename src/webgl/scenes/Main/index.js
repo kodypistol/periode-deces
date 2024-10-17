@@ -3,6 +3,8 @@ import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
 import { BackSide, Mesh, MeshBasicMaterial } from 'three'
+import Fox from 'components/Fox/Fox.js'
+import Environment from 'components/Environment.js'
 
 export default class Main {
 	constructor() {
@@ -19,6 +21,9 @@ export default class Main {
 	}
 
 	_createSceneElements() {
+		this.fox = new Fox()
+		this.environment = new Environment()
+
 		this.fanLeft = new Fan()
 		this.tasks.push(this.fanLeft)
 		this.fanLeft.mesh.position.x -= 2

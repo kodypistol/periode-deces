@@ -17,6 +17,7 @@ body {
 
 	width: 100% !important;
 	height: 100% !important;
+	image-rendering: pixelated;
 }
 
 .computer-screen{
