@@ -29,11 +29,12 @@ export default class AxisManager extends EventEmitter {
 		super()
 		// Experience
 		this.experience = new Experience()
+		this.instance = Axis
 		this.debug = this.experience.debug
 
 		// Initialize
 		this.controls = {}
-		this.leds = Axis.ledManager.leds
+		this.leds = this.instance.ledManager.leds
 		this.setControls()
 		this.setValues()
 		this.setEvents()
@@ -49,20 +50,20 @@ export default class AxisManager extends EventEmitter {
 
 		this.controls = {
 			left: {
-				stick: Axis.createGamepadEmulator(0),
-				a: Axis.registerKeys(left.a, 'a', 1), // keyboard key "q" to button "a" from group 1
-				x: Axis.registerKeys(left.x, 'x', 1), // keyboard key "d" to button "x" from group 1
-				i: Axis.registerKeys(left.i, 'i', 1), // keyboard key "z" to button "i" from group 1
-				s: Axis.registerKeys(left.s, 's', 1), // keyboard key "s" to button "s" from group 1
-				w: Axis.registerKeys(left.w, 'w', 1), // keyboard key Space to button "w" from group 1
+				stick: this.instance.createGamepadEmulator(0),
+				a: this.instance.registerKeys(left.a, 'a', 1), // keyboard key "q" to button "a" from group 1
+				x: this.instance.registerKeys(left.x, 'x', 1), // keyboard key "d" to button "x" from group 1
+				i: this.instance.registerKeys(left.i, 'i', 1), // keyboard key "z" to button "i" from group 1
+				s: this.instance.registerKeys(left.s, 's', 1), // keyboard key "s" to button "s" from group 1
+				w: this.instance.registerKeys(left.w, 'w', 1), // keyboard key Space to button "w" from group 1
 			},
 			right: {
-				stick: Axis.createGamepadEmulator(1),
-				a: Axis.registerKeys(right.a, 'a', 2), // keyboard key "ArrowLeft" to button "a" from group 2
-				x: Axis.registerKeys(right.x, 'x', 2), // keyboard key "ArrowRight" to button "x" from group 2
-				i: Axis.registerKeys(right.i, 'i', 2), // keyboard key "ArrowUp" to button "i" from group 2
-				s: Axis.registerKeys(right.s, 's', 2), // keyboard key "ArrowDown" to button "s" from group 2
-				w: Axis.registerKeys(right.w, 'w', 2), // keyboard key "Enter" to button "w" from group 2
+				stick: this.instance.createGamepadEmulator(1),
+				a: this.instance.registerKeys(right.a, 'a', 2), // keyboard key "ArrowLeft" to button "a" from group 2
+				x: this.instance.registerKeys(right.x, 'x', 2), // keyboard key "ArrowRight" to button "x" from group 2
+				i: this.instance.registerKeys(right.i, 'i', 2), // keyboard key "ArrowUp" to button "i" from group 2
+				s: this.instance.registerKeys(right.s, 's', 2), // keyboard key "ArrowDown" to button "s" from group 2
+				w: this.instance.registerKeys(right.w, 'w', 2), // keyboard key "Enter" to button "w" from group 2
 			},
 		}
 	}
@@ -99,14 +100,14 @@ export default class AxisManager extends EventEmitter {
 	 * Set events
 	 */
 	setEvents() {
-		Axis.addEventListener('keydown', this.keydownHandler.bind(this))
-		Axis.addEventListener('keyup', this.keyupHandler.bind(this))
+		this.instance.addEventListener('keydown', this.keydownHandler.bind(this))
+		this.instance.addEventListener('keyup', this.keyupHandler.bind(this))
 
-		Axis.joystick1.addEventListener('joystick:move', this.stickLeftHandler.bind(this))
-		Axis.joystick2.addEventListener('joystick:move', this.stickRightHandler.bind(this))
+		this.instance.joystick1.addEventListener('joystick:move', this.stickLeftHandler.bind(this))
+		this.instance.joystick2.addEventListener('joystick:move', this.stickRightHandler.bind(this))
 
-		Axis.joystick1.addEventListener('joystick:quickmove', this.stickLeftQuickHandler.bind(this))
-		Axis.joystick2.addEventListener('joystick:quickmove', this.stickRightQuickHandler.bind(this))
+		this.instance.joystick1.addEventListener('joystick:quickmove', this.stickLeftQuickHandler.bind(this))
+		this.instance.joystick2.addEventListener('joystick:quickmove', this.stickRightQuickHandler.bind(this))
 	}
 
 	/**
@@ -305,8 +306,8 @@ export default class AxisManager extends EventEmitter {
 	 */
 	destroy() {
 		// Remove event listeners
-		Axis.removeEventListener('keydown', this.keydownHandler)
-		Axis.removeEventListener('keyup', this.keyupHandler)
+		this.instance.removeEventListener('keydown', this.keydownHandler)
+		this.instance.removeEventListener('keyup', this.keyupHandler)
 
 		// Remove joystick event listeners
 		this.controls.left.stick.removeEventListener('joystick:move', this.stickLeftHandler)
