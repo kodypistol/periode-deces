@@ -26,10 +26,10 @@ export default class Experience {
 		this.canvas = _canvas
 
 		// Setup
-		this.sizes = new Sizes()
 		this.time = new Time()
 		this.scene = new Scene()
 		this.debug = new Debug()
+		this.sizes = new Sizes()
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
 		this.activeScene = new SceneManager()
