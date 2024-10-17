@@ -24,6 +24,16 @@
 		"path": "textures/dirt/normal.jpg"
 	},
 	{
+		"name": "bakeTexture",
+		"type": "texture",
+		"path": "textures/bake.png"
+	},
+	{
+		"name": "deskModel",
+		"type": "gltf",
+		"path": "models/model.glb"
+	},
+	{
 		"name": "computer",
 		"type": "gltf",
 		"path": "models/computer/model.glb"

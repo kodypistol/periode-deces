@@ -13,25 +13,49 @@
 </head>
 
 <body>
-<noscript>
-	<h1>Enable JavaScript to run this app.</h1>
-</noscript>
-<canvas id="webgl"></canvas>
-<p class="subtitle"></p>
-<div class="qte">
-	<img src="/textures/buttons/a.png" alt="a" />
-	<img src="/textures/buttons/x.png" alt="x" />
-	<img src="/textures/buttons/i.png" alt="i" />
-	<img src="/textures/buttons/s.png" alt="s" />
-</div>
+	<noscript>
+		<h1>Enable JavaScript to run this app.</h1>
+	</noscript>
+	<canvas id="webgl"></canvas>
+	<p class="subtitle"></p>
+	<div class="qte">
+		<img src="/textures/buttons/a.png" alt="a" />
+		<img src="/textures/buttons/x.png" alt="x" />
+		<img src="/textures/buttons/i.png" alt="i" />
+		<img src="/textures/buttons/s.png" alt="s" />
+	</div>
 
-<div class="computer-screen">
-	<p>Bonjour je suis l'ordinateur</p>
+	<div class="computer-screen">
+		<div class="graph">
+			<div class="notification">
+				<img src="./graph-notification.png" alt="">
+			</div>
 
-	<button>CLICQUE Moi</button>
+			<div class="activity">
+				<canvas class="canvas"></canvas>
+			</div>
+		</div>
 
-	<canvas class="graph"></canvas>
-</div>
+		<div class="call">
+			<div class="notification">
+				<img src="./call-notification.png" alt="">
+			</div>
+
+			<div class="activity">
+				<canvas class="canvas"></canvas>
+			</div>
+		</div>
+
+		<div class="mail">
+			<div class="notification">
+				<img src="./mail-notification.png" alt="">
+			</div>
+
+			<div class="activity">
+				<canvas class="canvas"></canvas>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>

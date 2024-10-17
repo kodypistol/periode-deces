@@ -5,8 +5,9 @@ import { BoxGeometry, Mesh, Scene, ShaderMaterial, MeshNormalMaterial, Vector3, 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 import addObjectDebug from '@/webgl/utils/addObjectDebug'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
+import Graph from './activities/Graph'
 
-export default class Cube {
+export default class Computer {
 	constructor(_position = new Vector3(0, 0, 0)) {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
@@ -27,24 +28,37 @@ export default class Cube {
 		this.setDebug()
 
 		this.tempPosition = new Vector3()
+
+		this._graphActivity = new Graph()
 	}
 
 	setMaterial() {
-		this.material = new ShaderMaterial({
-			fragmentShader,
-			vertexShader,
-			uniforms: {
-				uOpacity: { value: 1 },
-			},
-		})
+		// this.material = new ShaderMaterial({
+		// 	fragmentShader,
+		// 	vertexShader,
+		// 	uniforms: {
+		// 		uOpacity: { value: 1 },
+		// 	},
+		// })
+
+		const texture = this.resources.items.bakeTexture;
+		texture.flipY = false;
+
+		this.material = new MeshBasicMaterial({
+			map: texture,
+			transparent: true,
+		});
 	}
 
 	setMesh() {
-		const computer = this.resources.items.computer.scene.clone();
+		const computer = this.resources.items.deskModel.scene.clone();
 
 		computer.traverse((child) => {
 			if (child.isMesh) {
-				child.material = new MeshNormalMaterial();
+				if (child.geometry.attributes.uv1) child.geometry.attributes.uv = child.geometry.attributes.uv1.clone();
+				child.material = this.material;
+
+				console.log(child.name)
 			}
 		});
 
@@ -96,8 +110,8 @@ export default class Cube {
 
 	setScreenPoint() {
 		const screenPoint = new Mesh(new BoxGeometry(0.1, 0.1, 0.1), new MeshBasicMaterial({ color: 0xff0000 }));
-		screenPoint.position.set(-0.03, 2.17, 0.38);
-		screenPoint.rotation.y = Math.PI;
+		screenPoint.position.set(0.06, 2.17, -0.47);
+		// screenPoint.rotation.y = Math.PI;
 
 		this.scene.add(screenPoint);
 

@@ -33,7 +33,7 @@ export default class Fan extends EventEmitter {
 		this.mesh = new Mesh(this._geometry, this._material)
 		this.mesh.name = 'fan'
 		this.scene.add(this.mesh)
-		addObjectDebug(this.debug.ui, this.mesh)
+		// addObjectDebug(this.debug.ui, this.mesh)
 	}
 
 	_handleMove(event) {
