@@ -265,8 +265,9 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickLeftQuickHandler(evt) {
-		this.setStickValues('left', evt)
-		this.trigger('joystick:quickmove:left', [this.values.left.stick])
+		// this.setStickValues('left', evt)
+		console.log(evt)
+		this.trigger('joystick:quickmove:left', [evt])
 	}
 
 	/**
@@ -274,15 +275,16 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickRightQuickHandler(evt) {
-		this.setStickValues('right', evt)
-		this.trigger('joystick:quickmove:right', [this.values.right.stick])
+		// this.setStickValues('right', evt)
+		console.log(evt)
+		this.trigger('joystick:quickmove:right', [evt])
 	}
 
 	/**
 	 * Set values
 	 */
 	setStickValues(side, evt) {
-		const pos = evt.position
+		const pos = evt.position ?? this.values[side].stick.position
 		this.values[side].stick = {
 			...evt,
 			position: this.values[side].stick.position.set(pos.x, pos.y),
