@@ -35,7 +35,7 @@ export default class Experience {
 		this.axis = new AxisManager()
 		this.renderer = new Renderer()
 
-		this.setLedsEvent()
+		// this.setLedsEvent()
 
 		// Resize event
 		this.sizes.on('resize', () => {

@@ -21,7 +21,7 @@ export default class Renderer {
 		this.camera = this.experience.camera
 
 		this._createInstance()
-		this._createPostprocessing()
+		// this._createPostprocessing()
 	}
 
 	_createInstance() {
@@ -29,8 +29,8 @@ export default class Renderer {
 			canvas: this.canvas,
 			powerPreference: 'high-performance',
 		})
-		this.instance.outputColorSpace = SRGBColorSpace
-		this.instance.toneMapping = ACESFilmicToneMapping
+		// this.instance.outputColorSpace = SRGBColorSpace
+		// this.instance.toneMapping = ACESFilmicToneMapping
 		// this.instance.toneMappingExposure = 1.75
 		// this.instance.shadowMap.enabled = true
 		// this.instance.shadowMap.type = PCFSoftShadowMap
@@ -59,7 +59,7 @@ export default class Renderer {
 	}
 
 	update() {
-		this._composer.render()
-		// this.instance.render(this.scene, this.camera.instance)
+		// this._composer.render()
+		this.instance.render(this.scene, this.camera.instance)
 	}
 }
