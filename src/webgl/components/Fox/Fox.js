@@ -7,6 +7,7 @@ import AnimationController from 'utils/AnimationController.js'
 export default class Fox {
 	constructor() {
 		this.experience = new Experience()
+		this.axis = this.experience.axis
 		this.scene = this.experience.scene
 		this.resources = this.scene.resources
 		this.debug = this.experience.debug
@@ -38,6 +39,16 @@ export default class Fox {
 
 	update() {
 		this.animation.update(this.time.delta * 0.001)
+		const aLValues = this.axis.values.left.stick.position
+		const aRValues = this.axis.values.right.stick.position
+
+		const values = {
+			x: (aLValues?.x ?? 0) + (aRValues?.x ?? 0),
+			y: (aLValues?.y ?? 0) + (aRValues?.y ?? 0),
+		}
+
+		this.model.position.x += values.x * 0.01
+		this.model.position.z += values.y * 0.01
 	}
 
 	setDebug() {

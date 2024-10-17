@@ -7,6 +7,7 @@ import Experience from 'core/Experience.js'
 export default class Debug {
 	constructor() {
 		this.experience = new Experience()
+		this.axis = this.experience.axis
 		this.active = window.location.hash === '#debug'
 
 		if (this.active) {
@@ -221,6 +222,7 @@ export default class Debug {
 			SceneLog: true,
 			ResourceLog: true,
 			Stats: true,
+			Axis: true,
 			LoadingScreen: true,
 		}
 		this.debugParams = JSON.parse(sessionStorage.getItem('debugParams')) || this.debugParams
@@ -260,7 +262,7 @@ export default class Debug {
 						`📦 %c${object.name ? object.name : `unnamed ${object.type}`}%c added to the scene`,
 						'font-weight: bold; background-color: #ffffff20; padding: 0.1rem 0.3rem; border-radius: 0.3rem',
 						'font-weight: normal',
-						object,
+						object
 					)
 				}
 				return original.apply(this, arguments)
@@ -305,7 +307,7 @@ export default class Debug {
 		this.monitoringSection = document.createElement('section')
 		Object.assign(this.monitoringSection.style, {
 			position: 'fixed',
-			bottom: '1rem',
+			bottom: '2.5rem',
 			left: '1rem',
 			pointerEvents: 'none',
 			userSelect: 'none',

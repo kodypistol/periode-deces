@@ -6,6 +6,7 @@ import Renderer from './Renderer.js'
 import SceneManager from 'core/SceneManager.js'
 import { Mesh, Scene } from 'three'
 import InteractionManager from 'core/InteractionManager.js'
+import AxisManager from './AxisManager.js'
 
 let instance = null
 
@@ -31,7 +32,10 @@ export default class Experience {
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
 		this.activeScene = new SceneManager()
+		this.axis = new AxisManager()
 		this.renderer = new Renderer()
+
+		// this.setLedsEvent()
 
 		// Resize event
 		this.sizes.on('resize', () => {
@@ -44,6 +48,23 @@ export default class Experience {
 		})
 	}
 
+	/**
+	 * Set leds events
+	 */
+	setLedsEvent() {
+		// const left = Object.values(this.axis.controls.left)
+		// const right = Object.values(this.axis.controls.right)
+		// const values = [...left, ...right]
+		// const colors = ['#ff00ff', '#88ff00', '#000000', '#ff8800', '#00ddff']
+		// values?.forEach((val) => {
+		// 	val.addEventListener('keydown', () => {
+		// 		console.log(val)
+		// 		val.setLedColor?.(colors[Math.floor(Math.random() * colors.length)])
+		// 	})
+		// })
+		this.axis.instance.ledManager.leds[0].setColor('#ff00ff')
+	}
+
 	resize() {
 		this.camera.resize()
 		this.renderer.resize()
@@ -54,6 +75,7 @@ export default class Experience {
 		this.renderer.update()
 		this.debug.update()
 		this.interactionManager.update()
+		this.axis.update()
 	}
 
 	destroy() {
@@ -82,5 +104,6 @@ export default class Experience {
 		this.renderer.instance.dispose()
 
 		if (this.debug.active) this.debug.ui.destroy()
+		this.axis.destroy()
 	}
 }
