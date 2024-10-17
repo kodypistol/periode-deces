@@ -36,7 +36,6 @@ export default class Main {
 		let leftSelectionMode = true
 		this.experience.axis.on('down:left', (event) => {
 			if (event.key === 'a') {
-				alert(this.experience.sizes.width + ' ' + this.experience.sizes.width)
 				this.tasks[leftIndexSelection].playTask('left')
 				leftSelectionMode = false
 			}

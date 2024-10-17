@@ -166,17 +166,17 @@ class OutlinePass extends Pass {
 			this.renderScene.background = null
 
 			// Make non selected objects invisible, and draw only the selected objects, by comparing the depth buffer of non selected objects
-			this.changeVisibilityOfNonSelectedObjects(false)
+			// this.changeVisibilityOfNonSelectedObjects(false)
 			this.renderScene.overrideMaterial = new MeshBasicMaterial({ color: 'black' })
 			renderer.setRenderTarget(this.renderTargetMaskBuffer)
 			renderer.clear()
 			renderer.render(this.renderScene, this.renderCamera)
 			this.renderScene.overrideMaterial = null
-			this.changeVisibilityOfNonSelectedObjects(true)
-			this._visibilityCache.clear()
-			this._selectionCache.clear()
-
-			this.renderScene.background = currentBackground
+			// this.changeVisibilityOfNonSelectedObjects(true)
+			// this._visibilityCache.clear()
+			// this._selectionCache.clear()
+			//
+			// this.renderScene.background = currentBackground
 
 			// 3. Apply Edge Detection Pass
 			// this.fsQuad.material = this.edgeDetectionMaterial
