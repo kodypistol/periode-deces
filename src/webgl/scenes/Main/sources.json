@@ -32,10 +32,5 @@
 		"name": "foxModel",
 		"type": "gltf",
 		"path": "models/Fox/glTF/Fox.gltf"
-	},
-	{
-		"name": "foxAudio",
-		"type": "audio",
-		"path": "audio/fox.mp3"
 	}
 ]

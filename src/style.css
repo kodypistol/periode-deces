@@ -48,15 +48,31 @@ body {
 	font-style: italic;
 	text-align: center;
 	text-wrap: balance;
-	text-shadow:
-		1px 1px 2px #000,
-		-1px 1px 2px #000,
-		-1px -1px 0 #000,
-		1px -1px 0 #000;
+	text-shadow: 1px 1px 2px #000,
+	-1px 1px 2px #000,
+	-1px -1px 0 #000,
+	1px -1px 0 #000;
 
-	span{
+	span {
 		/*background: rgba(0,0,0,.5);*/
 
+	}
+}
+
+.qte {
+	display: flex;
+	gap: 24px;
+	position: fixed;
+	bottom: 200px;
+	left: 0;
+	right: 0;
+	justify-content: center;
+	opacity: 0;
+	transition: 1s;
+
+	img {
+		transition: 1s;
+		width: 64px;
 	}
 
 }

@@ -229,6 +229,7 @@ export default class AxisManager extends EventEmitter {
 	keydownHandler(evt) {
 		const side = evt.id === 1 ? 'left' : 'right'
 		this.trigger('down:' + side, [evt])
+		this.trigger('down', [evt])
 		this.values[side][evt.key] = true
 	}
 
@@ -239,6 +240,7 @@ export default class AxisManager extends EventEmitter {
 	keyupHandler(evt) {
 		const side = evt.id === 1 ? 'left' : 'right'
 		this.trigger('up:' + side, [evt])
+		this.trigger('up', [evt])
 		this.values[side][evt.key] = false
 	}
 
