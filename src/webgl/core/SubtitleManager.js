@@ -3,9 +3,10 @@ import { gsap } from 'gsap'
 import Experience from 'core/Experience.js'
 
 export class SubtitleManager {
-	constructor(props) {
+	constructor() {
 		this._subtitleElement = document.querySelector('.subtitle')
 		this._qteElement = document.querySelector('.qte')
+		this._nextElement = document.querySelector('.next')
 		this.experience = new Experience()
 
 		this.typeAudio = new Audio('/audio/type.mp3')
@@ -13,6 +14,7 @@ export class SubtitleManager {
 
 	playSubtitle(key) {
 		this._subtitleElement.innerText = ''
+		this._nextElement.style.opacity = '0'
 		this.currentSubtitle = subtitles[key]
 		if (!this.currentSubtitle) throw new Error('key doesnt exist')
 		this._subtitleElement.style.color = this.currentSubtitle.color || ''
@@ -33,6 +35,7 @@ export class SubtitleManager {
 			},
 			visibility: 'visible',
 			onComplete: () => {
+				this._nextElement.style.opacity = '1'
 				if (this.currentSubtitle.success) {
 					this.playQte()
 				}
@@ -44,6 +47,7 @@ export class SubtitleManager {
 		if (this.blockSubtitle) return
 		if (this.tl.progress() < 1) {
 			this.tl.seek(this.tl.duration())
+			this._nextElement.style.opacity = '1'
 			if (this.currentSubtitle.success) {
 				this.playQte()
 				return
@@ -57,9 +61,11 @@ export class SubtitleManager {
 		} else {
 			this._subtitleElement.innerText = ''
 		}
+		this._nextElement.style.opacity = '0'
 	}
 
 	playQte() {
+		this._nextElement.style.opacity = '0'
 		this._qteElement.style.opacity = '1'
 		this.blockSubtitle = true
 		const children = Array.from(this._qteElement.children)

@@ -37,6 +37,7 @@ export default class Experience {
 		this.renderer = new Renderer()
 		this.subtitlesManager = new SubtitleManager()
 
+		// this.subtitlesManager.playSubtitle('colleague')
 		this.subtitlesManager.playSubtitle('client')
 		this.axis.on('down:left', (event) => {
 			if (event.key === 'a') {
