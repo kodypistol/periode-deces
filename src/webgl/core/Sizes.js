@@ -5,16 +5,17 @@ export default class Sizes extends EventEmitter {
 		super()
 
 		// Setup
-		this.width = window.innerWidth
-		this.height = window.innerHeight
-		this.pixelRatio = Math.min(devicePixelRatio, 2)
+		this.downScale = 2
+		this.width = window.innerWidth / this.downScale
+		this.height = window.innerHeight / this.downScale
+		this.pixelRatio = Math.min(devicePixelRatio, 1)
 		this.isMobile = this.#checkIfMobile()
 
 		// Resize event
 		addEventListener('resize', () => {
-			this.width = window.innerWidth
-			this.height = window.innerHeight
-			this.pixelRatio = Math.min(devicePixelRatio, 2)
+			this.width = window.innerWidth / this.downScale
+			this.height = window.innerHeight / this.downScale
+			this.pixelRatio = Math.min(devicePixelRatio, 1)
 			this.isMobile = this.#checkIfMobile()
 
 			this.trigger('resize')
