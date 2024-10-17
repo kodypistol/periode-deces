@@ -24,7 +24,7 @@ class OutlinePass extends Pass {
 		this.visibleEdgeColor = new Color(0, 1, 0)
 		this.edgeStrength = 3.0
 		this.edgeThickness = 4
-		this.downSampleRatio = 1
+		this.downSampleRatio = 4
 
 		this._visibilityCache = new Map()
 		this._selectionCache = new Set()

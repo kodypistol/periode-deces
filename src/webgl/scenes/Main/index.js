@@ -36,13 +36,14 @@ export default class Main {
 		let leftSelectionMode = true
 		this.experience.axis.on('down:left', (event) => {
 			if (event.key === 'a') {
+				alert(this.experience.sizes.width + ' ' + this.experience.sizes.width)
 				this.tasks[leftIndexSelection].playTask('left')
 				leftSelectionMode = false
 			}
 		})
 
 		this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
-		this.experience.axis.on('joystick:quickmove:left', (event) => {
+		this.experience.axis.on('joystick:move:left', (event) => {
 			if (!leftSelectionMode) return
 			if (event.position.x > 0.9 || event.position.x < -0.9) {
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
