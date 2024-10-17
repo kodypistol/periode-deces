@@ -62,7 +62,7 @@ export default class Experience {
 		// 		val.setLedColor?.(colors[Math.floor(Math.random() * colors.length)])
 		// 	})
 		// })
-		this.axis.instance.ledManager[0].setColor('#ff00ff')
+		this.axis.instance.ledManager.leds[0].setColor('#ff00ff')
 	}
 
 	resize() {
