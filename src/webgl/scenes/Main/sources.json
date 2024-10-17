@@ -24,6 +24,11 @@
 		"path": "textures/dirt/normal.jpg"
 	},
 	{
+		"name": "computer",
+		"type": "gltf",
+		"path": "models/computer/model.glb"
+	},
+	{
 		"name": "foxModel",
 		"type": "gltf",
 		"path": "models/Fox/glTF/Fox.gltf"

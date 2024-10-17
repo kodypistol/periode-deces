@@ -2,6 +2,7 @@ import Experience from 'core/Experience.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
+import Computer from 'components/Computer/index.js'
 import { BackSide, Mesh, MeshBasicMaterial } from 'three'
 
 export default class Main {
@@ -36,6 +37,9 @@ export default class Main {
 		this.tasks.push(this.fanRight1)
 		this.fanRight1.mesh.position.x += 2
 		this.fanRight1.mesh.position.y -= 2
+
+		this.computer = new Computer()
+		// this.tasks.push(this.computer)
 	}
 
 	_selectionBehavior() {
@@ -119,5 +123,6 @@ export default class Main {
 	update() {
 		if (this.fanLeft) this.fanLeft.update()
 		if (this.fanRight) this.fanRight.update()
+		if (this.computer) this.computer.update()
 	}
 }

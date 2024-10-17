@@ -76,7 +76,7 @@ export default class Cube {
 		// Position it on the cube (modify this based on your cube's dimensions and face positioning)
 		cssObject.position.copy(this.screenPoint.position); // Example, adjust to position on the correct face
 		cssObject.rotation.copy(this.screenPoint.rotation); // Example, adjust to position on the correct face
-		cssObject.scale.set(0.0045, 0.0045, 0.0045); // Adjust the rotation as needed
+		cssObject.scale.set(0.0105, 0.0105, 0.0105); // Adjust the rotation as needed
 
 		this.css3dScene.add(cssObject);
 
@@ -104,72 +104,7 @@ export default class Cube {
 		return screenPoint;
 	}
 
-	// Convert 3D position of a cube face to 2D screen coordinates
-	updateScreenElement() {
-		// Project the world position to screen space
-		const screenPosition = this.toScreenPosition();
-
-		// Update the HTML element position to align with the cube face
-		this.screenElement.style.transform = ` translate(${screenPosition.x}px, ${screenPosition.y}px)`;
-	}
-
-	// Helper function to convert 3D world coordinates to 2D screen coordinates
-	toScreenPosition() {
-		// position.y -= 0.5; // Center the position
-		this.tempPosition.x = this.position.x;
-		this.tempPosition.y = this.position.y;
-		this.tempPosition.z = this.position.z;
-		this.tempPosition.project(this.camera.instance); // Project the position to camera space
-
-		const center = {
-			x: this.tempPosition.x,
-			y: this.tempPosition.y
-		};
-
-		this.tempPosition.x = this.screenBounds.left;
-		this.tempPosition.y = this.screenBounds.top;
-		this.tempPosition.z = this.screenPoint.position.z;
-		this.tempPosition.project(this.camera.instance); // Project the position to camera space
-
-		const leftTop = {
-			x: this.tempPosition.x,
-			y: this.tempPosition.y
-		};
-
-		this.tempPosition.x = this.screenBounds.right;
-		this.tempPosition.y = this.screenBounds.bottom;
-		this.tempPosition.z = this.screenPoint.position.z;
-
-		this.tempPosition.project(this.camera.instance); // Project the position to camera space
-
-		const rightBottom = {
-			x: this.tempPosition.x,
-			y: this.tempPosition.y
-		};
-
-		// Convert normalized device coordinates to screen coordinates
-		const halfWidth = window.innerWidth / 2;
-		const halfHeight = window.innerHeight / 2;
-
-		// 1 in 3D equals 300px in 2D
-		//calculate scale for css with that info
-		const xLeft = (leftTop.x * halfWidth) + halfWidth;
-		const xRight = (rightBottom.x * halfWidth) + halfWidth;
-		const yTop = -(leftTop.y * halfHeight) + halfHeight;
-		const yBottom = -(rightBottom.y * halfHeight) + halfHeight;
-
-		const scale = Math.abs(xLeft - xRight) / 300;
-
-		return {
-			x: xLeft,
-			y: yTop,
-			scale
-		};
-	}
-
-	// Update function that runs every frame
 	update() {
-		// this.updateScreenElement(); // Update the HTML element position on every frame
 		this.css3dRenderer.render(this.css3dScene, this.camera.instance);
 	}
 

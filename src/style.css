@@ -17,17 +17,20 @@ body {
 
 	width: 100% !important;
 	height: 100% !important;
+	image-rendering: pixelated;
 }
 
 .computer-screen{
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 350px;
-	height: 195px;
+	width: 150px;
+	height: 83px;
 	background-color: white;
 	color: black;
-	font-size: 20px;
+	font-size: 10px;
+	overflow: hidden;
+	image-rendering: pixelated;
 
 	/* transform-origin: center center; */
 }
