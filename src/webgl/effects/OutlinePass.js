@@ -156,7 +156,7 @@ class OutlinePass extends Pass {
 
 			renderer.autoClear = false
 
-			if (maskActive) renderer.state.buffers.stencil.setTest(false)
+			// if (maskActive) renderer.state.buffers.stencil.setTest(false)
 
 			renderer.setClearColor(0xffffff, 1)
 
@@ -167,11 +167,11 @@ class OutlinePass extends Pass {
 
 			// Make non selected objects invisible, and draw only the selected objects, by comparing the depth buffer of non selected objects
 			// this.changeVisibilityOfNonSelectedObjects(false)
-			this.renderScene.overrideMaterial = new MeshBasicMaterial({ color: 'black' })
+			// this.renderScene.overrideMaterial = new MeshBasicMaterial({ color: 'black' })
 			// renderer.setRenderTarget(this.renderTargetMaskBuffer)
 			// renderer.clear()
 			// renderer.render(this.renderScene, this.renderCamera)
-			this.renderScene.overrideMaterial = null
+			// this.renderScene.overrideMaterial = null
 			// this.changeVisibilityOfNonSelectedObjects(true)
 			// this._visibilityCache.clear()
 			// this._selectionCache.clear()
@@ -196,10 +196,10 @@ class OutlinePass extends Pass {
 			this.overlayMaterial.uniforms['edgeTexture'].value = this.renderTargetEdgeBuffer.texture
 			this.overlayMaterial.uniforms['edgeStrength'].value = this.edgeStrength
 
-			if (maskActive) renderer.state.buffers.stencil.setTest(true)
+			// if (maskActive) renderer.state.buffers.stencil.setTest(true)
 
-			renderer.setRenderTarget(readBuffer)
-			this.fsQuad.render(renderer)
+			// renderer.setRenderTarget(readBuffer)
+			// this.fsQuad.render(renderer)
 
 			renderer.setClearColor(this._oldClearColor, this.oldClearAlpha)
 			renderer.autoClear = oldAutoClear
