@@ -21,7 +21,7 @@ export default class Renderer {
 		this.camera = this.experience.camera
 
 		this._createInstance()
-		// this._createPostprocessing()
+		this._createPostprocessing()
 	}
 
 	_createInstance() {
@@ -50,7 +50,7 @@ export default class Renderer {
 			this.scene,
 			this.camera.instance,
 		)
-		this._composer.addPass(this.outlinePass)
+		// this._composer.addPass(this.outlinePass)
 	}
 
 	resize() {
@@ -59,7 +59,7 @@ export default class Renderer {
 	}
 
 	update() {
-		// this._composer.render()
-		this.instance.render(this.scene, this.camera.instance)
+		this._composer.render()
+		// this.instance.render(this.scene, this.camera.instance)
 	}
 }
