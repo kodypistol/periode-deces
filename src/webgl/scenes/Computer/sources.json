@@ -34,8 +34,8 @@
 		"path": "models/computer/model.glb"
 	},
 	{
-		"name": "foxAudio",
+		"name": "typeAudio",
 		"type": "audio",
-		"path": "audio/fox.mp3"
+		"path": "audio/type.mp3"
 	}
 ]
