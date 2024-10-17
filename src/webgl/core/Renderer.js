@@ -50,7 +50,7 @@ export default class Renderer {
 			this.scene,
 			this.camera.instance,
 		)
-		// this._composer.addPass(this.outlinePass)
+		this._composer.addPass(this.outlinePass)
 	}
 
 	resize() {

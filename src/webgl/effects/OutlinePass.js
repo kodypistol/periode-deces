@@ -179,16 +179,16 @@ class OutlinePass extends Pass {
 			this.renderScene.background = currentBackground
 
 			// 3. Apply Edge Detection Pass
-			this.fsQuad.material = this.edgeDetectionMaterial
-			this.edgeDetectionMaterial.uniforms['maskTexture'].value = this.renderTargetMaskBuffer.texture
-			this.edgeDetectionMaterial.uniforms['visibleEdgeColor'].value = this.visibleEdgeColor
-			this.edgeDetectionMaterial.uniforms['texSize'].value.set(
-				this.renderTargetMaskBuffer.width / this.edgeThickness,
-				this.renderTargetMaskBuffer.height / this.edgeThickness,
-			)
-			renderer.setRenderTarget(this.renderTargetEdgeBuffer)
-			renderer.clear()
-			this.fsQuad.render(renderer)
+			// this.fsQuad.material = this.edgeDetectionMaterial
+			// this.edgeDetectionMaterial.uniforms['maskTexture'].value = this.renderTargetMaskBuffer.texture
+			// this.edgeDetectionMaterial.uniforms['visibleEdgeColor'].value = this.visibleEdgeColor
+			// this.edgeDetectionMaterial.uniforms['texSize'].value.set(
+			// 	this.renderTargetMaskBuffer.width / this.edgeThickness,
+			// 	this.renderTargetMaskBuffer.height / this.edgeThickness,
+			// )
+			// renderer.setRenderTarget(this.renderTargetEdgeBuffer)
+			// renderer.clear()
+			// this.fsQuad.render(renderer)
 
 			// Blend it additively over the input texture
 			this.fsQuad.material = this.overlayMaterial
@@ -280,7 +280,7 @@ class OutlinePass extends Pass {
 					vec4 edgeValue = texture2D(edgeTexture, vUv);
 					vec4 maskColor = texture2D(maskTexture, vUv);
 					vec4 finalColor = edgeStrength * maskColor.r * edgeValue;
-					gl_FragColor = finalColor;
+					gl_FragColor = maskColor;
 				}`,
 			blending: AdditiveBlending,
 			depthTest: false,

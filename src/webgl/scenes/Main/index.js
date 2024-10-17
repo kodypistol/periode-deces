@@ -41,15 +41,15 @@ export default class Main {
 			}
 		})
 
-		// this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
+		this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
 		this.experience.axis.on('joystick:quickmove:left', (event) => {
 			if (!leftSelectionMode) return
 			if (event.position.x > 0.9 || event.position.x < -0.9) {
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
 				// if (rightIndexSelection === leftIndexSelection) leftIndexSelection = (leftIndexSelection + 1) % tasks.length
 
-				// this.experience.renderer.outlinePass.selectedObjects = []
-				// this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
+				this.experience.renderer.outlinePass.selectedObjects = []
+				this.experience.renderer.outlinePass.selectedObjects = [this.tasks[leftIndexSelection].mesh]
 			}
 		})
 	}
