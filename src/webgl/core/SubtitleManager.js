@@ -65,33 +65,42 @@ export class SubtitleManager {
 		const children = Array.from(this._qteElement.children)
 		children.sort(() => Math.random() - 0.5)
 		children.forEach((child) => {
+			child.style.opacity = 1
 			this._qteElement.appendChild(child)
 		})
 		let index = 0
 
-		this.experience.axis.on('down', (event) => {
+		const endQte = () => {
+			this._qteElement.style.opacity = '0'
+			this.experience.axis.off('down', handleDown)
+			this.blockSubtitle = false
+		}
+
+		const handleDown = (event) => {
 			const firstChild = this._qteElement.children[index]
-			if (event.key === 'a' && firstChild.alt === 'a') {
+			const keyMap = {
+				a: 'a',
+				x: 'x',
+				i: 'i',
+				s: 's',
+			}
+
+			if (keyMap[event.key] && firstChild.alt === keyMap[event.key]) {
 				firstChild.style.opacity = 0.5
 				index++
+			} else {
+				this.playSubtitle(this.currentSubtitle.error)
+				endQte()
 			}
-			if (event.key === 'x' && firstChild.alt === 'x') {
-				firstChild.style.opacity = 0.5
-				index++
-			}
-			if (event.key === 'i' && firstChild.alt === 'i') {
-				firstChild.style.opacity = 0.5
-				index++
-			}
-			if (event.key === 's' && firstChild.alt === 's') {
-				firstChild.style.opacity = 0.5
-				index++
-			}
+
 			if (index === children.length) {
-				this._qteElement.style.opacity = '0'
-				this.blockSubtitle = false
 				this.playSubtitle(this.currentSubtitle.success)
+				endQte()
 			}
+		}
+
+		requestAnimationFrame(() => {
+			this.experience.axis.on('down', handleDown)
 		})
 	}
 }

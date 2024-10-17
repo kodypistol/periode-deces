@@ -90,12 +90,23 @@
 	"clientSuccess": {
 		"text": "Oui, mais le potentiel de gain est élevé à long terme.",
 		"next": "clientSuccess2",
-		"color": "white"
+		"color": "green"
 	},
 	"clientSuccess2": {
-		"text": "C’est vrai, mais je ne veux pas attendre des années."
+		"text": "C’est vrai, mais je ne veux pas attendre des années.",
+		"success": "clientSuccess3",
+		"error": "clientError"
+	},
+	"clientSuccess3": {
+		"text": "Certaines actions peuvent vous rapporter rapidement.",
+		"next": "clientSuccess4",
+		"color": "green"
+	},
+	"clientSuccess4": {
+		"text": "Intéressant. Que me proposez-vous ?"
 	},
 	"clientError": {
-		"text": "Investis plûtot dans ta vie plutot que de m'appeler."
+		"text": "Investis plûtot dans ta vie plutot que de m'appeler.",
+		"color": "red"
 	}
 }
