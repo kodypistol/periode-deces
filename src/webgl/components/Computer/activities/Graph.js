@@ -18,6 +18,7 @@ export default class Graph extends EventEmitter {
         this._activity = this._element.querySelector('.activity')
         this._canvas = this._element.querySelector('.canvas')
         this._scoreNumber = this._element.querySelector('.number')
+        this._completedElement = this._element.querySelector('.completed')
 
         this.context = this._createContext()
 
@@ -31,16 +32,12 @@ export default class Graph extends EventEmitter {
         this.drawingSpeed = 2; // Constant horizontal drawing speed
         this.isGameActive = false;
 
-
-        // window.addEventListener('mousedown', () => {
-        // this.playTask("left")
-        // })
     }
 
     showTask() {
         gsap.to(this._notification, {
-            duration: 0.01,
-            autoAlpha: 1,
+            duration: 0.2,
+            scale: 1,
         })
     }
 
@@ -49,22 +46,36 @@ export default class Graph extends EventEmitter {
         this._bindEvents();
         gsap.to(this._notification, {
             duration: 0.01,
-            autoAlpha: 0,
+            scale: 0,
         })
 
         gsap.to(this._activity, {
-            duration: 0.01,
-            autoAlpha: 1,
+            duration: 0.2,
+            scale: 1,
         })
 
         this.isGameActive = true;
         this._draw();
     }
 
+    end() {
+        // make element blink opacity 3 times
+        gsap.to(this._completedElement, {
+            duration: 0.4,
+            autoAlpha: 1,
+            repeat: 4,
+            yoyo: true,
+            ease: 'steps(1)',
+            onComplete: () => {
+                this.trigger('end') // call to parent
+            }
+        })
+    }
+
     hide() {
         gsap.to(this._element, {
-            duration: 0.01,
-            autoAlpha: 0,
+            duration: 0.3,
+            scale: 0,
         })
     }
 
@@ -266,6 +277,7 @@ export default class Graph extends EventEmitter {
         this.axis.on(`joystick:move:${this._side}`, this._updateJoystick.bind(this));
 
         this._joystickInterval = window.setInterval(() => {
+            if (!this.isGameActive) return;
             const step = 5;  // How much the line moves vertically per arrow key press
             if (this._joystickBottom) {
                 this.currentY = Math.max(0, this.currentY + step);  // Move up
@@ -288,7 +300,7 @@ export default class Graph extends EventEmitter {
             if (this.currentX >= this._displayWidth) {
                 this.isGameActive = false;
 
-                this.trigger('end')
+                this.end();
             }
         }, 100)
     }

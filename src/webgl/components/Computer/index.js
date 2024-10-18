@@ -43,6 +43,7 @@ export default class Computer {
 		this._graphActivity.on('end', () => {
 			this._graphActivity.hide()
 			this._graphActivity.reset()
+			this.trigger('task:complete')
 		});
 	}
 
