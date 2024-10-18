@@ -70,16 +70,18 @@ export default class Main {
 		}, 10000)
 	}
 	_randomFocusTasks() {
+		let randomTask
 		const repeat = () => {
 			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
 				setTimeout(this._randomFocusTasks.bind(this), 30000)
 				return
 			}
 			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
-			const randomTask = this.focusTasks[randomIndex]
+			randomTask = this.focusTasks[randomIndex]
 			randomTask.playTask()
 			this.leftselectionMode = false
 			this.rightselectionMode = false
+			randomTask.on('task:complete', handleComplete)
 		}
 		setTimeout(repeat, 30000)
 
@@ -87,11 +89,8 @@ export default class Main {
 			setTimeout(repeat, 30000)
 			this.leftselectionMode = true
 			this.rightselectionMode = true
+			randomTask.off('task:complete', handleComplete)
 		}
-
-		this.focusTasks.forEach((task) => {
-			task.on('task:complete', handleComplete)
-		})
 	}
 
 	_selectionBehavior() {
@@ -117,13 +116,13 @@ export default class Main {
 
 		//TODO: Refactor this
 		const handleSelection = (side) => {
-			let indexSelection = side === 'left' ? 0 : 1
-			if (side === 'left') {
-				rightIndexSelection = indexSelection
-			} else {
-				leftIndexSelection = indexSelection
-			}
-			this[`${side}SelectionMode`] = true
+			// let indexSelection = side === 'left' ? 0 : 1
+			// if (side === 'left') {
+			// 	rightIndexSelection = indexSelection
+			// } else {
+			// 	leftIndexSelection = indexSelection
+			// }
+			// this[`${side}SelectionMode`] = true
 
 			this.experience.axis.on(`down:${side}`, (event) => {
 				if (!this[`${side}SelectionMode`]) return
@@ -189,7 +188,6 @@ export default class Main {
 					} else {
 						leftIndexSelection = indexSelection
 					}
-					console.log(rightIndexSelection, leftIndexSelection)
 					if (rightIndexSelection === leftIndexSelection) indexSelection = (indexSelection + 1) % this.tasks.length
 					if (side === 'left') {
 						rightIndexSelection = indexSelection
@@ -210,10 +208,13 @@ export default class Main {
 			return indexSelection
 		}
 
-		let leftIndexSelection
-		let rightIndexSelection
-		leftIndexSelection = handleSelection('left')
-		rightIndexSelection = handleSelection('right')
+		// let leftIndexSelection
+		// let rightIndexSelection
+		// leftIndexSelection = handleSelection('left')
+		// rightIndexSelection = handleSelection('right')
+
+		let leftIndexSelection = 0
+		this.leftselectionMode = true
 	}
 
 	update() {
