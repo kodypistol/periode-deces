@@ -144,12 +144,12 @@ export default class Main {
 
 			if (clonedMeshes[indexSelection]) {
 				clonedMeshes[indexSelection].visible = true
+				clonedMeshes[indexSelection].traverse((child) => {
+					if (child.material) {
+						child.material = selectMaterials[side]
+					}
+				})
 			}
-			clonedMeshes[indexSelection].traverse((child) => {
-				if (child.material) {
-					child.material = selectMaterials[side]
-				}
-			})
 
 			this.experience.axis.on(`joystick:quickmove:${side}`, (event) => {
 				if (!this[`${side}SelectionMode`]) return
@@ -188,12 +188,12 @@ export default class Main {
 				}
 				if (clonedMeshes[indexSelection]) {
 					clonedMeshes[indexSelection].visible = true
+					clonedMeshes[indexSelection].traverse((child) => {
+						if (child.material) {
+							child.material = selectMaterials[side]
+						}
+					})
 				}
-				clonedMeshes[indexSelection].traverse((child) => {
-					if (child.material) {
-						child.material = selectMaterials[side]
-					}
-				})
 			})
 
 			return indexSelection
