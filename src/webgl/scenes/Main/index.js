@@ -129,16 +129,22 @@ export default class Main {
 					this.tasks[indexSelection].playTask(side)
 					const handleComplete = () => {
 						this[`${side}SelectionMode`] = true
-						clonedMeshes[indexSelection].visible = true
+						if (clonedMeshes[indexSelection]) {
+							clonedMeshes[indexSelection].visible = true
+						}
 						this.tasks[indexSelection].off('task:complete', handleComplete)
 					}
 					this.tasks[indexSelection].on('task:complete', handleComplete)
 					this[`${side}SelectionMode`] = false
-					clonedMeshes[indexSelection].visible = false
+					if (clonedMeshes[indexSelection]) {
+						clonedMeshes[indexSelection].visible = false
+					}
 				}
 			})
 
-			clonedMeshes[indexSelection].visible = true
+			if (clonedMeshes[indexSelection]) {
+				clonedMeshes[indexSelection].visible = true
+			}
 			clonedMeshes[indexSelection].traverse((child) => {
 				if (child.material) {
 					child.material = selectMaterials[side]
@@ -148,7 +154,9 @@ export default class Main {
 			this.experience.axis.on(`joystick:quickmove:${side}`, (event) => {
 				if (!this[`${side}SelectionMode`]) return
 				if (event.direction === 'up' || event.direction === 'up') return
-				clonedMeshes[indexSelection].visible = false
+				if (clonedMeshes[indexSelection]) {
+					clonedMeshes[indexSelection].visible = false
+				}
 				if (event.direction === 'left') {
 					indexSelection = (indexSelection - 1) % this.tasks.length
 					if (side === 'left') {
@@ -178,7 +186,9 @@ export default class Main {
 						leftIndexSelection = indexSelection
 					}
 				}
-				clonedMeshes[indexSelection].visible = true
+				if (clonedMeshes[indexSelection]) {
+					clonedMeshes[indexSelection].visible = true
+				}
 				clonedMeshes[indexSelection].traverse((child) => {
 					if (child.material) {
 						child.material = selectMaterials[side]
