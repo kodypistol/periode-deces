@@ -25,9 +25,10 @@ export default class Main {
 			this.startMenu.classList.remove('d-none')
 			this._createSceneElements()
 
-			this.axis.on('down', (e) => {
+			const handleDown = (e) => {
 				if (e.key === 'a') {
 					this._selectionBehavior()
+					this.axis.off('down', handleDown)
 					gsap.to('#start-menu', {
 						opacity: 0,
 						duration: 0.5,
@@ -39,7 +40,9 @@ export default class Main {
 						},
 					})
 				}
-			})
+			}
+
+			this.axis.on('down', handleDown)
 		})
 	}
 
@@ -69,17 +72,20 @@ export default class Main {
 			randomTask.isShowed = true
 		}, 10000)
 	}
+
 	_randomFocusTasks() {
+		let randomTask
 		const repeat = () => {
 			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
 				setTimeout(this._randomFocusTasks.bind(this), 30000)
 				return
 			}
 			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
-			const randomTask = this.focusTasks[randomIndex]
+			randomTask = this.focusTasks[randomIndex]
 			randomTask.playTask()
 			this.leftselectionMode = false
 			this.rightselectionMode = false
+			randomTask.on('task:complete', handleComplete)
 		}
 		setTimeout(repeat, 30000)
 
@@ -87,11 +93,8 @@ export default class Main {
 			setTimeout(repeat, 30000)
 			this.leftselectionMode = true
 			this.rightselectionMode = true
+			randomTask.off('task:complete', handleComplete)
 		}
-
-		this.focusTasks.forEach((task) => {
-			task.on('task:complete', handleComplete)
-		})
 	}
 
 	_selectionBehavior() {
