@@ -97,6 +97,7 @@ export default class Phone extends EventEmitter {
 	 * @param {'left' | 'right'} side
 	 */
 	playTask(side = 'left') {
+		this.isPlaying = true
 		this.experience.subtitlesManager.playSubtitle('client')
 		this.shakeAnim.pause()
 		this.answerAnim.play()
@@ -110,6 +111,7 @@ export default class Phone extends EventEmitter {
 			this.answerAnim.reverse()
 			this.trigger('task:complete')
 			this.axis.off(`down:${side}`, handleDown)
+			this.isPlaying = false
 		})
 	}
 

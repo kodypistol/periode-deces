@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { CameraHelper, PerspectiveCamera, Vector3 } from 'three'
 import InputManager from 'utils/InputManager.js'
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js'
+import gsap from 'gsap'
 
 export default class Camera {
 	constructor() {
@@ -235,5 +236,21 @@ export default class Camera {
 			this.canvas.removeEventListener('click', this.fpsCamera.controls.lockControls)
 			this.scene.remove(this.fpsCamera)
 		}
+	}
+
+	headAnimation() {
+		gsap.to(this.instance.position, {
+			x: -0.5,
+			y: 3.2,
+			z: 1,
+		})
+	}
+
+	resetAnimation() {
+		gsap.to(this.instance.position, {
+			x: this.options.position.x,
+			y: this.options.position.y,
+			z: this.options.position.z,
+		})
 	}
 }

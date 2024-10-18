@@ -17,11 +17,13 @@ export default class Main {
 		this.scene.resources = new Resources(sources)
 
 		this.tasks = []
+		this.focusTasks = []
 
 		this.scene.resources.on('ready', () => {
 			this._createSceneElements()
 			this._selectionBehavior()
 			this._randomTasks()
+			this._randomFocusTasks()
 		})
 	}
 
@@ -30,7 +32,7 @@ export default class Main {
 		this.desk = new Desk()
 
 		this.head = new Head()
-		// this.tasks.push(this.head)
+		this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
 		// this.fan.showTask()
@@ -50,6 +52,21 @@ export default class Main {
 			randomTask.showTask()
 			randomTask.isShowed = true
 		}, 10000)
+	}
+	_randomFocusTasks() {
+		if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
+			setTimeout(this._randomFocusTasks.bind(this), 10000)
+			return
+		}
+		const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
+		const randomTask = this.focusTasks[randomIndex]
+		randomTask.playTask()
+		this.selectionMode = false
+
+		randomTask.on('task:complete', () => {
+			setTimeout(this._randomFocusTasks.bind(this), 10000)
+			this.selectionMode = true
+		})
 	}
 
 	_selectionBehavior() {
@@ -75,10 +92,10 @@ export default class Main {
 
 		const handleSelection = (side) => {
 			let indexSelection = side === 'left' ? 0 : 1
-			let selectionMode = true
+			this.selectionMode = true
 
 			this.experience.axis.on(`down:${side}`, (event) => {
-				if (!selectionMode) return
+				if (!this.selectionMode) return
 				if (event.key === 'a') {
 					if (!this.tasks[indexSelection].isShowed) {
 						// material red and return to original
@@ -96,12 +113,12 @@ export default class Main {
 					this.tasks[indexSelection].isShowed = false
 					this.tasks[indexSelection].playTask(side)
 					const handleComplete = () => {
-						selectionMode = true
+						this.selectionMode = true
 						clonedMeshes[indexSelection].visible = true
 						this.tasks[indexSelection].off('task:complete', handleComplete)
 					}
 					this.tasks[indexSelection].on('task:complete', handleComplete)
-					selectionMode = false
+					this.selectionMode = false
 					clonedMeshes[indexSelection].visible = false
 				}
 			})
@@ -114,7 +131,7 @@ export default class Main {
 			})
 
 			this.experience.axis.on(`joystick:quickmove:${side}`, (event) => {
-				if (!selectionMode) return
+				if (!this.selectionMode) return
 				if (event.direction === 'up' || event.direction === 'up') return
 				clonedMeshes[indexSelection].visible = false
 				if (event.direction === 'left') {
