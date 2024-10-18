@@ -9,8 +9,9 @@
 	{
 		"name": "bakeBackgroundTexture",
 		"type": "texture",
-		"path": "textures/bake_background.png",
-		"colorSpace": "srgb"
+		"path": "textures/bake-background-2.png",
+		"colorSpace": "srgb",
+		"flipY": false
 	},
 	{
 		"name": "postItWolfTexture",
@@ -22,6 +23,12 @@
 		"name": "posterWolfTexture",
 		"type": "texture",
 		"path": "textures/post-it/wolf-poster.png",
+		"colorSpace": "srgb"
+	},
+	{
+		"name": "posterGirlTexture",
+		"type": "texture",
+		"path": "textures/post-it/girl.png",
 		"colorSpace": "srgb"
 	},
 	{
@@ -43,7 +50,7 @@
 	{
 		"name": "backgroundModel",
 		"type": "gltf",
-		"path": "models/background.glb"
+		"path": "models/background-2.glb"
 	},
 	{
 		"name": "phoneModel",
