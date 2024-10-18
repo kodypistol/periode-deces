@@ -103,7 +103,7 @@ export default class Main {
 			if (randomTask.isPlaying || randomTask.isShowed) return
 			randomTask.showTask()
 			randomTask.isShowed = true
-		}, 10000)
+		}, 1000)
 	}
 
 	_randomFocusTasks() {
@@ -201,8 +201,11 @@ export default class Main {
 
 			if (event.direction === 'left') {
 				leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
+				if (rightIndexSelection === -1) leftIndexSelection = this.tasks.length - 1
+
 				if (rightIndexSelection === leftIndexSelection)
 					leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
+				if (leftIndexSelection === -1) leftIndexSelection = this.tasks.length - 1
 			}
 			if (event.direction === 'right') {
 				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
@@ -269,8 +272,10 @@ export default class Main {
 
 			if (event.direction === 'left') {
 				rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
+				if (rightIndexSelection === -1) rightIndexSelection = this.tasks.length - 1
 				if (leftIndexSelection === rightIndexSelection)
 					rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
+				if (rightIndexSelection === -1) rightIndexSelection = this.tasks.length - 1
 			}
 			if (event.direction === 'right') {
 				rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
