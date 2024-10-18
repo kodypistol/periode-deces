@@ -15,7 +15,7 @@ export default class Phone extends EventEmitter {
 	 *
 	 * @param {'left' | 'right'} _side
 	 */
-	constructor({ duration = 10, side = 'right' } = {}) {
+	constructor({ duration = 10, side = 'left' } = {}) {
 		super()
 
 		this.experience = new Experience()
@@ -99,6 +99,7 @@ export default class Phone extends EventEmitter {
 	playTask(side = 'left') {
 		this.isPlaying = true
 		this.experience.subtitlesManager.playSubtitle('client')
+		this.calling.pause()
 		this.shakeAnim.pause()
 		this.answerAnim.play()
 		const handleDown = (event) => {
@@ -154,7 +155,7 @@ export default class Phone extends EventEmitter {
 					z: (Math.PI / 2) * sideF,
 					ease: 'power2.inOut',
 				},
-				0,
+				0
 			)
 			.to(
 				this.telModel.position,
@@ -165,7 +166,7 @@ export default class Phone extends EventEmitter {
 					z: this.camera.position.z,
 					ease: 'power2.inOut',
 				},
-				0,
+				0
 			)
 	}
 
@@ -183,7 +184,7 @@ export default class Phone extends EventEmitter {
 				z: this.telModel.rotation.z - 0.05,
 				ease: 'bounce.out',
 			},
-			0,
+			0
 		)
 
 		this.shakeAnim.to(
@@ -193,7 +194,7 @@ export default class Phone extends EventEmitter {
 				y: this.telModel.position.y + 0.1,
 				ease: 'bounce.out',
 			},
-			0,
+			0
 		)
 	}
 
@@ -210,7 +211,7 @@ export default class Phone extends EventEmitter {
 					z: this.baseTalValues.rotation.z,
 					ease: 'power2.inOut',
 				},
-				0,
+				0
 			)
 			.to(
 				this.telModel.position,
@@ -224,7 +225,7 @@ export default class Phone extends EventEmitter {
 						this.closeCall.play()
 					},
 				},
-				0,
+				0
 			)
 	}
 
