@@ -61,5 +61,14 @@ export default class Desk {
 		scale = 0.5
 		poster.scale.set(scale, scale, scale)
 		this.scene.add(poster)
+
+		const texture4 = this.scene.resources.items.posterGirlTexture
+		const material4 = new MeshBasicMaterial({ map: texture4, transparent: false })
+		const poster2 = new Mesh(geometry, material4)
+		poster2.position.set(-1.4, 2, -1.05)
+		poster2.rotation.set(-0, 0, 0.1)
+		scale = 0.4
+		poster2.scale.set(scale, scale, scale)
+		this.scene.add(poster2)
 	}
 }
