@@ -1,74 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>KPI📈</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="./style.css" />
+		<script type="module" src="./script.js" defer></script>
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>KPI📈</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="./style.css" />
-	<script type="module" src="./script.js" defer></script>
-</head>
+	<body>
+		<noscript>
+			<h1>Enable JavaScript to run this app.</h1>
+		</noscript>
+		<canvas id="webgl"></canvas>
+		<p class="subtitle"></p>
+		<div class="qte">
+			<img src="/textures/buttons/x.png" alt="x" />
+			<img src="/textures/buttons/i.png" alt="i" />
+			<img src="/textures/buttons/s.png" alt="s" />
+		</div>
+		<img src="/textures/buttons/a.png" alt="a" class="next" />
 
-<body>
-	<noscript>
-		<h1>Enable JavaScript to run this app.</h1>
-	</noscript>
-	<canvas id="webgl"></canvas>
-	<p class="subtitle"></p>
-	<div class="qte">
-		<img src="/textures/buttons/x.png" alt="x" />
-		<img src="/textures/buttons/i.png" alt="i" />
-		<img src="/textures/buttons/s.png" alt="s" />
-	</div>
-	<img src="/textures/buttons/a.png" alt="a" class="next" />
-
-	<div class="computer-screen">
-		<div class="graph">
-			<div class="notification">
-				<img src="./graph-notification.png" alt="">
-			</div>
-
-			<div class="activity">
-				<img class="top" src="./graph-top.png" alt="">
-				<canvas class="canvas"></canvas>
-				<div class="bottom">
-					<img src="./graph-bottom.png" alt="">
-					<p class="number">1%</p>
+		<div class="computer-screen">
+			<div class="graph">
+				<div class="notification">
+					<img src="./graph-notification.png" alt="" />
 				</div>
 
-				<div class="completed">
-					<img src="./completed.png" alt="">
-					<img src="./benef-graph.png" alt="">
+				<div class="activity">
+					<img class="top" src="./graph-top.png" alt="" />
+					<canvas class="canvas"></canvas>
+					<div class="bottom">
+						<img src="./graph-bottom.png" alt="" />
+						<p class="number">1%</p>
+					</div>
+
+					<div class="completed">
+						<img src="./completed.png" alt="" />
+						<img src="./benef-graph.png" alt="" />
+					</div>
 				</div>
 			</div>
 
+			<img class="wallpaper" src="./wallpaper.png" alt="" />
+
+			<div class="call">
+				<div class="notification">
+					<img src="./call-notification.png" alt="" />
+				</div>
+
+				<div class="activity">
+					<canvas class="canvas"></canvas>
+				</div>
+			</div>
+
+			<div class="mail">
+				<div class="notification">
+					<img src="./mail-notification.png" alt="" />
+				</div>
+
+				<div class="activity">
+					<canvas class="canvas"></canvas>
+				</div>
+			</div>
 		</div>
 
-		<img class="wallpaper" src="./wallpaper.png" alt="">
-
-		<div class="call">
-			<div class="notification">
-				<img src="./call-notification.png" alt="">
+		<div id="start-menu" class="start d-none">
+			<div class="start__logo">
+				<img src="/textures/logo.svg" alt="" />
 			</div>
-
-			<div class="activity">
-				<canvas class="canvas"></canvas>
-			</div>
-		</div>
-
-		<div class="mail">
-			<div class="notification">
-				<img src="./mail-notification.png" alt="">
-			</div>
-
-			<div class="activity">
-				<canvas class="canvas"></canvas>
+			<div class="start__cta">
+				<span>PRESSEZ</span>
+				<img class="action" src="./textures/buttons/a.png" alt="" />
+				<span>POUR EMBAUCHER</span>
 			</div>
 		</div>
-	</div>
-</body>
-
+	</body>
 </html>

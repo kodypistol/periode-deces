@@ -14,16 +14,31 @@ export default class Main {
 	constructor() {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
+		this.axis = this.experience.axis
 		this.scene.resources = new Resources(sources)
 
 		this.tasks = []
 		this.focusTasks = []
 
 		this.scene.resources.on('ready', () => {
+			this.startMenu = document.getElementById('start-menu')
+			this.startMenu.classList.remove('d-none')
 			this._createSceneElements()
-			this._selectionBehavior()
-			this._randomTasks()
-			this._randomFocusTasks()
+
+			this.axis.on('down', (e) => {
+				if (e.key === 'a') {
+					this._selectionBehavior()
+					gsap.to('#start-menu', {
+						opacity: 0,
+						duration: 0.5,
+						onComplete: () => {
+							this.startMenu.remove()
+							this._randomTasks()
+							this._randomFocusTasks()
+						},
+					})
+				}
+			})
 		})
 	}
 
