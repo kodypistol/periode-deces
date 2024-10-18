@@ -116,13 +116,13 @@ export default class Main {
 
 		//TODO: Refactor this
 		const handleSelection = (side) => {
-			// let indexSelection = side === 'left' ? 0 : 1
-			// if (side === 'left') {
-			// 	rightIndexSelection = indexSelection
-			// } else {
-			// 	leftIndexSelection = indexSelection
-			// }
-			// this[`${side}SelectionMode`] = true
+			let indexSelection = side === 'left' ? 0 : 1
+			if (side === 'left') {
+				rightIndexSelection = indexSelection
+			} else {
+				leftIndexSelection = indexSelection
+			}
+			this[`${side}SelectionMode`] = true
 
 			this.experience.axis.on(`down:${side}`, (event) => {
 				if (!this[`${side}SelectionMode`]) return
@@ -188,6 +188,7 @@ export default class Main {
 					} else {
 						leftIndexSelection = indexSelection
 					}
+					console.log(rightIndexSelection, leftIndexSelection)
 					if (rightIndexSelection === leftIndexSelection) indexSelection = (indexSelection + 1) % this.tasks.length
 					if (side === 'left') {
 						rightIndexSelection = indexSelection
@@ -208,13 +209,10 @@ export default class Main {
 			return indexSelection
 		}
 
-		// let leftIndexSelection
-		// let rightIndexSelection
-		// leftIndexSelection = handleSelection('left')
-		// rightIndexSelection = handleSelection('right')
-
-		let leftIndexSelection = 0
-		this.leftselectionMode = true
+		let leftIndexSelection
+		let rightIndexSelection
+		leftIndexSelection = handleSelection('left')
+		rightIndexSelection = handleSelection('right')
 	}
 
 	update() {
