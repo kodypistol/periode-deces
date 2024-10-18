@@ -25,9 +25,10 @@ export default class Main {
 			this.startMenu.classList.remove('d-none')
 			this._createSceneElements()
 
-			this.axis.on('down', (e) => {
+			const handleDown = (e) => {
 				if (e.key === 'a') {
 					this._selectionBehavior()
+					this.axis.off('down', handleDown)
 					gsap.to('#start-menu', {
 						opacity: 0,
 						duration: 0.5,
@@ -39,7 +40,9 @@ export default class Main {
 						},
 					})
 				}
-			})
+			}
+
+			this.axis.on('down', handleDown)
 		})
 	}
 
@@ -69,6 +72,7 @@ export default class Main {
 			randomTask.isShowed = true
 		}, 10000)
 	}
+
 	_randomFocusTasks() {
 		let randomTask
 		const repeat = () => {
