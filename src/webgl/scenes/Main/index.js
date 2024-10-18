@@ -22,23 +22,56 @@ export default class Main {
 
 		this.scene.resources.on('ready', () => {
 			this.startMenu = document.getElementById('start-menu')
-			this.startMenu.classList.remove('d-none')
+			this.dayPanel = document.getElementById('day-panel')
+			this.startMenu.classList.remove('hidden')
 			this._createSceneElements()
 
 			const handleDown = (e) => {
 				if (e.key === 'a') {
 					this._selectionBehavior()
 					this.axis.off('down', handleDown)
-					gsap.to('#start-menu', {
-						opacity: 0,
-						duration: 0.5,
-						ease: 'sine.inOut',
-						onComplete: () => {
-							this.startMenu.remove()
-							this._randomTasks()
-							this._randomFocusTasks()
-						},
-					})
+					this.startMenu.classList.add('hide-element')
+
+					const tl = gsap
+						.timeline()
+						.to(
+							'#start-menu',
+							{
+								opacity: 0,
+								duration: 0.5,
+								ease: 'sine.inOut',
+								onComplete: () => {
+									this.startMenu.remove()
+								},
+							},
+							0
+						)
+						.to(
+							'#day-panel',
+							{
+								opacity: 1,
+								duration: 0.25,
+								ease: 'sine.inOut',
+								onStart: () => {
+									this.dayPanel.classList.remove('hidden')
+								},
+							},
+							0
+						)
+						.to(
+							'#day-panel',
+							{
+								opacity: 0,
+								delay: .5,
+								duration: 0.25,
+								ease: 'sine.inOut',
+								onComplete: () => {
+									this._randomTasks()
+									this._randomFocusTasks()
+								},
+							},
+							1
+						)
 				}
 			}
 
