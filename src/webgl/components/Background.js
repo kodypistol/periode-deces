@@ -22,6 +22,11 @@ export default class Background {
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material
+				console.log(child.name)
+				if (child.name === 'Cork001') {
+					console.log(child.geometry.attributes)
+					child.geometry.attributes.uv = child.geometry.attributes.uv1.clone()
+				}
 			}
 		})
 		this.mesh.name = 'background'

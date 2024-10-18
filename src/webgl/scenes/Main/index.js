@@ -38,7 +38,7 @@ export default class Main {
 						.to(
 							'#start-menu',
 							{
-								opacity: 0,
+								autoAlpha: 0,
 								duration: 0.5,
 								ease: 'sine.inOut',
 								onComplete: () => {
@@ -50,7 +50,7 @@ export default class Main {
 						.to(
 							'#day-panel',
 							{
-								opacity: 1,
+								autoAlpha: 1,
 								duration: 0.25,
 								ease: 'sine.inOut',
 								onStart: () => {
@@ -62,8 +62,8 @@ export default class Main {
 						.to(
 							'#day-panel',
 							{
-								opacity: 0,
-								delay: 0.5,
+								autoAlpha: 0,
+								delay: .5,
 								duration: 0.25,
 								ease: 'sine.inOut',
 								onComplete: () => {

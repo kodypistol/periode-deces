@@ -23,9 +23,10 @@ export default class Desk {
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material
+				console.log(child.name)
 				if (child.name === '_NAS') {
-					console.log(child)
-					child.geometry.attributes.uv = child.geometry.attributes.uv1.clone()
+					// child.geometry.attributes.uv = child.geometry.attributes.uv1.clone()
+					child.material = new MeshBasicMaterial({ color: 0x333333, side: 0 })
 				}
 			}
 		})

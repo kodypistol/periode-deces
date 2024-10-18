@@ -1,6 +1,6 @@
 import Experience from './Experience.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { CameraHelper, PerspectiveCamera, Vector3 } from 'three'
+import { CameraHelper, PerspectiveCamera, Vector3, Group } from 'three'
 import InputManager from 'utils/InputManager.js'
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js'
 import gsap from 'gsap'
@@ -18,10 +18,10 @@ export default class Camera {
 		 * @type {{ fov: number, frustum: { min: number, max: number }, position: Vector3, target: Vector3, currentCamera: 'sceneCamera' | 'controlsCamera' | 'fpsCamera' }}
 		 */
 		this.options = {
-			fov: 35,
+			fov: 33,
 			frustum: { min: 1, max: 100 },
-			position: new Vector3(0, 3, 4),
-			target: new Vector3(0, 2.1, 0),
+			position: new Vector3(0, 2.6, 4),
+			target: new Vector3(0, 1.9, 0),
 			currentCamera: 'sceneCamera',
 		}
 
@@ -31,6 +31,9 @@ export default class Camera {
 		if (this.options.currentCamera === 'fpsCamera') this.setFpsCamera()
 
 		if (this.debug.active) this.setDebug()
+
+		this.createCameraGroup();
+		this.setupIdleAnimation();
 	}
 
 	#setCameraDebugPositionAndTarget(camera) {
@@ -50,6 +53,32 @@ export default class Camera {
 		} else {
 			camera.lookAt(this.options.target)
 		}
+	}
+
+	// Create a group to apply the breathing animation
+	createCameraGroup() {
+		this.cameraGroup = new Group();
+		this.cameraGroup.add(this.instance);  // Add the camera to the group
+		this.scene.add(this.cameraGroup);     // Add the group to the scene
+	}
+
+	// Setup a breathing animation using GSAP on the camera group
+	setupIdleAnimation() {
+		gsap.to(this.cameraGroup.position, {
+			y: '+=0.06',   // Slight up and down movement
+			repeat: -1,   // Loop indefinitely
+			yoyo: true,   // Make the animation reverse back to the original state
+			duration: 2,  // Duration of each loop (adjust for speed)
+			ease: 'sine.inOut'  // Smooth easing for a breathing effect
+		});
+
+		gsap.to(this.cameraGroup.rotation, {
+			x: '+=0.013',   // Slight tilting
+			repeat: -1,    // Loop indefinitely
+			yoyo: true,    // Make the animation reverse
+			duration: 4,   // Duration of each loop
+			ease: 'sine.inOut'  // Smooth easing
+		});
 	}
 
 	setInstance() {
@@ -241,7 +270,7 @@ export default class Camera {
 	headAnimation() {
 		gsap.to(this.instance.position, {
 			x: -0.5,
-			y: 3.2,
+			y: 3,
 			z: 1,
 		})
 	}
@@ -252,5 +281,9 @@ export default class Camera {
 			y: this.options.position.y,
 			z: this.options.position.z,
 		})
+	}
+
+	update() {
+		// add idle animation of camera moving with gsap on loop
 	}
 }
