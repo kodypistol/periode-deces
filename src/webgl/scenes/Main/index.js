@@ -101,8 +101,6 @@ export default class Main {
 
 		//TODO: Refactor this
 		const handleSelection = (side) => {
-			console.log(side)
-
 			let indexSelection = side === 'left' ? 0 : 1
 			if (side === 'left') {
 				rightIndexSelection = indexSelection
