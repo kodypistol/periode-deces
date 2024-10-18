@@ -246,7 +246,7 @@ body {
 }
 
 .start {
-	background-color: #150f00e0;
+	background-color: #150f00c8;
 	position: fixed;
 	z-index: 999;
 	top: 0;
@@ -262,7 +262,9 @@ body {
 .start__logo {
 	width: 50%;
 	max-width: 700px;
-	margin-bottom: 16rem;
+	margin-bottom: 10rem;
+
+	transform: rotate(-3deg);
 
 	img {
 		width: 100%;

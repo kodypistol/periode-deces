@@ -31,6 +31,7 @@ export default class Main {
 					gsap.to('#start-menu', {
 						opacity: 0,
 						duration: 0.5,
+						ease: 'sine.inOut',
 						onComplete: () => {
 							this.startMenu.remove()
 							this._randomTasks()
