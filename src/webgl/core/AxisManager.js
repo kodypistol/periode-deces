@@ -114,8 +114,8 @@ export default class AxisManager extends EventEmitter {
 	 * Set debug
 	 */
 	setDebug() {
-		this.setAxisStats()
 		if (!this.debug.active) return
+		this.setAxisStats()
 
 		this.debugFolder = this.debug.ui.addFolder({
 			title: 'Axis Manager',
@@ -233,7 +233,6 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	keydownHandler(evt) {
-		console.log(evt)
 		const side = evt.id === 1 ? 'left' : 'right'
 		this.trigger('down:' + side, [evt])
 		this.trigger('down', [evt])
@@ -276,7 +275,6 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickLeftQuickHandler(evt) {
-		console.log(evt)
 		// this.setStickValues('left', evt)
 		this.trigger('joystick:quickmove:left', [evt])
 	}
@@ -286,7 +284,6 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickRightQuickHandler(evt) {
-		console.log(evt)
 		// this.setStickValues('right', evt)
 		this.trigger('joystick:quickmove:right', [evt])
 	}
@@ -309,9 +306,9 @@ export default class AxisManager extends EventEmitter {
 		this.controls.left.stick.update()
 		this.controls.right.stick.update()
 
-		// if (this.debug.active && this.debug.debugParams) {
-		this.axisStats?.update()
-		// }
+		if (this.debug.active && this.debug.debugParams) {
+			this.axisStats?.update()
+		}
 	}
 
 	/**

@@ -23,6 +23,7 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this.startMenu = document.getElementById('start-menu')
 			this.dayPanel = document.getElementById('day-panel')
+			this.gameover = document.getElementById('gameover')
 			this.startMenu.classList.remove('hidden')
 			this._createSceneElements()
 
@@ -32,7 +33,7 @@ export default class Main {
 					this.axis.off('down', handleDown)
 					this.startMenu.classList.add('hide-element')
 
-					const tl = gsap
+					gsap
 						.timeline()
 						.to(
 							'#start-menu',
@@ -62,12 +63,34 @@ export default class Main {
 							'#day-panel',
 							{
 								opacity: 0,
-								delay: .5,
+								delay: 0.5,
 								duration: 0.25,
 								ease: 'sine.inOut',
 								onComplete: () => {
 									this._randomTasks()
 									this._randomFocusTasks()
+
+									const handleDown = (e) => {
+										if (e.key === 'w') {
+											gsap.to('#gameover', {
+												opacity: 1,
+												duration: 0.25,
+												ease: 'sine.inOut',
+												onStart: () => {
+													this.gameover.classList.remove('hidden')
+												},
+												onComplete: () => {
+													this.axis.on('down', (e) => {
+														if (e.key === 'a') {
+															window.location.reload()
+														}
+													})
+												},
+											})
+										}
+									}
+
+									this.axis.on('down', handleDown.bind(this))
 								},
 							},
 							1
