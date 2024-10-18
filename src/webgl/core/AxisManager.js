@@ -139,6 +139,9 @@ export default class AxisManager extends EventEmitter {
 			this.stickLeftHandler({ position: evt.value })
 			this.stickLeftQuickHandler({ position: evt.value })
 		})
+		this.debugFolder.addButton({ title: 'Quick move left' }).on('click', () => {
+			this.stickLeftQuickHandler({ direction: 'right' })
+		})
 
 		const valueR = { position: { x: 0, y: 0 } }
 		this.debugStickR = this.debugFolder.addBinding(valueR, 'position', {
@@ -156,6 +159,9 @@ export default class AxisManager extends EventEmitter {
 
 			this.stickRightHandler({ position: evt.value })
 			this.stickRightQuickHandler({ position: evt.value })
+		})
+		this.debugFolder.addButton({ title: 'Quick move right' }).on('click', () => {
+			this.stickRightQuickHandler({ direction: 'right' })
 		})
 	}
 

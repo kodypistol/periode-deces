@@ -17,10 +17,10 @@ export default class Camera {
 		 * @type {{ fov: number, frustum: { min: number, max: number }, position: Vector3, target: Vector3, currentCamera: 'sceneCamera' | 'controlsCamera' | 'fpsCamera' }}
 		 */
 		this.options = {
-			fov: 30,
+			fov: 35,
 			frustum: { min: 1, max: 100 },
-			position: new Vector3(0, 3, 5),
-			target: new Vector3(0, 1.8, 0),
+			position: new Vector3(0, 3, 4),
+			target: new Vector3(0, 2.1, 0),
 			currentCamera: 'sceneCamera',
 		}
 

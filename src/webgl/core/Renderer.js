@@ -21,9 +21,8 @@ export default class Renderer {
 			canvas: this.canvas,
 			powerPreference: 'high-performance',
 		})
-		// this.instance.outputColorSpace = SRGBColorSpace
+		this.instance.outputColorSpace = 'srgb'
 		this.instance.toneMapping = CustomToneMapping
-		// this.instance.toneMappingExposure = 1.75
 		// this.instance.shadowMap.enabled = true
 		// this.instance.shadowMap.type = PCFSoftShadowMap
 		this.instance.setClearColor('#211d20')
@@ -41,7 +40,7 @@ export default class Renderer {
     //}
 
     vec3 CustomToneMapping( vec3 color ) {
-      float levels = 8.;
+      float levels = 48.;
 
       // Generate noise based on screen position
       //float noise = random(gl_FragCoord.xy);
@@ -50,7 +49,7 @@ export default class Renderer {
       //color += noise / levels;
 
       // Posterize the color
-      color = floor(color * levels) / levels;
+       color = floor(color * levels) / levels;
 
       return color;
     }

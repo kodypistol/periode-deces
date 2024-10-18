@@ -1,32 +1,15 @@
 [
 	{
-		"name": "environmentMapTexture",
-		"type": "cubeTexture",
-		"path": [
-			"textures/environmentMap/px.jpg",
-			"textures/environmentMap/nx.jpg",
-			"textures/environmentMap/py.jpg",
-			"textures/environmentMap/ny.jpg",
-			"textures/environmentMap/pz.jpg",
-			"textures/environmentMap/nz.jpg"
-		],
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "grassColorTexture",
-		"type": "texture",
-		"path": "textures/dirt/color.jpg",
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "grassNormalTexture",
-		"type": "texture",
-		"path": "textures/dirt/normal.jpg"
-	},
-	{
 		"name": "bakeTexture",
 		"type": "texture",
-		"path": "textures/bake.png"
+		"path": "textures/bake.png",
+		"colorSpace": "srgb"
+	},
+	{
+		"name": "bakeBackgroundTexture",
+		"type": "texture",
+		"path": "textures/bake_background.png",
+		"colorSpace": "srgb"
 	},
 	{
 		"name": "deskModel",
@@ -39,8 +22,14 @@
 		"path": "models/computer/model.glb"
 	},
 	{
-		"name": "foxModel",
+		"name": "fanModel",
 		"type": "gltf",
-		"path": "models/Fox/glTF/Fox.gltf"
+		"path": "models/fan.glb"
+	},
+	{
+		"name": "backgroundModel",
+		"type": "gltf",
+		"path": "models/background.glb"
 	}
+
 ]

@@ -4,6 +4,7 @@ import sources from './sources.json'
 import Fan from 'components/Fan.js'
 import Computer from 'components/Computer/index.js'
 import { BackSide, Mesh, MeshBasicMaterial } from 'three'
+import Background from 'components/Background.js'
 
 export default class Main {
 	constructor() {
@@ -20,116 +21,107 @@ export default class Main {
 	}
 
 	_createSceneElements() {
-		this.fanLeft = new Fan()
-		this.tasks.push(this.fanLeft)
-		this.fanLeft.mesh.position.x -= 2
-		this.fanLeft.mesh.position.z = 5
-
-		this.fanRight = new Fan()
-		this.tasks.push(this.fanRight)
-		this.fanRight.mesh.position.x += 2
-		this.fanRight.mesh.position.z = 5
-
-		this.fanLeft1 = new Fan()
-		this.tasks.push(this.fanLeft1)
-		this.fanLeft1.mesh.position.x -= 2
-		this.fanLeft1.mesh.position.y -= 2
-		this.fanLeft1.mesh.position.z = 5
-
-		this.fanRight1 = new Fan()
-		this.tasks.push(this.fanRight1)
-		this.fanRight1.mesh.position.x += 2
-		this.fanRight1.mesh.position.y -= 2
-		this.fanRight1.mesh.position.z = 5
-
 		this.computer = new Computer()
+
+		this.background = new Background()
+
+		// this.fan = new Fan()
+		// this.tasks.push(this.fan)
+		//
+		// this.fan1 = new Fan()
+		// this.fan1.mesh.position.x += 0.5
+		// this.tasks.push(this.fan1)
+		//
+		// this.fan2 = new Fan()
+		// this.fan2.mesh.position.x += 1
+		// this.tasks.push(this.fan2)
+		//
+		// this.fan3 = new Fan()
+		// this.fan3.mesh.position.x += 1.5
+		// this.tasks.push(this.fan3)
+
 		// this.tasks.push(this.computer)
 	}
 
 	_selectionBehavior() {
-		const selectLeftMaterial = new MeshBasicMaterial({ color: 'blue', side: BackSide })
-		const selectRightMaterial = new MeshBasicMaterial({ color: 'green', side: BackSide })
+		const selectMaterials = {
+			left: new MeshBasicMaterial({ color: 'blue', side: BackSide }),
+			right: new MeshBasicMaterial({ color: 'green', side: BackSide }),
+		}
 		const clonedMeshes = []
 		this.tasks.forEach((task) => {
-			const geometry = task.mesh.geometry
-			const clonedMesh = new Mesh(geometry, selectLeftMaterial)
-			clonedMesh.position.copy(task.mesh.position)
-			clonedMesh.rotation.copy(task.mesh.rotation)
-			clonedMesh.quaternion.copy(task.mesh.quaternion)
-			clonedMesh.scale.copy(task.mesh.scale)
+			const clonedMesh = task.mesh.clone()
 			clonedMesh.name = 'clonedMesh'
 			clonedMesh.scale.addScalar(0.02)
-			clonedMesh.material = selectLeftMaterial
+			clonedMesh.position.z = -0.2
+			clonedMesh.traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.left
+				}
+			})
 			clonedMesh.visible = false
 			clonedMeshes.push(clonedMesh)
 			this.scene.add(clonedMesh)
 		})
 
-		let leftIndexSelection = 0
-		let leftSelectionMode = true
-		this.experience.axis.on('down:left', (event) => {
-			if (event.key === 'a') {
-				this.tasks[leftIndexSelection].playTask('left')
-				leftSelectionMode = false
-				clonedMeshes[leftIndexSelection].visible = false
-			}
-		})
+		const handleSelection = (side) => {
+			let indexSelection = side === 'left' ? 0 : 1
+			let selectionMode = true
 
-		//TODO: need refactor
-		clonedMeshes[leftIndexSelection].visible = true
-		clonedMeshes[leftIndexSelection].material = selectLeftMaterial
-		this.experience.axis.on('joystick:quickmove:left', (event) => {
-			if (!leftSelectionMode) return
-			if (event.direction === 'up' || event.direction === 'up') return
-			clonedMeshes[leftIndexSelection].visible = false
-			if (event.direction === 'left') {
-				leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
-				if (rightIndexSelection === leftIndexSelection)
-					leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
-			}
-			if (event.direction === 'right') {
-				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
-				if (rightIndexSelection === leftIndexSelection)
-					leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
-			}
-			clonedMeshes[leftIndexSelection].visible = true
-			clonedMeshes[leftIndexSelection].material = selectLeftMaterial
-		})
+			this.experience.axis.on(`down:${side}`, (event) => {
+				if (event.key === 'a') {
+					this.tasks[indexSelection].playTask(side)
+					const handleComplete = () => {
+						selectionMode = true
+						clonedMeshes[indexSelection].visible = true
+						this.tasks[indexSelection].off('task:complete', handleComplete)
+					}
+					this.tasks[indexSelection].on('task:complete', handleComplete)
+					selectionMode = false
+					clonedMeshes[indexSelection].visible = false
+				}
+			})
 
-		let rightIndexSelection = 1
-		let rightSelectionMode = true
-		this.experience.axis.on('down:right', (event) => {
-			if (event.key === 'a') {
-				this.tasks[rightIndexSelection].playTask('right')
-				rightSelectionMode = false
-				clonedMeshes[rightIndexSelection].visible = false
-			}
-		})
+			clonedMeshes[indexSelection].visible = true
+			clonedMeshes[indexSelection].traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials[side]
+				}
+			})
 
-		clonedMeshes[rightIndexSelection].visible = true
-		clonedMeshes[rightIndexSelection].material = selectRightMaterial
-		this.experience.axis.on('joystick:quickmove:right', (event) => {
-			if (!rightSelectionMode) return
-			if (event.direction === 'up' || event.direction === 'up') return
-			clonedMeshes[rightIndexSelection].visible = false
-			if (event.direction === 'left') {
-				rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
-				if (rightIndexSelection === leftIndexSelection)
-					rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
-			}
-			if (event.direction === 'right') {
-				rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
-				if (rightIndexSelection === leftIndexSelection)
-					rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
-			}
-			clonedMeshes[rightIndexSelection].visible = true
-			clonedMeshes[rightIndexSelection].material = selectRightMaterial
-		})
+			this.experience.axis.on(`joystick:quickmove:${side}`, (event) => {
+				if (!selectionMode) return
+				if (event.direction === 'up' || event.direction === 'up') return
+				clonedMeshes[indexSelection].visible = false
+				if (event.direction === 'left') {
+					indexSelection = (indexSelection - 1) % this.tasks.length
+					if (indexSelection === (side === 'left' ? rightIndexSelection : leftIndexSelection))
+						indexSelection = (indexSelection - 1) % this.tasks.length
+				}
+				if (event.direction === 'right') {
+					indexSelection = (indexSelection + 1) % this.tasks.length
+					if (indexSelection === (side === 'left' ? rightIndexSelection : leftIndexSelection))
+						indexSelection = (indexSelection + 1) % this.tasks.length
+				}
+				clonedMeshes[indexSelection].visible = true
+				clonedMeshes[indexSelection].traverse((child) => {
+					if (child.material) {
+						child.material = selectMaterials[side]
+					}
+				})
+			})
+
+			return indexSelection
+		}
+
+		let leftIndexSelection = handleSelection('left')
+		let rightIndexSelection = handleSelection('right')
 	}
-
 	update() {
-		if (this.fanLeft) this.fanLeft.update()
-		if (this.fanRight) this.fanRight.update()
+		if (this.fan) this.fan.update()
+		if (this.fan1) this.fan1.update()
+		if (this.fan2) this.fan2.update()
+		if (this.fan3) this.fan3.update()
 		if (this.computer) this.computer.update()
 	}
 }
