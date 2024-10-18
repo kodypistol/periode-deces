@@ -38,11 +38,11 @@ export default class Head extends EventEmitter {
 					duration: 0.5,
 				})
 				const positionTl = gsap.to(this.mesh.position, {
-					y: '-=0.02',
+					y: '-=0.015',
 					yoyo: true,
 					repeat: -1,
 					ease: 'none',
-					duration: 0.5,
+					duration: 0.7,
 				})
 
 				const handleDown = (event) => {

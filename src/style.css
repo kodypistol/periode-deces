@@ -198,11 +198,13 @@ body {
 	font-family: 'Times New Roman', serif;
 	font-weight: 500;
 	color: #f5e082;
+	/* color: #ffcd38; */
 	font-style: italic;
 	text-align: center;
 	text-wrap: balance;
 	text-shadow: 1px 1px 2px #000, -1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000;
 	z-index: 10;
+	user-select: none;
 
 	span {
 		/*background: rgba(0,0,0,.5);*/
@@ -219,6 +221,7 @@ body {
 	justify-content: center;
 	opacity: 0;
 	transition: 1s;
+	pointer-events: none;
 
 	img {
 		transition: 1s;

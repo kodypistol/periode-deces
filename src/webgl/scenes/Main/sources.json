@@ -13,6 +13,18 @@
 		"colorSpace": "srgb"
 	},
 	{
+		"name": "postItWolfTexture",
+		"type": "texture",
+		"path": "textures/post-it/wolf.jpg",
+		"colorSpace": "srgb"
+	},
+	{
+		"name": "postItZiziTexture",
+		"type": "texture",
+		"path": "textures/post-it/zizi.jpg",
+		"colorSpace": "srgb"
+	},
+	{
 		"name": "deskModel",
 		"type": "gltf",
 		"path": "models/model.glb"
@@ -36,7 +48,8 @@
 		"name": "computerModel",
 		"type": "gltf",
 		"path": "models/computer.glb"
-	},{
+	},
+	{
 		"name": "headModel",
 		"type": "gltf",
 		"path": "models/head.glb"
