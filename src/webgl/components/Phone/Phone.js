@@ -100,6 +100,7 @@ export default class Phone extends EventEmitter {
 		this.isPlaying = true
 		this.experience.subtitlesManager.playSubtitle('client')
 		this.shakeAnim.pause()
+		this.calling.pause()
 		this.answerAnim.play()
 		const handleDown = (event) => {
 			if (event.key === 'a') {
