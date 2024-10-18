@@ -256,7 +256,7 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickLeftHandler(evt) {
-		console.log(evt)
+		if (evt.position.x === 0 && evt.position.y === 0) return
 		this.setStickValues('left', evt)
 		this.trigger('joystick:move:left', [this.values.left.stick])
 	}
@@ -266,7 +266,7 @@ export default class AxisManager extends EventEmitter {
 	 * @param {*} evt
 	 */
 	stickRightHandler(evt) {
-		console.log(evt)
+		if (evt.position.x === 0 && evt.position.y === 0) return
 		this.setStickValues('right', evt)
 		this.trigger('joystick:move:right', [this.values.right.stick])
 	}
