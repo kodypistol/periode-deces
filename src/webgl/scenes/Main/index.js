@@ -49,23 +49,31 @@ export default class Main {
 		setInterval(() => {
 			const randomIndex = Math.floor(Math.random() * this.tasks.length)
 			const randomTask = this.tasks[randomIndex]
+			if (randomTask.isPlaying || randomTask.isShowed) return
 			randomTask.showTask()
 			randomTask.isShowed = true
 		}, 10000)
 	}
 	_randomFocusTasks() {
-		if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
-			setTimeout(this._randomFocusTasks.bind(this), 10000)
-			return
+		const repeat = () => {
+			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
+				setTimeout(this._randomFocusTasks.bind(this), 20000)
+				return
+			}
+			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
+			const randomTask = this.focusTasks[randomIndex]
+			randomTask.playTask()
+			this.selectionMode = false
 		}
-		const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
-		const randomTask = this.focusTasks[randomIndex]
-		randomTask.playTask()
-		this.selectionMode = false
+		setTimeout(repeat, 20000)
 
-		randomTask.on('task:complete', () => {
-			setTimeout(this._randomFocusTasks.bind(this), 10000)
+		const handleComplete = () => {
+			setTimeout(repeat, 20000)
 			this.selectionMode = true
+		}
+
+		this.focusTasks.forEach((task) => {
+			task.on('task:complete', handleComplete)
 		})
 	}
 

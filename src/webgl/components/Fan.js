@@ -53,6 +53,7 @@ export default class Fan extends EventEmitter {
 	 * @param {'left' | 'right'} side
 	 */
 	playTask(side = 'left') {
+		this.isPlaying = true
 		this.showTaskTl?.kill()
 		this.witness.material.color.set(0xffffff)
 
@@ -70,6 +71,7 @@ export default class Fan extends EventEmitter {
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
 				this.trigger('task:complete')
+				this.isPlaying = false
 				this.experience.axis.off(`joystick:move:${side}`, handleMove)
 
 				this.targetRotation = Math.PI * 2 * SETTINGS.TURNS

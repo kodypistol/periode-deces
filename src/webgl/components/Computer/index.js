@@ -15,9 +15,11 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import addObjectDebug from '@/webgl/utils/addObjectDebug'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
 import Graph from './activities/Graph'
+import EventEmitter from 'core/EventEmitter.js'
 
-export default class Computer {
+export default class Computer extends EventEmitter {
 	constructor(_position = new Vector3(0, 0, 0)) {
+		super()
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.debug = this.experience.debug
@@ -44,7 +46,8 @@ export default class Computer {
 			this._graphActivity.hide()
 			this._graphActivity.reset()
 			this.trigger('task:complete')
-		});
+			this.isPlaying = false
+		})
 	}
 
 	showTask() {
@@ -53,6 +56,7 @@ export default class Computer {
 	}
 
 	playTask(side) {
+		this.isPlaying = true
 		this._graphActivity.playTask(side)
 	}
 
@@ -84,7 +88,7 @@ export default class Computer {
 
 		this.scene.add(this.mesh)
 
-		return this.mesh;
+		return this.mesh
 	}
 
 	setCss3dRenderer() {
