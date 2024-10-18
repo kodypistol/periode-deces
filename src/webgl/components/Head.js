@@ -52,13 +52,13 @@ export default class Head extends EventEmitter {
 						this.experience.subtitlesManager.next()
 					}
 				}
-				this.experience.axis.on('down:left', handleDown)
+				this.experience.axis.on('down', handleDown)
 
 				this.experience.subtitlesManager.on('finish', () => {
 					gsap.to(this.mesh.position, {
 						y: 2,
 					})
-					this.experience.axis.off('down:left', handleDown)
+					this.experience.axis.off('down', handleDown)
 					this.trigger('task:complete')
 				})
 			},
