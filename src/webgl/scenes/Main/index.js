@@ -3,11 +3,12 @@ import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
 import Computer from 'components/Computer/index.js'
-import { BackSide, Mesh, MeshBasicMaterial } from 'three'
+import { BackSide, MeshBasicMaterial } from 'three'
 import Background from 'components/Background.js'
 import Phone from 'components/Phone/Phone.js'
 import Desk from 'components/Desk.js'
 import Head from 'components/Head.js'
+import gsap from 'gsap'
 
 export default class Main {
 	constructor() {
@@ -20,16 +21,19 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this._createSceneElements()
 			this._selectionBehavior()
+			this._randomTasks()
 		})
 	}
 
 	_createSceneElements() {
 		this.background = new Background()
 		this.desk = new Desk()
+
 		this.head = new Head()
-		this.tasks.push(this.head)
+		// this.tasks.push(this.head)
 
 		this.fan = new Fan()
+		// this.fan.showTask()
 		this.tasks.push(this.fan)
 
 		this.computer = new Computer()
@@ -37,6 +41,15 @@ export default class Main {
 
 		this.phone = new Phone()
 		this.tasks.push(this.phone)
+	}
+
+	_randomTasks() {
+		setInterval(() => {
+			const randomIndex = Math.floor(Math.random() * this.tasks.length)
+			const randomTask = this.tasks[randomIndex]
+			randomTask.showTask()
+			randomTask.isShowed = true
+		}, 10000)
 	}
 
 	_selectionBehavior() {
@@ -67,6 +80,20 @@ export default class Main {
 			this.experience.axis.on(`down:${side}`, (event) => {
 				if (!selectionMode) return
 				if (event.key === 'a') {
+					if (!this.tasks[indexSelection].isShowed) {
+						// material red and return to original
+						gsap.to(selectMaterials[side].color, {
+							r: 1,
+							g: 0,
+							b: 0,
+							duration: 0.2,
+							repeat: 1,
+							yoyo: true,
+						})
+
+						return
+					}
+					this.tasks[indexSelection].isShowed = false
 					this.tasks[indexSelection].playTask(side)
 					const handleComplete = () => {
 						selectionMode = true
@@ -110,11 +137,13 @@ export default class Main {
 
 			return indexSelection
 		}
+
 		let leftIndexSelection
 		let rightIndexSelection
-		if (this.tasks.length > 0) leftIndexSelection = handleSelection('left')
-		// if (this.tasks.length > 1) rightIndexSelection = handleSelection('right')
+		leftIndexSelection = handleSelection('left')
+		rightIndexSelection = handleSelection('right')
 	}
+
 	update() {
 		if (this.fan) this.fan.update()
 		// if (this.phone) this.phone.update()

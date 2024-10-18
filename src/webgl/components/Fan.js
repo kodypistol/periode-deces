@@ -1,8 +1,8 @@
 import Experience from 'core/Experience.js'
-import { BoxGeometry, Group, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
-import addObjectDebug from 'utils/addObjectDebug.js'
 import EventEmitter from '../core/EventEmitter'
+import { gsap } from 'gsap'
 
 const SETTINGS = {
 	TURNS: 4,
@@ -25,16 +25,21 @@ export default class Fan extends EventEmitter {
 		// texture.flipY = false
 		// texture.channels = 1
 		this._material = new MeshBasicMaterial({ map: texture })
+
+		this._witnessMaterial = new MeshBasicMaterial({ map: texture })
 	}
 
 	_createMesh() {
 		this.mesh = this.scene.resources.items.fanModel.scene.children[0].clone()
-		console.log(this.scene.resources.items.fanModel)
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material
 				if (child.name === 'HELICES') {
 					this.helix = child
+				}
+				if (child.name === 'BOUTON') {
+					this.witness = child
+					child.material = this._witnessMaterial
 				}
 			}
 		})
@@ -48,6 +53,9 @@ export default class Fan extends EventEmitter {
 	 * @param {'left' | 'right'} side
 	 */
 	playTask(side = 'left') {
+		this.showTaskTl?.kill()
+		this.witness.material.color.set(0xffffff)
+
 		let lastAngle = new Vector2()
 
 		const handleMove = (event) => {
@@ -74,6 +82,15 @@ export default class Fan extends EventEmitter {
 		}
 
 		this.experience.axis.on(`joystick:move:${side}`, handleMove)
+	}
+
+	showTask() {
+		this.showTaskTl = gsap.to(this.witness.material.color, {
+			r: 100,
+			duration: 0.5,
+			repeat: -1,
+			yoyo: true,
+		})
 	}
 
 	update() {

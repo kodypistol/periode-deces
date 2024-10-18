@@ -66,7 +66,6 @@ export default class Phone extends EventEmitter {
 		this._setShakeAnim()
 		this._setAnswerAnim()
 		this._setResetAnim()
-		this.pickMe()
 
 		this.scene.add(this.mesh)
 	}
@@ -74,7 +73,7 @@ export default class Phone extends EventEmitter {
 	/**
 	 * Activate the CTA of the call (ringing)
 	 */
-	pickMe() {
+	showTask() {
 		this.shakeAnim.play()
 		this.calling.volume = CALL.VOLUMES.CALLING
 		this.calling.play()
@@ -97,7 +96,7 @@ export default class Phone extends EventEmitter {
 	/**
 	 * @param {'left' | 'right'} side
 	 */
-	playTask() {
+	playTask(side = 'left') {
 		this.experience.subtitlesManager.playSubtitle('client')
 		this.shakeAnim.pause()
 		this.answerAnim.play()
@@ -106,11 +105,11 @@ export default class Phone extends EventEmitter {
 				this.experience.subtitlesManager.next()
 			}
 		}
-		this.axis.on('down:left', handleDown)
+		this.axis.on(`down:${side}`, handleDown)
 		this.experience.subtitlesManager.on('finish', () => {
 			this.answerAnim.reverse()
 			this.trigger('task:complete')
-			this.axis.off('down:left', handleDown)
+			this.axis.off(`down:${side}`, handleDown)
 		})
 	}
 

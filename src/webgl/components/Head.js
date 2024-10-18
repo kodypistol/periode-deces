@@ -1,5 +1,4 @@
 import Experience from 'core/Experience.js'
-import addObjectDebug from 'utils/addObjectDebug.js'
 import gsap from 'gsap'
 import EventEmitter from 'core/EventEmitter.js'
 
@@ -23,7 +22,6 @@ export default class Head extends EventEmitter {
 
 		this.mesh.name = 'head'
 		this.scene.add(this.mesh)
-		addObjectDebug(this.debug.ui, this.mesh)
 	}
 
 	playTask() {
