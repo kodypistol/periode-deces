@@ -186,14 +186,12 @@ export default class Main {
 						leftIndexSelection = indexSelection
 					}
 				}
-				if (clonedMeshes[indexSelection]) {
-					clonedMeshes[indexSelection].visible = true
-					clonedMeshes[indexSelection].traverse((child) => {
-						if (child.material) {
-							child.material = selectMaterials[side]
-						}
-					})
-				}
+				clonedMeshes[indexSelection].visible = true
+				clonedMeshes[indexSelection].traverse((child) => {
+					if (child.material) {
+						child.material = selectMaterials[side]
+					}
+				})
 			})
 
 			return indexSelection
