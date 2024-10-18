@@ -1,7 +1,4 @@
 import Experience from 'core/Experience.js'
-import Environment from 'components/Environment.js'
-import Floor from 'components/Floor.js'
-import Fox from 'components/Fox/Fox.js'
 import Cube from 'components/Cube/Cube.js'
 import Computer from 'components/Computer/index.js'
 import Resources from 'core/Resources.js'

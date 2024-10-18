@@ -17,11 +17,6 @@
 		"path": "models/model.glb"
 	},
 	{
-		"name": "computer",
-		"type": "gltf",
-		"path": "models/computer/model.glb"
-	},
-	{
 		"name": "fanModel",
 		"type": "gltf",
 		"path": "models/fan.glb"
@@ -31,5 +26,4 @@
 		"type": "gltf",
 		"path": "models/background.glb"
 	}
-
 ]
