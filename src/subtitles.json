@@ -83,30 +83,30 @@
 		"text": "Honnêtement, je me suis jamais autant réjoui de retrouver mon bureau..."
 	},
 	"client": {
-		"text": "Bonjour, je veux investir, mais je sais que c’est risqué.",
+		"text": "Bonjour, je veux faire fructifier mon argent, même si je suis bien conscient des dangers potentiels.",
 		"success": "clientSuccess",
 		"error": "clientError"
 	},
 	"clientSuccess": {
-		"text": "Oui, mais le potentiel de gain est élevé à long terme.",
+		"text": "Effectivement, mais laissez-moi vous dire, le ciel est littéralement la limite en matière de rendement à long terme.",
 		"next": "clientSuccess2",
 		"color": "green"
 	},
 	"clientSuccess2": {
-		"text": "C’est vrai, mais je ne veux pas attendre des années.",
+		"text": "Je comprends, mais je ne suis pas vraiment dans l’optique d’attendre l’éternité pour récolter les fruits.",
 		"success": "clientSuccess3",
 		"error": "clientError"
 	},
 	"clientSuccess3": {
-		"text": "Certaines actions peuvent vous rapporter rapidement.",
+		"text": "Ah, mais certaines opportunités peuvent littéralement transformer votre portefeuille du jour au lendemain.",
 		"next": "clientSuccess4",
 		"color": "green"
 	},
 	"clientSuccess4": {
-		"text": "Intéressant. Que me proposez-vous ?"
+		"text": "Fascinant. Quels leviers stratégiques proposez-vous ?"
 	},
 	"clientError": {
-		"text": "Investis plûtot dans ta vie plutot que de m'appeler.",
+		"text": "Pourquoi ne pas commencer par investir dans toi-même avant d’appeler un conseiller ?",
 		"color": "red"
 	}
 }

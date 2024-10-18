@@ -35,7 +35,6 @@ export default class Main {
 		this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
-		// this.fan.showTask()
 		this.tasks.push(this.fan)
 
 		this.computer = new Computer()
@@ -57,19 +56,21 @@ export default class Main {
 	_randomFocusTasks() {
 		const repeat = () => {
 			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
-				setTimeout(this._randomFocusTasks.bind(this), 20000)
+				setTimeout(this._randomFocusTasks.bind(this), 30000)
 				return
 			}
 			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
 			const randomTask = this.focusTasks[randomIndex]
 			randomTask.playTask()
-			this.selectionMode = false
+			this.leftselectionMode = false
+			this.rightselectionMode = false
 		}
-		setTimeout(repeat, 20000)
+		setTimeout(repeat, 30000)
 
 		const handleComplete = () => {
-			setTimeout(repeat, 20000)
-			this.selectionMode = true
+			setTimeout(repeat, 30000)
+			this.leftselectionMode = true
+			this.rightselectionMode = true
 		}
 
 		this.focusTasks.forEach((task) => {
@@ -98,12 +99,18 @@ export default class Main {
 			this.scene.add(clonedMesh)
 		})
 
+		//TODO: Refactor this
 		const handleSelection = (side) => {
 			let indexSelection = side === 'left' ? 0 : 1
-			this.selectionMode = true
+			if (side === 'left') {
+				rightIndexSelection = indexSelection
+			} else {
+				leftIndexSelection = indexSelection
+			}
+			this[`${side}SelectionMode`] = true
 
 			this.experience.axis.on(`down:${side}`, (event) => {
-				if (!this.selectionMode) return
+				if (!this[`${side}SelectionMode`]) return
 				if (event.key === 'a') {
 					if (!this.tasks[indexSelection].isShowed) {
 						// material red and return to original
@@ -121,12 +128,12 @@ export default class Main {
 					this.tasks[indexSelection].isShowed = false
 					this.tasks[indexSelection].playTask(side)
 					const handleComplete = () => {
-						this.selectionMode = true
+						this[`${side}SelectionMode`] = true
 						clonedMeshes[indexSelection].visible = true
 						this.tasks[indexSelection].off('task:complete', handleComplete)
 					}
 					this.tasks[indexSelection].on('task:complete', handleComplete)
-					this.selectionMode = false
+					this[`${side}SelectionMode`] = false
 					clonedMeshes[indexSelection].visible = false
 				}
 			})
@@ -139,18 +146,37 @@ export default class Main {
 			})
 
 			this.experience.axis.on(`joystick:quickmove:${side}`, (event) => {
-				if (!this.selectionMode) return
+				if (!this[`${side}SelectionMode`]) return
 				if (event.direction === 'up' || event.direction === 'up') return
 				clonedMeshes[indexSelection].visible = false
 				if (event.direction === 'left') {
 					indexSelection = (indexSelection - 1) % this.tasks.length
-					if (indexSelection === (side === 'left' ? rightIndexSelection : leftIndexSelection))
-						indexSelection = (indexSelection - 1) % this.tasks.length
+					if (side === 'left') {
+						rightIndexSelection = indexSelection
+					} else {
+						leftIndexSelection = indexSelection
+					}
+					if (rightIndexSelection === leftIndexSelection) indexSelection = (indexSelection - 1) % this.tasks.length
+					if (side === 'left') {
+						rightIndexSelection = indexSelection
+					} else {
+						leftIndexSelection = indexSelection
+					}
 				}
 				if (event.direction === 'right') {
 					indexSelection = (indexSelection + 1) % this.tasks.length
-					if (indexSelection === (side === 'left' ? rightIndexSelection : leftIndexSelection))
-						indexSelection = (indexSelection + 1) % this.tasks.length
+					if (side === 'left') {
+						rightIndexSelection = indexSelection
+					} else {
+						leftIndexSelection = indexSelection
+					}
+					console.log(rightIndexSelection, leftIndexSelection)
+					if (rightIndexSelection === leftIndexSelection) indexSelection = (indexSelection + 1) % this.tasks.length
+					if (side === 'left') {
+						rightIndexSelection = indexSelection
+					} else {
+						leftIndexSelection = indexSelection
+					}
 				}
 				clonedMeshes[indexSelection].visible = true
 				clonedMeshes[indexSelection].traverse((child) => {

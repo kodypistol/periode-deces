@@ -88,7 +88,6 @@ export class SubtitleManager extends EventEmitter {
 		const handleDown = (event) => {
 			const firstChild = this._qteElement.children[index]
 			const keyMap = {
-				a: 'a',
 				x: 'x',
 				i: 'i',
 				s: 's',
