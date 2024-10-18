@@ -7,6 +7,7 @@ import { BackSide, Mesh, MeshBasicMaterial } from 'three'
 import Background from 'components/Background.js'
 import Phone from 'components/Phone/Phone.js'
 import Desk from 'components/Desk.js'
+import Head from 'components/Head.js'
 
 export default class Main {
 	constructor() {
@@ -25,6 +26,8 @@ export default class Main {
 	_createSceneElements() {
 		this.background = new Background()
 		this.desk = new Desk()
+		this.head = new Head()
+		this.tasks.push(this.head)
 
 		this.fan = new Fan()
 		this.tasks.push(this.fan)
@@ -34,7 +37,6 @@ export default class Main {
 
 		this.phone = new Phone()
 		this.tasks.push(this.phone)
-		// this.tasks.push(this.computer)
 	}
 
 	_selectionBehavior() {

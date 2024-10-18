@@ -101,14 +101,16 @@ export default class Phone extends EventEmitter {
 		this.experience.subtitlesManager.playSubtitle('client')
 		this.shakeAnim.pause()
 		this.answerAnim.play()
-		this.axis.on('down:left', (event) => {
+		const handleDown = (event) => {
 			if (event.key === 'a') {
 				this.experience.subtitlesManager.next()
 			}
-		})
+		}
+		this.axis.on('down:left', handleDown)
 		this.experience.subtitlesManager.on('finish', () => {
 			this.answerAnim.reverse()
 			this.trigger('task:complete')
+			this.axis.off('down:left', handleDown)
 		})
 	}
 
