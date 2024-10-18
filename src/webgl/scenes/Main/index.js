@@ -44,7 +44,7 @@ export default class Main {
 									this.startMenu.remove()
 								},
 							},
-							0
+							0,
 						)
 						.to(
 							'#day-panel',
@@ -56,13 +56,13 @@ export default class Main {
 									this.dayPanel.classList.remove('hidden')
 								},
 							},
-							0
+							0,
 						)
 						.to(
 							'#day-panel',
 							{
 								opacity: 0,
-								delay: .5,
+								delay: 0.5,
 								duration: 0.25,
 								ease: 'sine.inOut',
 								onComplete: () => {
@@ -70,7 +70,7 @@ export default class Main {
 									this._randomFocusTasks()
 								},
 							},
-							1
+							1,
 						)
 				}
 			}
@@ -103,7 +103,7 @@ export default class Main {
 			if (randomTask.isPlaying || randomTask.isShowed) return
 			randomTask.showTask()
 			randomTask.isShowed = true
-		}, 1000)
+		}, 10000)
 	}
 
 	_randomFocusTasks() {
