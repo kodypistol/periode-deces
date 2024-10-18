@@ -146,11 +146,6 @@ export default class Main {
 			})
 
 			this.experience.axis.on(`joystick:quickmove:${side}`, (event) => {
-				console.log(event)
-				console.log(clonedMeshes)
-				console.log(clonedMeshes[indexSelection])
-				console.log(this[`${side}SelectionMode`])
-
 				if (!this[`${side}SelectionMode`]) return
 				if (!clonedMeshes[indexSelection]) return
 				if (event.direction === 'up' || event.direction === 'down') return
