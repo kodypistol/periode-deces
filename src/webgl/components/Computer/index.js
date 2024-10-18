@@ -30,6 +30,11 @@ export default class Computer {
 		this.tempPosition = new Vector3()
 
 		this._graphActivity = new Graph()
+
+		this._graphActivity.on('end', () => {
+			this._graphActivity.hide()
+			this._graphActivity.reset()
+		});
 	}
 
 	setMaterial() {
@@ -57,8 +62,6 @@ export default class Computer {
 			if (child.isMesh) {
 				if (child.geometry.attributes.uv1) child.geometry.attributes.uv = child.geometry.attributes.uv1.clone();
 				child.material = this.material;
-
-				console.log(child.name)
 			}
 		});
 

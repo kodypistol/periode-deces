@@ -1,24 +1,29 @@
 import { gsap } from 'gsap'
 
 import Experience from 'core/Experience.js'
+import EventEmitter from '@/webgl/core/EventEmitter'
 
-export default class Graph {
+export default class Graph extends EventEmitter {
     constructor() {
+        super()
         this.experience = new Experience()
         this.scene = this.experience.scene
         this.debug = this.experience.debug
         this.camera = this.experience.camera;
         this.resources = this.scene.resources;
+        this.axis = this.experience.axis
 
         this._element = document.body.querySelector('.graph')
         this._notification = this._element.querySelector('.notification')
         this._activity = this._element.querySelector('.activity')
         this._canvas = this._element.querySelector('.canvas')
+        this._scoreNumber = this._element.querySelector('.number')
 
         this.context = this._createContext()
 
         // Graph data and settings
         this.originalGraph = this._generateRandomGraph();  // Random trading graph
+        this.userScoreGraph = [];  // The user's graph based on key inputs
         this.userGraph = [];  // The user's graph based on key inputs
         this.currentX = 0;  // Track the current position in X
         this.currentY = this._canvas.height / 2;  // Start drawing in the middle
@@ -26,11 +31,10 @@ export default class Graph {
         this.drawingSpeed = 2; // Constant horizontal drawing speed
         this.isGameActive = false;
 
-        this._bindEvents();
 
-        window.addEventListener('mousedown', () => {
-            this.playTask()
-        })
+        // window.addEventListener('mousedown', () => {
+        this.playTask("left")
+        // })
     }
 
     showTask() {
@@ -40,7 +44,9 @@ export default class Graph {
         })
     }
 
-    playTask() {
+    playTask(side) {
+        this._side = side
+        this._bindEvents();
         gsap.to(this._notification, {
             duration: 0.01,
             autoAlpha: 0,
@@ -55,53 +61,95 @@ export default class Graph {
         this._draw();
     }
 
+    hide() {
+        gsap.to(this._element, {
+            duration: 0.01,
+            autoAlpha: 0,
+        })
+    }
+
+    reset() {
+        this.isGameActive = false;
+        this.userGraph = [];
+        this.currentX = 0;
+        this.currentY = this._canvas.height / 2;
+        this.score = 0;
+
+        this._joystickInterval && clearInterval(this._joystickInterval)
+        this._joystickInterval = null
+
+        this.axis.off(`joystick:move:${this._side}`, this._updateJoystick.bind(this));
+
+    }
+
     _createContext() {
         const context = this._canvas.getContext('2d');
 
-        // Set canvas size based on its CSS display size
-        const displayWidth = this._canvas.clientWidth;  // CSS width
-        const displayHeight = this._canvas.clientHeight; // CSS height
+        // Get the CSS width and height
+        this._displayWidth = this._canvas.clientWidth;
+        this._displayHeight = this._canvas.clientHeight;
 
-        // Set canvas width and height based on CSS size
-        this._canvas.width = displayWidth;
-        this._canvas.height = displayHeight;
+        // Get the device pixel ratio (e.g., 2 for Retina screens)
+        const pixelRatio = 2;
+        // const pixelRatio = window.devicePixelRatio || 1;
 
-        // No need to scale the context, since the canvas will remain at CSS size
-        // context.scale(pixelRatio, pixelRatio);  // We remove pixel ratio scaling here
+        // Set the canvas width and height based on the pixel ratio
+        this._canvas.width = this._displayWidth * pixelRatio;
+        this._canvas.height = this._displayHeight * pixelRatio;
+
+        // Scale the context to match the pixel ratio
+        context.scale(pixelRatio, pixelRatio);
 
         return context;
     }
 
+
     // Generate a random trading graph to follow
     _generateRandomGraph() {
-        const graph = [];
-        let lastY = this._canvas.height / 2;
-        for (let x = 0; x <= this._canvas.width; x += this.drawingSpeed) {
-            const randomChange = Math.random() * 10 - 5;  // Random upward/downward movement
-            lastY += randomChange;
-            lastY = Math.max(0, Math.min(this._canvas.height, lastY));  // Stay within bounds
+        let graph = [];
+        const maxChanges = 10;  // Maximum number of direction changes
+        let changes = 0;  // Track the number of direction changes
+        let direction = 1;  // Start with an upward direction
+        let lastY = this._displayHeight * 0.75;  // Start 3/4 down the canvas
+        let lastX = 0;  // Start 3/4 down the canvas
+
+        const stepX = this._displayWidth / 10;  // Step X-axis increment (adjustable)
+
+        for (let i = 0; i <= changes; i++) {
+            // Make sure Y stays within bounds (0 <= Y <= canvas height)
+            lastY = Math.max(5, Math.min(this._displayHeight - 10, lastY));  // Keep it within bounds
+
+            const x = lastX;
+
             graph.push({ x, y: lastY });
+
+            // Randomly change direction (but limit changes)
+            if (Math.random() < 0.1 && changes < maxChanges) {
+                direction *= -1;  // Flip the direction
+                changes++;
+            }
+
+            lastX = x;
         }
+
+        graph = [
+            { x: 0, y: this._displayHeight - 5 },
+            { x: 10, y: 20 },
+            { x: 15, y: 25 },
+            { x: 20, y: 30 },
+            { x: 30, y: 20 },
+            { x: 35, y: 5 },
+            { x: 40, y: 25 },
+            { x: 50, y: 10 },
+            { x: 55, y: 30 },
+            { x: 60, y: 20 },
+            { x: 70, y: 10 },
+            { x: 75, y: 30 },
+            { x: 85, y: 0 },
+        ]
+        console.log(graph);
+
         return graph;
-    }
-
-    // Draw both the original graph and the user's graph
-    _draw() {
-        if (!this.isGameActive) return;
-
-        this.context.clearRect(0, 0, this._canvas.width, this._canvas.height);
-
-        // Draw the original trading graph
-        this._drawOriginalGraph();
-
-        // Draw the user's graph
-        this._drawUserGraph();
-
-        // Calculate the score based on the accuracy of the user's drawing
-        this._calculateScore();
-
-        // Continue updating the frame
-        requestAnimationFrame(() => this._draw());
     }
 
     _drawOriginalGraph() {
@@ -113,8 +161,46 @@ export default class Graph {
                 this.context.lineTo(point.x, point.y);
             }
         });
-        this.context.strokeStyle = '#AAAAAA';  // Light color for original graph
+        this.context.strokeStyle = '#CCCCCC';  // Light gray color for the original graph
+        this.context.lineWidth = 1;  // Slightly thicker line for better visibility
         this.context.stroke();
+    }
+
+    // Draw both the original graph and the user's graph
+    _draw() {
+        if (!this.isGameActive) return;
+
+        this.context.fillStyle = '#FFFFFF';  // White background
+        this.context.fillRect(0, 0, this._canvas.width, this._canvas.height);  // Clear canvas
+
+        this._drawGrid();            // Draw background grid
+        this._drawOriginalGraph();   // Draw the reference graph
+        this._drawUserGraph();       // Draw the user's graph
+
+        this._calculateScore();      // Calculate score based on user's drawing
+
+        requestAnimationFrame(() => this._draw());  // Keep redrawing the canvas
+    }
+
+    _drawGrid() {
+        // Draw horizontal lines
+        for (let y = 0; y <= this._canvas.height; y += 5) {
+            this.context.beginPath();
+            this.context.moveTo(0, y);
+            this.context.lineTo(this._canvas.width, y);
+            this.context.strokeStyle = '#EEEEEE';  // Light gray color for grid lines
+            this.context.lineWidth = 1;  // Slightly thicker line for better visibility
+            this.context.stroke();
+        }
+
+        // Draw vertical lines
+        for (let x = 0; x <= this._canvas.width; x += 10) {
+            this.context.beginPath();
+            this.context.moveTo(x, 0);
+            this.context.lineTo(x, this._canvas.height);
+            this.context.strokeStyle = '#EEEEEE';  // Light gray color for grid lines
+            this.context.stroke();
+        }
     }
 
     _drawUserGraph() {
@@ -132,48 +218,93 @@ export default class Graph {
         }
     }
 
+    // _calculateScore() {
+    //     const maxSamplePoints = 50;  // Number of points to compare (fewer points for better performance)
+    //     const userGraphLength = Math.min(this.userGraph.length, this.originalGraph.length);  // Use the shorter graph
+    //     const step = Math.max(1, Math.floor(userGraphLength / maxSamplePoints));  // Ensure we don’t step too fast
+
+    //     let totalDifference = 0;
+    //     let pointsCompared = 0;
+
+    //     // Sample fewer points to avoid too many comparisons
+    //     for (let i = 0; i < userGraphLength; i += step) {
+    //         const originalPoint = this.originalGraph[i];
+    //         const userPoint = this.userGraph[i];
+
+    //         if (originalPoint && userPoint) {
+    //             const distance = Math.abs(originalPoint.y - userPoint.y);  // Only compare Y values
+    //             totalDifference += distance;
+    //             pointsCompared++;
+    //         }
+
+    //         // If the total difference is getting too high early, we can stop
+    //         if (totalDifference > 10000) {  // Example threshold, adjust as needed
+    //             break;
+    //         }
+    //     }
+
+    //     // Prevent division by zero and ensure maxDifference is correctly calculated
+    //     const maxDifference = this._displayHeight * pointsCompared;
+    //     const accuracy = Math.max(0, (1 - totalDifference / maxDifference)) * 100;
+
+    //     // Display score
+    //     this._scoreNumber.innerHTML = `${accuracy.toFixed(2)}%`;
+    //     this._scoreNumber.style.backgroundColor = accuracy > 50 ? 'green' : 'red';
+    // }
+
     _calculateScore() {
-        // Compare the user's graph to the original and calculate accuracy
-        let totalDifference = 0;
-        for (let i = 0; i < this.userGraph.length; i++) {
-            const originalY = this.originalGraph[i]?.y;
-            const userY = this.userGraph[i]?.y;
-            if (originalY !== undefined && userY !== undefined) {
-                totalDifference += Math.abs(originalY - userY);
-            }
-        }
 
-        // The lower the totalDifference, the better the score
-        const maxDifference = this._canvas.height * this.userGraph.length;
-        const accuracy = 1 - (totalDifference / maxDifference);  // Accuracy as a percentage
-
-        // Display score as percentage
-        this.context.font = '20px Arial';
-        this.context.fillStyle = '#000';
-        this.context.fillText(`Score: ${(accuracy * 100).toFixed(2)}%`, 10, 30);
+        // Update the score display
+        this._scoreNumber.innerHTML = `${this.score.toFixed(0)}%`;
+        this._scoreNumber.style.backgroundColor = this.score >= 0 ? 'green' : 'red';
     }
 
+    // on event joystick up set up boolean to false
+    // then on update if event push up or down on graph then
     _bindEvents() {
-        // Listen for arrow key presses to control the Y position of the user's drawing
-        window.addEventListener('keydown', (event) => {
-            if (!this.isGameActive) return;
 
+        this.axis.on(`joystick:move:${this._side}`, this._updateJoystick.bind(this));
+
+        this._joystickInterval = window.setInterval(() => {
             const step = 5;  // How much the line moves vertically per arrow key press
-            if (event.key === 'ArrowUp') {
-                this.currentY = Math.max(0, this.currentY - step);  // Move up
-            }
-            if (event.key === 'ArrowDown') {
-                this.currentY = Math.min(this._canvas.height, this.currentY + step);  // Move down
+            if (this._joystickBottom) {
+                this.currentY = Math.max(0, this.currentY + step);  // Move up
+                if (this.score > 0) this.score = 0
+                this.score -= 1
+                this._calculateScore();  // Update score for ArrowUp
+
+                this.currentX += this.drawingSpeed;  // Move horizontally at a constant speed
+                this.userGraph.push({ x: this.currentX, y: this.currentY });
+            } else if (this._joystickTop) {
+                this.currentY = Math.min(this._canvas.height, this.currentY - step);  // Move down
+                if (this.score < 0) this.score = 0
+                this.score += 1
+                this._calculateScore();  // Update score for ArrowUp
+
+                this.currentX += this.drawingSpeed;  // Move horizontally at a constant speed
+                this.userGraph.push({ x: this.currentX, y: this.currentY });
             }
 
-            // Update the user's graph
-            this.currentX += this.drawingSpeed;  // Move horizontally at a constant speed
-            this.userGraph.push({ x: this.currentX, y: this.currentY });
-
-            // End game if user reaches the end of the canvas
-            if (this.currentX >= this._canvas.width) {
+            if (this.currentX >= this._displayWidth) {
                 this.isGameActive = false;
+
+                this.trigger('end')
             }
-        });
+        }, 100)
+    }
+
+    _updateJoystick(e) {
+        if (!this.isGameActive) return;
+
+        if (e.position.y < -0.4) {
+            this._joystickBottom = true
+            this._joystickTop = false
+        } else if (e.position.y > 0.4) {
+            this._joystickBottom = false
+            this._joystickTop = true
+        } else {
+            this._joystickBottom = false
+            this._joystickTop = false
+        }
     }
 }
