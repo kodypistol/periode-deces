@@ -33,7 +33,7 @@ export default class Graph extends EventEmitter {
 
 
         // window.addEventListener('mousedown', () => {
-        this.playTask("left")
+        // this.playTask("left")
         // })
     }
 

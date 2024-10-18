@@ -24,7 +24,7 @@ export default class Computer {
 		this.screenBounds = this.setScreenBounds()
 
 		this.setMaterial()
-		this.setMesh()
+		this.mesh = this.setMesh()
 		this.setDebug()
 
 		this.tempPosition = new Vector3()
@@ -35,6 +35,15 @@ export default class Computer {
 			this._graphActivity.hide()
 			this._graphActivity.reset()
 		});
+	}
+
+	showTask() {
+		//TODO: Show random task
+		this._graphActivity.showTask()
+	}
+
+	playTask(side) {
+		this._graphActivity.playTask(side)
 	}
 
 	setMaterial() {
@@ -66,6 +75,8 @@ export default class Computer {
 		});
 
 		this.scene.add(computer)
+
+		return computer;
 	}
 
 	setCss3dRenderer() {

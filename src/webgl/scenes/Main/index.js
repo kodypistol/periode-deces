@@ -40,7 +40,7 @@ export default class Main {
 		// this.fan3.mesh.position.x += 1.5
 		// this.tasks.push(this.fan3)
 
-		// this.tasks.push(this.computer)
+		this.tasks.push(this.computer)
 	}
 
 	_selectionBehavior() {
