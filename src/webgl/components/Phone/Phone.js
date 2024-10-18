@@ -106,7 +106,10 @@ export default class Phone extends EventEmitter {
 				this.experience.subtitlesManager.next()
 			}
 		})
-		// this.
+		this.experience.subtitlesManager.on('finish', () => {
+			this.answerAnim.reverse()
+			this.trigger('task:complete')
+		})
 	}
 
 	_handlePlayTask(e) {
