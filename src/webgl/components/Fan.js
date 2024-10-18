@@ -14,23 +14,22 @@ export default class Fan extends EventEmitter {
 		this.scene = this.experience.scene
 		this.debug = this.experience.debug
 
-		this._createGeometry()
 		this._createMaterial()
 		this._createMesh()
 
 		this.targetRotation = 0
 	}
 
-	_createGeometry() {
-		this._geometry = new BoxGeometry()
-	}
-
 	_createMaterial() {
-		this._material = new MeshBasicMaterial({ map: this.scene.resources.items.bakeTexture })
+		const texture = this.scene.resources.items.bakeTexture
+		// texture.flipY = false
+		// texture.channels = 1
+		this._material = new MeshBasicMaterial({ map: texture })
 	}
 
 	_createMesh() {
 		this.mesh = this.scene.resources.items.fanModel.scene.children[0].clone()
+		console.log(this.scene.resources.items.fanModel)
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material

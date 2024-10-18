@@ -32,18 +32,10 @@ export default class Experience {
 		this.sizes = new Sizes()
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
-		this.activeScene = new SceneManager()
 		this.axis = new AxisManager()
+		this.activeScene = new SceneManager()
 		this.renderer = new Renderer()
 		this.subtitlesManager = new SubtitleManager()
-
-		// this.subtitlesManager.playSubtitle('colleague')
-		this.subtitlesManager.playSubtitle('client')
-		this.axis.on('down:left', (event) => {
-			if (event.key === 'a') {
-				this.subtitlesManager.next()
-			}
-		})
 
 		// Resize event
 		this.sizes.on('resize', () => {

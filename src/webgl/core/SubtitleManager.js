@@ -1,9 +1,11 @@
 import subtitles from '@/subtitles.json'
 import { gsap } from 'gsap'
 import Experience from 'core/Experience.js'
+import EventEmitter from 'core/EventEmitter.js'
 
-export class SubtitleManager {
+export class SubtitleManager extends EventEmitter {
 	constructor() {
+		super()
 		this._subtitleElement = document.querySelector('.subtitle')
 		this._qteElement = document.querySelector('.qte')
 		this._nextElement = document.querySelector('.next')
@@ -60,6 +62,7 @@ export class SubtitleManager {
 			this.typeAudio.play()
 		} else {
 			this._subtitleElement.innerText = ''
+			this.trigger('finish')
 		}
 		this._nextElement.style.opacity = '0'
 	}

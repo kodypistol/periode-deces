@@ -5,6 +5,8 @@ import Fan from 'components/Fan.js'
 import Computer from 'components/Computer/index.js'
 import { BackSide, Mesh, MeshBasicMaterial } from 'three'
 import Background from 'components/Background.js'
+import Phone from 'components/Phone/Phone.js'
+import Desk from 'components/Desk.js'
 
 export default class Main {
 	constructor() {
@@ -21,39 +23,31 @@ export default class Main {
 	}
 
 	_createSceneElements() {
-		this.computer = new Computer()
-
 		this.background = new Background()
+		this.desk = new Desk()
 
-		// this.fan = new Fan()
-		// this.tasks.push(this.fan)
-		//
-		// this.fan1 = new Fan()
-		// this.fan1.mesh.position.x += 0.5
-		// this.tasks.push(this.fan1)
-		//
-		// this.fan2 = new Fan()
-		// this.fan2.mesh.position.x += 1
-		// this.tasks.push(this.fan2)
-		//
-		// this.fan3 = new Fan()
-		// this.fan3.mesh.position.x += 1.5
-		// this.tasks.push(this.fan3)
+		this.fan = new Fan()
+		this.tasks.push(this.fan)
 
+		this.computer = new Computer()
 		this.tasks.push(this.computer)
+
+		this.phone = new Phone()
+		this.tasks.push(this.phone)
+		// this.tasks.push(this.computer)
 	}
 
 	_selectionBehavior() {
 		const selectMaterials = {
-			left: new MeshBasicMaterial({ color: 'blue', side: BackSide }),
+			left: new MeshBasicMaterial({ color: 'orange', side: BackSide }),
 			right: new MeshBasicMaterial({ color: 'green', side: BackSide }),
 		}
 		const clonedMeshes = []
 		this.tasks.forEach((task) => {
 			const clonedMesh = task.mesh.clone()
 			clonedMesh.name = 'clonedMesh'
-			clonedMesh.scale.addScalar(0.02)
-			clonedMesh.position.z = -0.2
+			clonedMesh.scale.addScalar(0.01)
+			// clonedMesh.position.z = -0.2
 			clonedMesh.traverse((child) => {
 				if (child.material) {
 					child.material = selectMaterials.left
@@ -69,6 +63,7 @@ export default class Main {
 			let selectionMode = true
 
 			this.experience.axis.on(`down:${side}`, (event) => {
+				if (!selectionMode) return
 				if (event.key === 'a') {
 					this.tasks[indexSelection].playTask(side)
 					const handleComplete = () => {
@@ -113,15 +108,14 @@ export default class Main {
 
 			return indexSelection
 		}
-
-		let leftIndexSelection = handleSelection('left')
-		let rightIndexSelection = handleSelection('right')
+		let leftIndexSelection
+		let rightIndexSelection
+		if (this.tasks.length > 0) leftIndexSelection = handleSelection('left')
+		// if (this.tasks.length > 1) rightIndexSelection = handleSelection('right')
 	}
 	update() {
 		if (this.fan) this.fan.update()
-		if (this.fan1) this.fan1.update()
-		if (this.fan2) this.fan2.update()
-		if (this.fan3) this.fan3.update()
+		// if (this.phone) this.phone.update()
 		if (this.computer) this.computer.update()
 	}
 }

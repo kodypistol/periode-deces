@@ -1,7 +1,7 @@
 import EventEmitter from '@/webgl/core/EventEmitter'
 import Experience from 'core/Experience.js'
 import { gsap } from 'gsap'
-import { Vector2 } from 'three'
+import { MeshBasicMaterial, Vector2 } from 'three'
 
 const CALL = {
 	DURATION: 4, // seconds
@@ -32,20 +32,33 @@ export default class Phone extends EventEmitter {
 		this.side = side
 		this.duration = duration
 
+		this._setMaterial()
 		this._setModel()
 		this._setDebug()
 
 		this.targetRotation = 0
 	}
 
+	_setMaterial() {
+		const texture = this.resources.items.bakeTexture
+		texture.channel = 1
+		this._material = new MeshBasicMaterial({ map: texture })
+	}
+
 	_setModel() {
-		this.model = this.resources.items.phoneModel.scene
-		this.model.name = 'phone'
+		this.mesh = this.resources.items.phoneModel.scene.clone()
+		this.mesh.name = 'phone'
+
+		this.mesh.traverse((child) => {
+			if (child.isMesh) {
+				child.material = this._material
+			}
+		})
 		// this.model.position.x += 1.2
 		// this.model.position.y += 1
 		// this.model.position.z += 5
 
-		this.telModel = this.model.children.find(({ name }) => name === 'tel')
+		this.telModel = this.mesh.children.find(({ name }) => name === 'tel')
 		this.baseTalValues = {
 			rotation: this.telModel.rotation.clone(),
 			position: this.telModel.position.clone(),
@@ -55,7 +68,7 @@ export default class Phone extends EventEmitter {
 		this._setResetAnim()
 		this.pickMe()
 
-		this.scene.add(this.model)
+		this.scene.add(this.mesh)
 	}
 
 	/**
@@ -65,13 +78,13 @@ export default class Phone extends EventEmitter {
 		this.shakeAnim.play()
 		this.calling.volume = CALL.VOLUMES.CALLING
 		this.calling.play()
-		this.playTask()
+		// this.playTask()
 
-		this.outCall = setTimeout(() => {
-			this.shakeAnim.pause()
-			this.resetAnim.play()
-			this.trigger('task:fail')
-		}, this.duration * 1000)
+		// this.outCall = setTimeout(() => {
+		// 	this.shakeAnim.pause()
+		// 	this.resetAnim.play()
+		// 	this.trigger('task:fail')
+		// }, this.duration * 1000)
 	}
 
 	/**
@@ -85,7 +98,15 @@ export default class Phone extends EventEmitter {
 	 * @param {'left' | 'right'} side
 	 */
 	playTask() {
-		this.axis.on('down:' + this.side, this._handlePlayTask.bind(this))
+		this.experience.subtitlesManager.playSubtitle('client')
+		this.shakeAnim.pause()
+		this.answerAnim.play()
+		this.axis.on('down:left', (event) => {
+			if (event.key === 'a') {
+				this.experience.subtitlesManager.next()
+			}
+		})
+		// this.
 	}
 
 	_handlePlayTask(e) {
@@ -127,7 +148,7 @@ export default class Phone extends EventEmitter {
 					z: (Math.PI / 2) * sideF,
 					ease: 'power2.inOut',
 				},
-				0
+				0,
 			)
 			.to(
 				this.telModel.position,
@@ -138,7 +159,7 @@ export default class Phone extends EventEmitter {
 					z: this.camera.position.z,
 					ease: 'power2.inOut',
 				},
-				0
+				0,
 			)
 	}
 
@@ -156,7 +177,7 @@ export default class Phone extends EventEmitter {
 				z: this.telModel.rotation.z - 0.05,
 				ease: 'bounce.out',
 			},
-			0
+			0,
 		)
 
 		this.shakeAnim.to(
@@ -166,7 +187,7 @@ export default class Phone extends EventEmitter {
 				y: this.telModel.position.y + 0.1,
 				ease: 'bounce.out',
 			},
-			0
+			0,
 		)
 	}
 
@@ -183,7 +204,7 @@ export default class Phone extends EventEmitter {
 					z: this.baseTalValues.rotation.z,
 					ease: 'power2.inOut',
 				},
-				0
+				0,
 			)
 			.to(
 				this.telModel.position,
@@ -197,7 +218,7 @@ export default class Phone extends EventEmitter {
 						this.closeCall.play()
 					},
 				},
-				0
+				0,
 			)
 	}
 
