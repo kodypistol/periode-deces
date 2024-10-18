@@ -19,6 +19,12 @@
 		"colorSpace": "srgb"
 	},
 	{
+		"name": "posterWolfTexture",
+		"type": "texture",
+		"path": "textures/post-it/wolf-poster.png",
+		"colorSpace": "srgb"
+	},
+	{
 		"name": "postItZiziTexture",
 		"type": "texture",
 		"path": "textures/post-it/zizi.jpg",

@@ -47,12 +47,19 @@ export default class Desk {
 		const texture2 = this.scene.resources.items.postItWolfTexture
 		const material2 = new MeshBasicMaterial({ map: texture2 })
 		const postIt2 = new Mesh(geometry, material2)
-		postIt2.position.set(1.7, 2, -1.)
+		postIt2.position.set(1.7, 1.7, -1.)
 		postIt2.rotation.set(-0.2, 0, 0.2)
 		scale = 0.4
 		postIt2.scale.set(scale, scale, scale)
 		this.scene.add(postIt2)
 
-		addObjectDebug
+		const texture3 = this.scene.resources.items.posterWolfTexture
+		const material3 = new MeshBasicMaterial({ map: texture3, transparent: false })
+		const poster = new Mesh(geometry, material3)
+		poster.position.set(1.65, 2.05, -1.05)
+		poster.rotation.set(-0, 0, -0.1)
+		scale = 0.5
+		poster.scale.set(scale, scale, scale)
+		this.scene.add(poster)
 	}
 }
