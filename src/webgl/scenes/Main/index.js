@@ -81,6 +81,7 @@ export default class Main {
 		let randomTask
 		const repeat = () => {
 			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
+				//prevent subtitle conflict
 				setTimeout(this._randomFocusTasks.bind(this), timeout)
 				return
 			}
@@ -122,6 +123,7 @@ export default class Main {
 			this.scene.add(clonedMesh)
 		})
 
+		//left
 		let leftIndexSelection = 0
 		this.leftSelectionMode = true
 
