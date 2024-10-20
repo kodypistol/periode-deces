@@ -67,21 +67,21 @@ export default class Main {
 		this.tasks.push(this.phone)
 	}
 
-	_randomTasks() {
+	_randomTasks(timeout = 10000) {
 		setInterval(() => {
 			const randomIndex = Math.floor(Math.random() * this.tasks.length)
 			const randomTask = this.tasks[randomIndex]
 			if (randomTask.isPlaying || randomTask.isShowed) return
 			randomTask.showTask()
 			randomTask.isShowed = true
-		}, 10000)
+		}, timeout)
 	}
 
-	_randomFocusTasks() {
+	_randomFocusTasks(timeout = 30000) {
 		let randomTask
 		const repeat = () => {
 			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
-				setTimeout(this._randomFocusTasks.bind(this), 30000)
+				setTimeout(this._randomFocusTasks.bind(this), timeout)
 				return
 			}
 			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
@@ -91,10 +91,10 @@ export default class Main {
 			this.rightSelectionMode = false
 			randomTask.on('task:complete', handleComplete)
 		}
-		setTimeout(repeat, 30000)
+		setTimeout(repeat, timeout)
 
 		const handleComplete = () => {
-			setTimeout(repeat, 30000)
+			setTimeout(repeat, timeout)
 			this.leftSelectionMode = true
 			this.rightSelectionMode = true
 			randomTask.off('task:complete', handleComplete)
@@ -171,17 +171,15 @@ export default class Main {
 			clonedMeshes[leftIndexSelection].visible = false
 
 			if (event.direction === 'left') {
-				leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
-				if (rightIndexSelection === -1) leftIndexSelection = this.tasks.length - 1
+				leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
 
 				if (rightIndexSelection === leftIndexSelection)
-					leftIndexSelection = (leftIndexSelection - 1) % this.tasks.length
-				if (leftIndexSelection === -1) leftIndexSelection = this.tasks.length - 1
+					leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
 			}
 			if (event.direction === 'right') {
-				leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
+				leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
 				if (rightIndexSelection === leftIndexSelection)
-					leftIndexSelection = (leftIndexSelection + 1) % this.tasks.length
+					leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
 			}
 			clonedMeshes[leftIndexSelection].visible = true
 			clonedMeshes[leftIndexSelection].traverse((child) => {
@@ -192,7 +190,6 @@ export default class Main {
 		})
 
 		//right
-
 		let rightIndexSelection = 1
 		this.rightSelectionMode = true
 
@@ -242,16 +239,14 @@ export default class Main {
 			clonedMeshes[rightIndexSelection].visible = false
 
 			if (event.direction === 'left') {
-				rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
-				if (rightIndexSelection === -1) rightIndexSelection = this.tasks.length - 1
+				rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
 				if (leftIndexSelection === rightIndexSelection)
-					rightIndexSelection = (rightIndexSelection - 1) % this.tasks.length
-				if (rightIndexSelection === -1) rightIndexSelection = this.tasks.length - 1
+					rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
 			}
 			if (event.direction === 'right') {
-				rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
+				rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
 				if (leftIndexSelection === rightIndexSelection)
-					rightIndexSelection = (rightIndexSelection + 1) % this.tasks.length
+					rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
 			}
 			clonedMeshes[rightIndexSelection].visible = true
 			clonedMeshes[rightIndexSelection].traverse((child) => {
@@ -267,13 +262,20 @@ export default class Main {
 
 		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
 		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
-		startTimeline.to(this._dayPanelElement, {
-			autoAlpha: 0, delay: .5, duration: 0.25, ease: 'sine.inOut',
-			onComplete: () => {
-				this._randomTasks()
-				this._randomFocusTasks()
+		startTimeline.to(
+			this._dayPanelElement,
+			{
+				autoAlpha: 0,
+				delay: 0.5,
+				duration: 0.25,
+				ease: 'sine.inOut',
+				onComplete: () => {
+					this._randomTasks()
+					this._randomFocusTasks()
+				},
 			},
-		}, 1)
+			1,
+		)
 	}
 
 	_playGameOverAnimation() {
