@@ -38,6 +38,11 @@
 		"colorSpace": "srgb"
 	},
 	{
+		"name": "taskBackgrounds",
+		"type": "gltf",
+		"path": "models/task-backgrounds.glb"
+	},
+	{
 		"name": "deskModel",
 		"type": "gltf",
 		"path": "models/model.glb"

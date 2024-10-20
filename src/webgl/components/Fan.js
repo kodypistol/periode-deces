@@ -2,12 +2,13 @@ import Experience from 'core/Experience.js'
 import { MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
 import EventEmitter from '../core/EventEmitter'
+import Component from '../core/Component'
 import { gsap } from 'gsap'
 
 const SETTINGS = {
 	TURNS: 4,
 }
-export default class Fan extends EventEmitter {
+export default class Fan extends Component {
 	constructor() {
 		super()
 		this.experience = new Experience()
@@ -34,18 +35,29 @@ export default class Fan extends EventEmitter {
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material
+				// child.material.depthTest = false
 				if (child.name === 'HELICES') {
 					this.helix = child
 				}
 				if (child.name === 'BOUTON') {
 					this.witness = child
 					child.material = this._witnessMaterial
+					// child.material.depthTest = false
 				}
 			}
 		})
 		this.mesh.name = 'fan'
 
-		this.scene.add(this.mesh)
+		this.scene.resources.items.taskBackgrounds.scene.traverse((child) => {
+			if (child.name.includes('fan')) {
+				this.backgroundMesh = child
+				this.backgroundMesh.material = new MeshBasicMaterial({ color: 0x000000 })
+				this.backgroundMesh.visible = false
+			}
+		})
+
+		this.add(this.mesh)
+		this.add(this.backgroundMesh)
 		// addObjectDebug(this.debug.ui, this.mesh)
 	}
 

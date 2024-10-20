@@ -54,9 +54,6 @@ export default class Phone extends EventEmitter {
 				child.material = this._material
 			}
 		})
-		// this.model.position.x += 1.2
-		// this.model.position.y += 1
-		// this.model.position.z += 5
 
 		this.telModel = this.mesh.children.find(({ name }) => name === 'tel')
 		this.baseTalValues = {
@@ -67,6 +64,15 @@ export default class Phone extends EventEmitter {
 		this._setAnswerAnim()
 		this._setResetAnim()
 
+		this.scene.resources.items.taskBackgrounds.scene.traverse((child) => {
+			if (child.name.includes('phone')) {
+				this.backgroundMesh = child
+				this.backgroundMesh.material = new MeshBasicMaterial({ color: 0x000000 })
+				this.backgroundMesh.visible = false
+			}
+		})
+
+		this.scene.add(this.backgroundMesh)
 		this.scene.add(this.mesh)
 	}
 
