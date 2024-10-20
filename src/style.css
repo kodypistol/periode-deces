@@ -249,11 +249,10 @@ body {
 }
 
 .hidden {
-	visibility: hidden !important;
-	opacity: 0 !important;
+	opacity: 0;
 }
 
-.start {
+.start-menu {
 	pointer-events: none;
 	background-color: #150f00c8;
 	position: fixed;
@@ -268,7 +267,7 @@ body {
 	height: 100%;
 }
 
-.start__logo {
+.start-menu-logo {
 	width: 50%;
 	max-width: 700px;
 	margin-bottom: 10rem;
@@ -280,7 +279,7 @@ body {
 	}
 }
 
-.start__cta {
+.start-menu-cta {
 	height: 1.75rem;
 	font-size: 1.75rem;
 	display: flex;
@@ -296,6 +295,7 @@ body {
 
 .day {
 	pointer-events: none;
+	opacity: 0;
 	position: fixed;
 	background-color: #fcb637;
 	width: 100%;
@@ -308,7 +308,7 @@ body {
 	align-items: center;
 	flex-direction: column;
 
-	.bg__wrapper {
+	.bg-wrapper {
 		position: absolute;
 		display: flex;
 		align-items: center;
@@ -326,7 +326,7 @@ body {
 		}
 	}
 
-	.day__content {
+	.day-content {
 		z-index: 1;
 		margin-bottom: 6rem;
 	}
@@ -358,6 +358,7 @@ body {
 
 .gameover {
 	pointer-events: none;
+	opacity: 0;
 	background-color: #150f00c8;
 	position: fixed;
 	z-index: 999;
@@ -392,7 +393,7 @@ body {
 	}
 }
 
-.gameover__cta {
+.gameover-cta {
 	height: 1.75rem;
 	font-size: 1.75rem;
 	display: flex;
@@ -406,11 +407,11 @@ body {
 	}
 }
 
-.gameover__title__wrapper {
+.gameover-title-wrapper {
 	position: relative;
 }
 
-.gameover__title {
+.gameover-title {
 	position: absolute;
 	transform: translate(-50%, -25%) rotate(-1deg);
 	left: 50%;

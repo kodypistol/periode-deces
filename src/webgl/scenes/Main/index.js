@@ -19,90 +19,38 @@ export default class Main {
 
 		this.tasks = []
 		this.focusTasks = []
+		this._isGameStarted = false
+		this._isGameOver = false
 
 		this.scene.resources.on('ready', () => {
-			this.startMenu = document.getElementById('start-menu')
-			this.dayPanel = document.getElementById('day-panel')
-			this.gameover = document.getElementById('gameover')
-			this.startMenu.classList.remove('hidden')
-			this._createSceneElements()
-
-			const handleDown = (e) => {
-				if (e.key === 'a') {
-					this._selectionBehavior()
-					this.axis.off('down', handleDown)
-					this.startMenu.classList.add('hide-element')
-
-					gsap
-						.timeline()
-						.to(
-							'#start-menu',
-							{
-								autoAlpha: 0,
-								duration: 0.5,
-								ease: 'sine.inOut',
-								onComplete: () => {
-									this.startMenu.remove()
-								},
-							},
-							0,
-						)
-						.to(
-							'#day-panel',
-							{
-								autoAlpha: 1,
-								duration: 0.25,
-								ease: 'sine.inOut',
-								onStart: () => {
-									this.dayPanel.classList.remove('hidden')
-								},
-							},
-							0,
-						)
-						.to(
-							'#day-panel',
-							{
-								autoAlpha: 0,
-								delay: .5,
-								duration: 0.25,
-								ease: 'sine.inOut',
-								onComplete: () => {
-									this._randomTasks()
-									this._randomFocusTasks()
-
-									const handleDown = (e) => {
-										if (e.key === 'w') {
-											gsap.to('#gameover', {
-												opacity: 1,
-												duration: 0.25,
-												ease: 'sine.inOut',
-												onStart: () => {
-													this.gameover.classList.remove('hidden')
-												},
-												onComplete: () => {
-													this.axis.on('down', (e) => {
-														if (e.key === 'a') {
-															window.location.reload()
-														}
-													})
-												},
-											})
-										}
-									}
-
-									this.axis.on('down', handleDown.bind(this))
-								},
-							},
-							1,
-						)
-				}
-			}
-
-			this.axis.on('down', handleDown)
+			this._start()
+			this._addEventListeners()
 		})
 	}
 
-	_createSceneElements() {
+	_start() {
+		this._startMenuElement = document.getElementById('start-menu')
+		this._dayPanelElement = document.getElementById('day-panel')
+		this._gameOverElement = document.getElementById('game-over')
+
+		this._createSceneComponents()
+	}
+
+	_reset() {
+		this.tasks.forEach((task) => {
+			task.reset()
+		})
+
+		this.focusTasks.forEach((task) => {
+			task.reset()
+		})
+
+		this._isGameStarted = false
+
+		this._isGameOver = false
+	}
+
+	_createSceneComponents() {
 		this.background = new Background()
 		this.desk = new Desk()
 
@@ -312,6 +260,60 @@ export default class Main {
 				}
 			})
 		})
+	}
+
+	_playStartAnimation() {
+		const startTimeline = gsap.timeline()
+
+		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
+		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
+		startTimeline.to(this._dayPanelElement, {
+			autoAlpha: 0, delay: .5, duration: 0.25, ease: 'sine.inOut',
+			onComplete: () => {
+				this._randomTasks()
+				this._randomFocusTasks()
+			},
+		}, 1)
+	}
+
+	_playGameOverAnimation() {
+		const gameOverTimeline = gsap.timeline()
+
+		gameOverTimeline.to(this._gameOverElement, {
+			opacity: 1,
+			duration: 0.25,
+			ease: 'sine.inOut',
+			onComplete: () => {
+				this.axis.on('down', (e) => {
+					if (e.key === 'a') {
+						window.location.reload()
+					}
+				})
+			},
+		})
+	}
+
+	_handleAxisDown(e) {
+		if (e.key === 'a' && !this._isGameStarted) {
+			this._selectionBehavior()
+			this._playStartAnimation()
+
+			this._isGameStarted = true
+		}
+
+		if (e.key === 'w' && this._isGameStarted) {
+			this._playGameOverAnimation()
+			this._isGameOver = true
+		}
+
+		if (e.key === 'a' && this._isGameOver) {
+			window.location.reload()
+			// this._reset() //TODO:/ do a clean reset
+		}
+	}
+
+	_addEventListeners() {
+		this.axis.on('down', this._handleAxisDown.bind(this))
 	}
 
 	update() {
