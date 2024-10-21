@@ -25,8 +25,6 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
-
-			// this._skipIntro()
 		})
 	}
 
@@ -36,23 +34,6 @@ export default class Main {
 		this._gameOverElement = document.getElementById('game-over')
 
 		this._createSceneComponents()
-	}
-
-	_skipIntro() {
-		this._selectionBehavior()
-
-		this._isGameStarted = true
-		const startTimeline = gsap.timeline()
-
-		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.01, ease: 'sine.inOut' }, 0)
-		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.01, ease: 'sine.inOut' }, 0)
-		startTimeline.to(this._dayPanelElement, {
-			autoAlpha: 0, duration: 0.01, ease: 'sine.inOut',
-			onComplete: () => {
-				this._randomTasks()
-				this._randomFocusTasks()
-			},
-		}, 1)
 	}
 
 	_reset() {
@@ -77,8 +58,6 @@ export default class Main {
 		this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
-		this.scene.add(this.fan)
-		// this.fan.renderOrder = 2
 		this.tasks.push(this.fan)
 
 		this.computer = new Computer()
@@ -109,136 +88,176 @@ export default class Main {
 			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
 			randomTask = this.focusTasks[randomIndex]
 			randomTask.playTask()
-			this.leftSelectionEnabled = false
-			this.rightSelectionEnabled = false
+			this.leftSelectionMode = false
+			this.rightSelectionMode = false
 			randomTask.on('task:complete', handleComplete)
 		}
 		setTimeout(repeat, timeout)
 
 		const handleComplete = () => {
 			setTimeout(repeat, timeout)
-			this.leftSelectionEnabled = true
-			this.rightSelectionEnabled = true
+			this.leftSelectionMode = true
+			this.rightSelectionMode = true
 			randomTask.off('task:complete', handleComplete)
 		}
 	}
 
-
 	_selectionBehavior() {
-		const selectColors = {
-			left: 0x00FF00,
-			right: 0xFF0000,
-		};
+		const selectMaterials = {
+			left: new MeshBasicMaterial({ color: 'orange', side: BackSide }),
+			right: new MeshBasicMaterial({ color: 'violet', side: BackSide }),
+		}
+		const clonedMeshes = []
+		this.tasks.forEach((task) => {
+			const clonedMesh = task.mesh.clone()
+			clonedMesh.name = 'clonedMesh'
+			clonedMesh.scale.addScalar(0.01)
+			// clonedMesh.position.z = -0.2
+			clonedMesh.traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.left
+				}
+			})
+			clonedMesh.visible = false
+			clonedMeshes.push(clonedMesh)
+			this.scene.add(clonedMesh)
+		})
 
-		let leftSelectionIndex = 0;
-		let rightSelectionIndex = 1;
+		//left
+		let leftIndexSelection = 0
+		this.leftSelectionMode = true
 
-		this.leftSelectionEnabled = true;
-		this.rightSelectionEnabled = true;
-
-		// Filter out tasks that are either playing or already selected by another hand
-		const getSelectableTasks = () => this.tasks.filter(task => !task.isPlaying && !task.isSelected);
-
-		// Highlight a task for the specified hand
-		const highlightTask = (index, selectColor) => {
-			if (!this.tasks[index]) return;
-			this.tasks[index].backgroundMesh.visible = true;
-			this.tasks[index].backgroundMesh.material.color.set(selectColor);
-
-			this.tasks[index].isSelected = true;
-		};
-
-		// Unhighlight a task (disable visibility and deselect)
-		const unhighlightTask = (task) => {
-			task.backgroundMesh.visible = false;
-			task.isSelected = false;
-		};
-
-		// Move selection for left or right hand
-		const moveSelection = (currentIndex, hand, selectColor, direction) => {
-			const selectableTasks = getSelectableTasks();
-
-			if (selectableTasks.length === 0) return currentIndex;  // No tasks left to select
-
-			// Unhighlight the current task
-			const currentTask = this.tasks[currentIndex];
-			unhighlightTask(currentTask);
-
-			// Move selection left or right, wrapping around the available tasks
-			let nextSelectableIndex = direction === 'left'
-				? (currentIndex - 1 + selectableTasks.length) % selectableTasks.length
-				: (currentIndex + 1) % selectableTasks.length;
-
-			// Highlight the new task
-			let nextIndex = this.tasks.indexOf(selectableTasks[nextSelectableIndex]);
-			highlightTask(nextIndex, selectColor);
-
-			return nextIndex;
-		};
-
-		// Select and start playing the task based on the current index
-		const playTask = (index, hand, selectColor) => {
-			const selectableTasks = getSelectableTasks();
-
-			if (selectableTasks.length === 0) return;
-
-			const selectedTask = this.tasks[index];
-
-			// If the task is already playing, do nothing
-			if (selectedTask.isPlaying) return;
-
-			// Mark the task as playing and unhighlight it
-			selectedTask.isPlaying = true;
-			unhighlightTask(selectedTask);
-
-			// Simulate task playing and disable selection for this hand while playing
-			setTimeout(() => {
-				selectedTask.isPlaying = false;
-				selectedTask.isSelected = false;  // The task becomes selectable again once it's done playing
-			}, 3000);  // Simulate 3 seconds of task playing
-		};
-
-		// Initial task selection for both hands
-		highlightTask(leftSelectionIndex, selectColors.left);
-		highlightTask(rightSelectionIndex, selectColors.right);
-
-		// Event listener for left hand task selection
+		//first selection
+		clonedMeshes[leftIndexSelection].visible = true
+		clonedMeshes[leftIndexSelection].traverse((child) => {
+			if (child.material) {
+				child.material = selectMaterials.left
+			}
+		})
+		//select task
 		this.experience.axis.on(`down:left`, (event) => {
-			if (!this.leftSelectionEnabled) return;
+			if (!this.leftSelectionMode) return
 			if (event.key === 'a') {
-				playTask(leftSelectionIndex, 'left', selectColors.left);
-				this.leftSelectionEnabled = false;  // Prevent left hand from selecting another task while playing
+				const selectedTask = this.tasks[leftIndexSelection]
+				const outlineMesh = clonedMeshes[leftIndexSelection]
+				if (!selectedTask.isShowed) {
+					// material red and return to original
+					gsap.to(selectMaterials.left.color, {
+						r: 1,
+						g: 0,
+						b: 0,
+						duration: 0.2,
+						repeat: 1,
+						yoyo: true,
+					})
+					return
+				}
+				this.leftSelectionMode = false
+				selectedTask.isShowed = false
+				selectedTask.playTask('left')
+				outlineMesh.visible = false
+				const handleComplete = () => {
+					this.leftSelectionMode = true
+					outlineMesh.visible = true
+					selectedTask.off('task:complete', handleComplete)
+				}
+				selectedTask.on('task:complete', handleComplete)
 			}
-		});
+		})
 
-		// Event listener for right hand task selection
-		this.experience.axis.on(`down:right`, (event) => {
-			if (!this.rightSelectionEnabled) return;
-			if (event.key === 'a') {
-				playTask(rightSelectionIndex, 'right', selectColors.right);
-				this.rightSelectionEnabled = false;  // Prevent right hand from selecting another task while playing
-			}
-		});
-
-		// Move selection for left hand
+		// move selection
 		this.experience.axis.on(`joystick:quickmove:left`, (event) => {
-			if (event.direction === 'up' || event.direction === 'down') return;
-			if (!this.leftSelectionEnabled) return;
+			if (event.direction === 'up' || event.direction === 'down') return
+			if (!this.leftSelectionMode) return
 
-			// Update leftSelectionIndex and ensure the new task is highlighted
-			leftSelectionIndex = moveSelection(leftSelectionIndex, 'left', selectColors.left, event.direction);
-		});
+			clonedMeshes[leftIndexSelection].visible = false
 
-		// Move selection for right hand
+			if (event.direction === 'left') {
+				leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
+
+				if (rightIndexSelection === leftIndexSelection)
+					leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
+			}
+			if (event.direction === 'right') {
+				leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
+				if (rightIndexSelection === leftIndexSelection)
+					leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
+			}
+			clonedMeshes[leftIndexSelection].visible = true
+			clonedMeshes[leftIndexSelection].traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.left
+				}
+			})
+		})
+
+		//right
+		let rightIndexSelection = 1
+		this.rightSelectionMode = true
+
+		//first selection
+		clonedMeshes[rightIndexSelection].visible = true
+		clonedMeshes[rightIndexSelection].traverse((child) => {
+			if (child.material) {
+				child.material = selectMaterials.right
+			}
+		})
+		//select task
+		this.experience.axis.on(`down:right`, (event) => {
+			if (!this.rightSelectionMode) return
+			if (event.key === 'a') {
+				const selectedTask = this.tasks[rightIndexSelection]
+				const outlineMesh = clonedMeshes[rightIndexSelection]
+				if (!selectedTask.isShowed) {
+					// material red and return to original
+					gsap.to(selectMaterials.right.color, {
+						r: 1,
+						g: 0,
+						b: 0,
+						duration: 0.2,
+						repeat: 1,
+						yoyo: true,
+					})
+					return
+				}
+				this.rightSelectionMode = false
+				selectedTask.isShowed = false
+				selectedTask.playTask('right')
+				outlineMesh.visible = false
+				const handleComplete = () => {
+					this.rightSelectionMode = true
+					outlineMesh.visible = true
+					selectedTask.off('task:complete', handleComplete)
+				}
+				selectedTask.on('task:complete', handleComplete)
+			}
+		})
+
+		// move selection
 		this.experience.axis.on(`joystick:quickmove:right`, (event) => {
-			if (event.direction === 'up' || event.direction === 'down') return;
-			if (!this.rightSelectionEnabled) return;
+			if (event.direction === 'up' || event.direction === 'down') return
+			if (!this.rightSelectionMode) return
 
-			// Update rightSelectionIndex and ensure the new task is highlighted
-			rightSelectionIndex = moveSelection(rightSelectionIndex, 'right', selectColors.right, event.direction);
-		});
+			clonedMeshes[rightIndexSelection].visible = false
+
+			if (event.direction === 'left') {
+				rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
+				if (leftIndexSelection === rightIndexSelection)
+					rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
+			}
+			if (event.direction === 'right') {
+				rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
+				if (leftIndexSelection === rightIndexSelection)
+					rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
+			}
+			clonedMeshes[rightIndexSelection].visible = true
+			clonedMeshes[rightIndexSelection].traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.right
+				}
+			})
+		})
 	}
-
 
 	_playStartAnimation() {
 		const startTimeline = gsap.timeline()
