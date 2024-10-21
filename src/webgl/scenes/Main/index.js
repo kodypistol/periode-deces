@@ -58,6 +58,7 @@ export default class Main {
 		this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
+		this.scene.add(this.fan)
 		this.tasks.push(this.fan)
 
 		this.computer = new Computer()
