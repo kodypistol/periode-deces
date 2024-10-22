@@ -24,7 +24,7 @@ export default class Phone extends EventEmitter {
 		this.resources = this.scene.resources
 		this.debug = this.experience.debug
 		this.axis = this.experience.axis
-		this.calling = new Audio('/audio/phone/calling.wav')
+		this.calling = new Audio('/audio/phone/ringtone.mp3')
 		this.calling.loop = true
 		this.talking = new Audio('/audio/phone/talking.mp3')
 		this.talking.loop = true
@@ -161,7 +161,7 @@ export default class Phone extends EventEmitter {
 					z: (Math.PI / 2) * sideF,
 					ease: 'power2.inOut',
 				},
-				0,
+				0
 			)
 			.to(
 				this.telModel.position,
@@ -172,7 +172,7 @@ export default class Phone extends EventEmitter {
 					z: this.camera.position.z,
 					ease: 'power2.inOut',
 				},
-				0,
+				0
 			)
 	}
 
@@ -190,7 +190,7 @@ export default class Phone extends EventEmitter {
 				z: this.telModel.rotation.z - 0.05,
 				ease: 'bounce.out',
 			},
-			0,
+			0
 		)
 
 		this.shakeAnim.to(
@@ -200,7 +200,7 @@ export default class Phone extends EventEmitter {
 				y: this.telModel.position.y + 0.1,
 				ease: 'bounce.out',
 			},
-			0,
+			0
 		)
 	}
 
@@ -217,7 +217,7 @@ export default class Phone extends EventEmitter {
 					z: this.baseTalValues.rotation.z,
 					ease: 'power2.inOut',
 				},
-				0,
+				0
 			)
 			.to(
 				this.telModel.position,
@@ -231,7 +231,7 @@ export default class Phone extends EventEmitter {
 						this.closeCall.play()
 					},
 				},
-				0,
+				0
 			)
 	}
 
