@@ -86,7 +86,6 @@ export default class JoystickSelectionManager {
 	handleLeftMove(event) {
 		if (event.direction === 'up' || event.direction === 'down') return
 		if (!this.leftSelectionMode) return
-		console.log('ev', event)
 
 		this.clonedMeshes[this.leftIndexSelection].visible = false
 

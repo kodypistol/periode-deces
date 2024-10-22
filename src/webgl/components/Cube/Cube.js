@@ -45,8 +45,5 @@ export default class Cube {
 
 	setInteraction() {
 		this.experience.interactionManager.addInteractiveObject(this.mesh)
-		this.mesh.addEventListener('click', () => {
-			console.log('cube click')
-		})
 	}
 }
