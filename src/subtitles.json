@@ -1,10 +1,10 @@
 {
 	"colleague": {
-		"text": "Eh ben tu sais, cette année, on est partis à la campagne, histoire de changer d’air.",
+		"text": "Eh ben tu sais, cette année, on est partis à la campagne, histoire de changer d'air.",
 		"next": "colleague2"
 	},
 	"colleague2": {
-		"text": "Franchement, j’étais pas super motivé mais bon, c’était la seule option qui rentrait dans le budget.",
+		"text": "Franchement, j'étais pas super motivé mais bon, c'était la seule option qui rentrait dans le budget.",
 		"next": "colleague3"
 	},
 	"colleague3": {
@@ -16,15 +16,15 @@
 		"next": "colleague5"
 	},
 	"colleague5": {
-		"text": "J’avais choisi un gîte “authentique”... Bah c’était surtout authentiquement sale !",
+		"text": "J'avais choisi un gîte “authentique”... Bah c'était surtout authentiquement sale !",
 		"next": "colleague6"
 	},
 	"colleague6": {
-		"text": "J’avais choisi un gîte “authentique”... Bah c’était surtout authentiquement sale !",
+		"text": "J'avais choisi un gîte “authentique”... Bah c'était surtout authentiquement sale !",
 		"next": "colleague7"
 	},
 	"colleague7": {
-		"text": "La literie, laisse tomber, on aurait dit un lit d’hôpital, mal au dos direct.",
+		"text": "La literie, laisse tomber, on aurait dit un lit d'hôpital, mal au dos direct.",
 		"next": "colleague8"
 	},
 	"colleague8": {
@@ -40,19 +40,19 @@
 		"next": "colleague11"
 	},
 	"colleague11": {
-		"text": "Oh et puis, y avait pas de réseau ! T’imagines, pas de Wi-Fi, rien ! On était coupés du monde !",
+		"text": "Oh et puis, y avait pas de réseau ! T'imagines, pas de Wi-Fi, rien ! On était coupés du monde !",
 		"next": "colleague12"
 	},
 	"colleague12": {
-		"text": "Une fois, on a tenté d’aller se baigner à la rivière... elle était glacée et pleine de moustiques.",
+		"text": "Une fois, on a tenté d'aller se baigner à la rivière... elle était glacée et pleine de moustiques.",
 		"next": "colleague13"
 	},
 	"colleague13": {
-		"text": "Ah et t’aurais vu les restos du coin ! Des pièges à touristes hors de prix pour des plats surgelés, ça m’a coûté un bras.",
+		"text": "Ah et t'aurais vu les restos du coin ! Des pièges à touristes hors de prix pour des plats surgelés, ça m'a coûté un bras.",
 		"next": "colleague14"
 	},
 	"colleague14": {
-		"text": "J’ai même chopé une indigestion après un magret de canard suspect... j’ai passé une nuit blanche à vomir.",
+		"text": "J'ai même chopé une indigestion après un magret de canard suspect... j'ai passé une nuit blanche à vomir.",
 		"next": "colleague15"
 	},
 	"colleague15": {
@@ -64,11 +64,11 @@
 		"next": "colleague17"
 	},
 	"colleague17": {
-		"text": "Bref, on a fini par faire le tour de toutes les églises du village, parce que c’était la seule chose à faire.",
+		"text": "Bref, on a fini par faire le tour de toutes les églises du village, parce que c'était la seule chose à faire.",
 		"next": "colleague18"
 	},
 	"colleague18": {
-		"text": "Ma femme était à deux doigts de péter un câble, les enfants s’ennuyaient à mourir.",
+		"text": "Ma femme était à deux doigts de péter un câble, les enfants s'ennuyaient à mourir.",
 		"next": "colleague19"
 	},
 	"colleague19": {
@@ -76,7 +76,7 @@
 		"next": "colleague20"
 	},
 	"colleague20": {
-		"text": "Trois heures d’attente pour la dépanneuse sous un soleil de plomb, je te raconte pas l’ambiance.",
+		"text": "Trois heures d'attente pour la dépanneuse sous un soleil de plomb, je te raconte pas l'ambiance.",
 		"next": "colleague21"
 	},
 	"colleague21": {
@@ -93,7 +93,7 @@
 		"color": "green"
 	},
 	"clientSuccess2": {
-		"text": "Je comprends, mais je ne suis pas vraiment dans l’optique d’attendre l’éternité pour récolter les fruits.",
+		"text": "Je comprends, mais je ne suis pas vraiment dans l'optique d'attendre l'éternité pour récolter les fruits.",
 		"success": "clientSuccess3",
 		"error": "clientError"
 	},
@@ -106,7 +106,7 @@
 		"text": "Fascinant. Quels leviers stratégiques proposez-vous ?"
 	},
 	"clientError": {
-		"text": "Pourquoi ne pas commencer par investir dans toi-même avant d’appeler un conseiller ?",
+		"text": "Pourquoi ne pas commencer par investir dans toi-même avant d'appeler un conseiller ?",
 		"color": "red"
 	}
 }
