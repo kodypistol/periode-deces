@@ -8,7 +8,7 @@ export default class Debug {
 	constructor() {
 		this.experience = new Experience()
 		this.axis = this.experience.axis
-		this.active = window.location.hash === '#debug'
+		this.active = window.location.hash === ''
 
 		if (this.active) {
 			this.ui = new Pane({ title: '⚙️ Debug' })
@@ -262,7 +262,7 @@ export default class Debug {
 						`📦 %c${object.name ? object.name : `unnamed ${object.type}`}%c added to the scene`,
 						'font-weight: bold; background-color: #ffffff20; padding: 0.1rem 0.3rem; border-radius: 0.3rem',
 						'font-weight: normal',
-						object
+						object,
 					)
 				}
 				return original.apply(this, arguments)
