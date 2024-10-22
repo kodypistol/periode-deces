@@ -277,12 +277,13 @@ export default class Main {
 					this._randomFocusTasks()
 				},
 			},
-			1,
+			1
 		)
 	}
 
 	_playGameOverAnimation() {
 		const gameOverTimeline = gsap.timeline()
+		console.log('game over')
 
 		gameOverTimeline.to(this._gameOverElement, {
 			opacity: 1,
@@ -312,7 +313,7 @@ export default class Main {
 		}
 
 		if (e.key === 'a' && this._isGameOver) {
-			window.location.reload()
+			// window.location.reload()
 			// this._reset() //TODO:/ do a clean reset
 		}
 	}

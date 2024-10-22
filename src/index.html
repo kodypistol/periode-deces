@@ -1,120 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>KPI📈</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="./style.css" />
+		<script type="module" src="./script.js" defer></script>
+	</head>
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>KPI📈</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
-	<link rel="stylesheet" href="./style.css" />
-	<script type="module" src="./script.js" defer></script>
-</head>
+	<body>
+		<noscript>
+			<h1>Enable JavaScript to run this app.</h1>
+		</noscript>
+		<canvas id="webgl"></canvas>
+		<p class="subtitle"></p>
+		<div class="qte">
+			<img src="/textures/buttons/x.png" alt="x" />
+			<img src="/textures/buttons/i.png" alt="i" />
+			<img src="/textures/buttons/s.png" alt="s" />
+		</div>
+		<img src="/textures/buttons/a.png" alt="a" class="next" />
 
-<body>
-	<noscript>
-		<h1>Enable JavaScript to run this app.</h1>
-	</noscript>
-	<canvas id="webgl"></canvas>
-	<p class="subtitle"></p>
-	<div class="qte">
-		<img src="/textures/buttons/x.png" alt="x" />
-		<img src="/textures/buttons/i.png" alt="i" />
-		<img src="/textures/buttons/s.png" alt="s" />
-	</div>
-	<img src="/textures/buttons/a.png" alt="a" class="next" />
-
-	<div class="computer-screen">
-		<div class="graph">
-			<div class="notification">
-				<img src="./graph-notification.png" alt="" />
-			</div>
-
-			<div class="activity">
-				<img class="top" src="./graph-top.png" alt="" />
-				<canvas class="canvas"></canvas>
-				<div class="bottom">
-					<img src="./graph-bottom.png" alt="" />
-					<p class="number">1%</p>
+		<div class="computer-screen">
+			<div class="graph">
+				<div class="notification">
+					<img src="./graph-notification.png" alt="" />
 				</div>
 
-				<div class="completed">
-					<img src="./completed.png" alt="" />
-					<img src="./benef-graph.png" alt="" />
+				<div class="activity">
+					<img class="top" src="./graph-top.png" alt="" />
+					<canvas class="canvas"></canvas>
+					<div class="bottom">
+						<img src="./graph-bottom.png" alt="" />
+						<p class="number">1%</p>
+					</div>
+
+					<div class="completed">
+						<img src="./completed.png" alt="" />
+						<img src="./benef-graph.png" alt="" />
+					</div>
+				</div>
+			</div>
+
+			<img class="wallpaper" src="./wallpaper.png" alt="" />
+
+			<div class="call">
+				<div class="notification">
+					<img src="./call-notification.png" alt="" />
+				</div>
+
+				<div class="activity">
+					<canvas class="canvas"></canvas>
+				</div>
+			</div>
+
+			<div class="mail">
+				<div class="notification">
+					<img src="./mail-notification.png" alt="" />
+				</div>
+
+				<div class="activity">
+					<canvas class="canvas"></canvas>
 				</div>
 			</div>
 		</div>
 
-		<img class="wallpaper" src="./wallpaper.png" alt="" />
-
-		<div class="call">
-			<div class="notification">
-				<img src="./call-notification.png" alt="" />
+		<div id="start-menu" class="start-menu">
+			<div class="start-menu-logo">
+				<img src="/textures/logo.svg" alt="" />
 			</div>
-
-			<div class="activity">
-				<canvas class="canvas"></canvas>
-			</div>
-		</div>
-
-		<div class="mail">
-			<div class="notification">
-				<img src="./mail-notification.png" alt="" />
-			</div>
-
-			<div class="activity">
-				<canvas class="canvas"></canvas>
+			<div class="start-menu-cta">
+				<span>Pressez</span>
+				<img class="action" src="./textures/buttons/a.png" alt="" />
+				<span>Pour startuper !</span>
 			</div>
 		</div>
-	</div>
 
-	<div id="start-menu" class="start-menu">
-		<div class="start-menu-logo">
-			<img src="/textures/logo.svg" alt="" />
+		<div id="day-panel" class="day hidden">
+			<div class="bg-wrapper">
+				<div class="bg"></div>
+			</div>
+			<div class="day-content">
+				<h1 class="day-title">
+					<span>JOUR</span>
+					<span id="day-counter">1</span>
+				</h1>
+				<h2 class="ke-title">
+					<span id="ke-counter">0</span>
+					<span>K€ 🚀</span>
+				</h2>
+			</div>
 		</div>
-		<div class="start-menu-cta">
-			<span>Pressez</span>
-			<img class="action" src="./textures/buttons/a.png" alt="" />
-			<span>Pour startuper !</span>
-		</div>
-	</div>
 
-	<div id="day-panel" class="day hidden">
-		<div class="bg-wrapper">
-			<div class="bg"></div>
-		</div>
-		<div class="day-content">
-			<h1 class="day-title">
-				<span>JOUR</span>
-				<span id="day-counter">1</span>
-			</h1>
+		<div id="game-over" class="gameover">
+			<div class="gameover-title-wrapper">
+				<h1 class="gameover-title">manque d'assertivité</h1>
+			</div>
+			<p class="ke-end">
+				Votre cycle d'intégration professionnelle est arrivé à maturité. Nous procédons à une réallocation stratégique
+				de vos compétences hors de notre écosystème. Merci de votre participation à cette expérience.
+			</p>
 			<h2 class="ke-title">
-				<span id="ke-counter">0</span>
-				<span>K€ 🚀</span>
+				<span id="ke-counter">12348</span>
+				<span>K€</span>
 			</h2>
+			<div class="gameover-cta">
+				<span>Pressez</span>
+				<img class="action" src="./textures/buttons/a.png" alt="" />
+				<span>Pour revenir en force</span>
+			</div>
 		</div>
-	</div>
-
-	<div id="gameover" class="gameover">
-		<div class="gameover-title-wrapper">
-			<h1 class="gameover-title">manque d’assertivité</h1>
-		</div>
-		<p class="ke-end">
-			Votre cycle d’intégration professionnelle est arrivé à maturité. Nous procédons à une réallocation
-			stratégique
-			de vos compétences hors de notre écosystème. Merci de votre participation à cette expérience.
-		</p>
-		<h2 class="ke-title">
-			<span id="ke-counter">12348</span>
-			<span>K€</span>
-		</h2>
-		<div class="gameover-cta">
-			<span>Pressez</span>
-			<img class="action" src="./textures/buttons/a.png" alt="" />
-			<span>Pour revenir en force</span>
-		</div>
-	</div>
-</body>
-
+	</body>
 </html>
