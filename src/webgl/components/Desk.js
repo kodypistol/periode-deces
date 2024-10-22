@@ -23,7 +23,6 @@ export default class Desk {
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material
-				console.log(child.name)
 				if (child.name === '_NAS') {
 					// child.geometry.attributes.uv = child.geometry.attributes.uv1.clone()
 					child.material = new MeshBasicMaterial({ color: 0x333333, side: 0 })
@@ -41,14 +40,14 @@ export default class Desk {
 		const postIt1 = new Mesh(geometry, material1)
 		let scale = 0.3
 		postIt1.scale.set(scale, scale, scale)
-		postIt1.position.set(-1.15, 1.7, -1.)
+		postIt1.position.set(-1.15, 1.7, -1)
 		postIt1.rotation.set(-0.2, 0, -0.2)
 		this.scene.add(postIt1)
 
 		const texture2 = this.scene.resources.items.postItWolfTexture
 		const material2 = new MeshBasicMaterial({ map: texture2 })
 		const postIt2 = new Mesh(geometry, material2)
-		postIt2.position.set(1.7, 1.7, -1.)
+		postIt2.position.set(1.7, 1.7, -1)
 		postIt2.rotation.set(-0.2, 0, 0.2)
 		scale = 0.4
 		postIt2.scale.set(scale, scale, scale)
