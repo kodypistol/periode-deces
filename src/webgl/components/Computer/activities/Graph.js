@@ -28,9 +28,12 @@ export default class Graph extends EventEmitter {
 		this.userGraph = [] // The user's graph based on key inputs
 		this.currentX = 0 // Track the current position in X
 		this.currentY = this._graphCanvas.height / 2 // Start drawing in the middle
-		this.score = 0 // score is not an actual score for now its just percentages 
+		this.score = 0 // Score is not an actual score for now; it's just percentages
 		this.drawingSpeed = 2 // Constant horizontal drawing speed
 		this.isGameActive = false
+
+		// Bind event handlers
+		this._updateJoystick = this._updateJoystick.bind(this)
 	}
 
 	showTask() {
@@ -40,8 +43,7 @@ export default class Graph extends EventEmitter {
 		})
 	}
 
-	playTask(side) {
-		this._side = side
+	playTask() {
 		this._bindEvents()
 		gsap.to(this._notification, {
 			duration: 0.01,
@@ -58,7 +60,7 @@ export default class Graph extends EventEmitter {
 	}
 
 	end() {
-		// make element blink opacity 3 times
+		// Make element blink opacity 3 times
 		gsap.to(this._completedElement, {
 			duration: 0.4,
 			autoAlpha: 1,
@@ -66,7 +68,7 @@ export default class Graph extends EventEmitter {
 			yoyo: true,
 			ease: 'steps(1)',
 			onComplete: () => {
-				this.trigger('end') // call to parent
+				this.trigger('end') // Notify parent
 			},
 		})
 	}
@@ -89,12 +91,12 @@ export default class Graph extends EventEmitter {
 		this.currentY = this._graphCanvas.height / 2
 		this.score = 0
 
-		this._joystickInterval && clearInterval(this._joystickInterval)
+		clearInterval(this._joystickInterval)
 		this._joystickInterval = null
 		this._joystickBottom = false
 		this._joystickTop = false
 
-		this.axis.off(`joystick:move:${this._side}`, this._updateJoystick.bind(this))
+		this.axis.off('joystick:move:right', this._updateJoystick)
 	}
 
 	_createContext() {
@@ -274,16 +276,16 @@ export default class Graph extends EventEmitter {
 	// on event joystick up set up boolean to false
 	// then on update if event push up or down on graph then
 	_bindEvents() {
-		this.axis.on(`joystick:move:${this._side}`, this._updateJoystick.bind(this))
+		this.axis.on('joystick:move:right', this._updateJoystick)
 
-		this._joystickInterval = window.setInterval(() => {
+		this._joystickInterval = setInterval(() => {
 			if (!this.isGameActive) return
 			const step = 5 // How much the line moves vertically per arrow key press
 			if (this._joystickBottom) {
 				this.currentY = Math.max(0, this.currentY + step) // Move up
 				if (this.score > 0) this.score = 0
 				this.score -= 1
-				this._calculateScore() // Update score for ArrowUp
+				this._calculateScore() // Update score for moving down
 
 				this.currentX += this.drawingSpeed // Move horizontally at a constant speed
 				this.userGraph.push({ x: this.currentX, y: this.currentY })
@@ -291,7 +293,7 @@ export default class Graph extends EventEmitter {
 				this.currentY = Math.min(this._graphCanvas.height, this.currentY - step) // Move down
 				if (this.score < 0) this.score = 0
 				this.score += 1
-				this._calculateScore() // Update score for ArrowUp
+				this._calculateScore() // Update score for moving up
 
 				this.currentX += this.drawingSpeed // Move horizontally at a constant speed
 				this.userGraph.push({ x: this.currentX, y: this.currentY })
@@ -299,7 +301,6 @@ export default class Graph extends EventEmitter {
 
 			if (this.currentX >= this._displayWidth) {
 				this.isGameActive = false
-
 				this.end()
 			}
 		}, 100)
