@@ -155,6 +155,7 @@ export default class Computer extends EventEmitter {
 
 	update() {
 		this.css3dRenderer.render(this.css3dScene, this.camera.instance)
+		if (this._graphActivity.update) this._graphActivity.update()
 	}
 
 	setDebug() {

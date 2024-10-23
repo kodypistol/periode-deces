@@ -14,6 +14,7 @@ export default class Fan extends Component {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.debug = this.experience.debug
+		this.day = this.experience.day
 
 		this._createMaterial()
 		this._createMesh()
@@ -83,6 +84,8 @@ export default class Fan extends Component {
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
 				this.trigger('task:complete')
+				//TODO: ADD MONEY SCALE
+				this.day.tasksCount++
 				this.isPlaying = false
 				this.experience.axis.off(`joystick:move:${side}`, handleMove)
 

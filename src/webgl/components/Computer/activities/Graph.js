@@ -12,6 +12,8 @@ export default class Graph extends EventEmitter {
 		this.camera = this.experience.camera
 		this.resources = this.scene.resources
 		this.axis = this.experience.axis
+		this.time = this.experience.time
+		this.day = this.experience.day
 
 		this._element = document.body.querySelector('.graph')
 		this._notification = this._element.querySelector('.notification')
@@ -29,8 +31,11 @@ export default class Graph extends EventEmitter {
 		this.currentX = 0 // Track the current position in X
 		this.currentY = this._graphCanvas.height / 2 // Start drawing in the middle
 		this.score = 0 // Score is not an actual score for now; it's just percentages
-		this.drawingSpeed = 2 // Constant horizontal drawing speed
+		this.drawingSpeed = .2 // Constant horizontal drawing speed
 		this.isGameActive = false
+		this.isPlaying = false
+		this.timeLimit = 7000
+		this.playTime = 0
 
 		// Bind event handlers
 		this._updateJoystick = this._updateJoystick.bind(this)
@@ -56,6 +61,7 @@ export default class Graph extends EventEmitter {
 		})
 
 		this.isGameActive = true
+		this.isPlaying = true
 		this._draw()
 	}
 
@@ -68,6 +74,25 @@ export default class Graph extends EventEmitter {
 			yoyo: true,
 			ease: 'steps(1)',
 			onComplete: () => {
+				// TODO: CONVERT SCORE TO MONEY SCALE HERE
+				this.day.tasksCount++
+				console.log(this.day.tasksCount);
+
+				this.trigger('end') // Notify parent
+			},
+		})
+	}
+
+	gameOver() {
+		// Make element blink opacity 3 times
+		gsap.to(this._completedElement, {
+			duration: 0.4,
+			autoAlpha: 1,
+			repeat: 4,
+			yoyo: true,
+			ease: 'steps(1)',
+			onComplete: () => {
+				// TODO: CONVERT SCORE TO MONEY DECREASE HERE
 				this.trigger('end') // Notify parent
 			},
 		})
@@ -90,6 +115,7 @@ export default class Graph extends EventEmitter {
 		this.currentX = 0
 		this.currentY = this._graphCanvas.height / 2
 		this.score = 0
+		this.playTime = 0
 
 		clearInterval(this._joystickInterval)
 		this._joystickInterval = null
@@ -234,6 +260,7 @@ export default class Graph extends EventEmitter {
 	}
 
 	// _calculateScore() {
+	// 		this._scoreNumber.innerHTML = `${this.score.toFixed(0)}%`
 	//     const maxSamplePoints = 50;  // Number of points to compare (fewer points for better performance)
 	//     const userGraphLength = Math.min(this.userGraph.length, this.originalGraph.length);  // Use the shorter graph
 	//     const step = Math.max(1, Math.floor(userGraphLength / maxSamplePoints));  // Ensure we don’t step too fast
@@ -251,6 +278,9 @@ export default class Graph extends EventEmitter {
 	//             totalDifference += distance;
 	//             pointsCompared++;
 	//         }
+
+	// 				console.log(totalDifference);
+
 
 	//         // If the total difference is getting too high early, we can stop
 	//         if (totalDifference > 10000) {  // Example threshold, adjust as needed
@@ -280,10 +310,11 @@ export default class Graph extends EventEmitter {
 
 		this._joystickInterval = setInterval(() => {
 			if (!this.isGameActive) return
-			const step = 5 // How much the line moves vertically per arrow key press
+			const step = .5 // How much the line moves vertically per arrow key press
+
 			if (this._joystickBottom) {
 				this.currentY = Math.max(0, this.currentY + step) // Move up
-				if (this.score > 0) this.score = 0
+				// if (this.score > 0) this.score = 0
 				this.score -= 1
 				this._calculateScore() // Update score for moving down
 
@@ -291,7 +322,7 @@ export default class Graph extends EventEmitter {
 				this.userGraph.push({ x: this.currentX, y: this.currentY })
 			} else if (this._joystickTop) {
 				this.currentY = Math.min(this._graphCanvas.height, this.currentY - step) // Move down
-				if (this.score < 0) this.score = 0
+				// if (this.score < 0) this.score = 0
 				this.score += 1
 				this._calculateScore() // Update score for moving up
 
@@ -300,10 +331,20 @@ export default class Graph extends EventEmitter {
 			}
 
 			if (this.currentX >= this._displayWidth) {
+				this.isPlaying = false
 				this.isGameActive = false
 				this.end()
 			}
-		}, 100)
+
+			console.log(this.playTime, this.timeLimit);
+
+
+			if (this.playTime > this.timeLimit) {
+				this.isPlaying = false
+				this.isGameActive = false
+				this.gameOver()
+			}
+		}, 10)
 	}
 
 	_updateJoystick(e) {
@@ -318,6 +359,14 @@ export default class Graph extends EventEmitter {
 		} else {
 			this._joystickBottom = false
 			this._joystickTop = false
+		}
+	}
+
+	update() {
+		// update playtime
+		if (this.isPlaying) {
+			this.playTime += this.time.delta
+			// console.log(this.playTime);
 		}
 	}
 }

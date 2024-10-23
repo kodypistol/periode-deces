@@ -340,6 +340,23 @@ body {
 		font-size: 20rem;
 	}
 
+	.role-title {
+		white-space: nowrap;
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		color: white;
+		font-size: 10rem;
+		background-color: #150f00;
+		padding: 0px 36px;
+		width: fit-content;
+		position: absolute;
+		transform: translate(-50%, -50%) rotate(-3deg);
+		left: 50%;
+		bottom: 0;
+		z-index: 3;
+	}
+
 	.ke-title {
 		white-space: nowrap;
 		display: flex;

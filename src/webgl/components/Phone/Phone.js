@@ -15,7 +15,7 @@ export default class Phone extends EventEmitter {
 	 *
 	 * @param {'left' | 'right'} _side
 	 */
-	constructor({ duration = 10, side = 'right' } = {}) {
+	constructor({ duration = 10, side = 'left' } = {}) {
 		super()
 
 		this.experience = new Experience()

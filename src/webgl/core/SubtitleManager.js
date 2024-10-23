@@ -10,6 +10,7 @@ export class SubtitleManager extends EventEmitter {
 		this._qteElement = document.querySelector('.qte')
 		this._nextElement = document.querySelector('.next')
 		this.experience = new Experience()
+		this.day = this.experience.day
 
 		this.typeAudio = new Audio('/audio/type.mp3')
 	}
@@ -98,11 +99,16 @@ export class SubtitleManager extends EventEmitter {
 				index++
 			} else {
 				this.playSubtitle(this.currentSubtitle.error)
+				// TODO: ADD MONEY DECREASE
 				endQte()
 			}
 
 			if (index === children.length) {
 				this.playSubtitle(this.currentSubtitle.success)
+				// TODO: ADD MONEY SCALE
+				this.day.tasksCount++
+				console.log(this.day.tasksCount);
+
 				endQte()
 			}
 		}

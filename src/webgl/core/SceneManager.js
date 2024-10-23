@@ -23,8 +23,7 @@ export default class SceneManager {
 
 		if (this.debug.active) this.setDebug()
 
-		// create scene
-		return new this.scenes[this.sceneName]()
+		this.currentScene = new this.scenes[this.sceneName](this.experience.scene);
 	}
 
 	setDebug() {

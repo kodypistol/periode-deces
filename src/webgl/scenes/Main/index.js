@@ -16,6 +16,7 @@ export default class Main {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.axis = this.experience.axis
+		this.day = this.experience.day
 		this.scene.resources = new Resources(sources)
 
 		this.tasks = []
@@ -26,6 +27,10 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
+		})
+		this.day.on('day:changed', () => {
+			this._randomTasks()
+			this._randomFocusTasks()
 		})
 	}
 
@@ -62,7 +67,7 @@ export default class Main {
 		this.desk = new Desk()
 
 		this.head = new Head()
-		this.focusTasks.push(this.head)
+		// this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
 		this.scene.add(this.fan)
@@ -72,7 +77,7 @@ export default class Main {
 		this.tasks.push(this.computer)
 
 		this.phone = new Phone()
-		this.tasks.push(this.phone)
+		// this.tasks.push(this.phone)
 	}
 
 	_randomTasks(timeout = 10000) {
@@ -114,21 +119,6 @@ export default class Main {
 		const startTimeline = gsap.timeline()
 
 		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
-		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
-		startTimeline.to(
-			this._dayPanelElement,
-			{
-				autoAlpha: 0,
-				delay: 0.5,
-				duration: 0.25,
-				ease: 'sine.inOut',
-				onComplete: () => {
-					this._randomTasks()
-					this._randomFocusTasks()
-				},
-			},
-			1,
-		)
 	}
 
 	_playGameOverAnimation() {
@@ -155,6 +145,7 @@ export default class Main {
 
 	_handleAxisDown(e) {
 		if (e.key === 'a' && !this._isGameStarted) {
+			this.day.setDay(1)
 			this._playStartAnimation()
 			this._isGameStarted = true
 		}
@@ -172,5 +163,10 @@ export default class Main {
 	update() {
 		if (this.fan) this.fan.update()
 		if (this.computer) this.computer.update()
+	}
+
+	destroy() {
+		this.scene.clear()
+
 	}
 }

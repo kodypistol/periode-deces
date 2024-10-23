@@ -8,6 +8,7 @@ import { Mesh, Scene } from 'three'
 import InteractionManager from 'core/InteractionManager.js'
 import AxisManager from './AxisManager.js'
 import { SubtitleManager } from 'core/SubtitleManager.js'
+import DayManager from './DayManager.js'
 
 let instance = null
 
@@ -33,7 +34,9 @@ export default class Experience {
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
 		this.axis = new AxisManager()
-		this.activeScene = new SceneManager()
+		this.day = new DayManager()
+		this.sceneManager = new SceneManager()
+		this.activeScene = this.sceneManager.currentScene
 		this.renderer = new Renderer()
 		this.subtitlesManager = new SubtitleManager()
 
