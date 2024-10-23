@@ -77,17 +77,19 @@ export default class Phone extends Task {
 		this.answerAnim.play()
 
 		this.experience.subtitlesManager.playSubtitle('client')
+
 		const handleDown = (event) => {
 			if (event.key === 'a') {
 				this.experience.subtitlesManager.next()
 			}
 		}
-		this.axis.on(`down:${this.side}`, handleDown)
+
+		this.axis.on(`down:right`, handleDown)
 
 		this.experience.subtitlesManager.on('finish', () => {
 			this.answerAnim.reverse()
 			this.completeTask()
-			this.axis.off(`down:${this.side}`, handleDown)
+			this.axis.off(`down:right`, handleDown)
 			this.isPlaying = false
 		})
 	}

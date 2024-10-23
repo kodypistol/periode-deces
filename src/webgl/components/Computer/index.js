@@ -1,6 +1,6 @@
 import Task from 'core/Task'
 import Graph from './activities/Graph'
-import { MeshBasicMaterial, MeshStandardMaterial, Object3D } from 'three'
+import { MeshBasicMaterial, Object3D } from 'three'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
 
 export default class Computer extends Task {
@@ -90,6 +90,7 @@ export default class Computer extends Task {
 
 	playTask() {
 		if (!this.isAvailable || this.isPlaying) return
+		console.log('play')
 		this.isPlaying = true
 		this.hideTask()
 		this._graphActivity.showTask()

@@ -30,7 +30,7 @@ export default class TaskManager {
 	}
 
 	_startTaskScheduler() {
-		const interval = 10000 // Adjust interval as needed
+		const interval = 1000 // Adjust interval as needed
 		this.taskInterval = setInterval(() => {
 			const availableTasks = this.tasks.filter((task) => !task.isPlaying && !task.isAvailable)
 			if (availableTasks.length > 0) {
