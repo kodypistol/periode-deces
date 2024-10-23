@@ -17,6 +17,8 @@ import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRe
 import Graph from './activities/Graph'
 import EventEmitter from 'core/EventEmitter.js'
 
+import moneyManager from 'core/MoneyManager'
+
 export default class Computer extends EventEmitter {
 	constructor(_position = new Vector3(0, 0, 0)) {
 		super()
@@ -32,6 +34,7 @@ export default class Computer extends EventEmitter {
 
 		this.screenPoint = this.setScreenPoint()
 		this.screenElement = this.setScreenElement()
+		this.screenMoneyCounter = this.setScreenMoneyCounter()
 		this.screenBounds = this.setScreenBounds()
 
 		this.setMaterial()
@@ -130,6 +133,25 @@ export default class Computer extends EventEmitter {
 		this.css3dScene.add(cssObject)
 
 		return cssObject
+	}
+
+	setScreenMoneyCounter() {
+		const screen = document.querySelector('.computer-screen')
+		const moneyDisplay = screen.querySelector('.money-counter')
+
+		const moneySpan = document.createElement('span')
+
+		moneySpan.textContent = moneyManager.formatNumber(moneyManager.money)
+
+		moneyDisplay.appendChild(moneySpan)
+
+		moneyManager.setOnMoneyChangeCallback((newMoney) => {
+			moneySpan.textContent = moneyManager.formatNumber(newMoney)
+		})
+
+		setTimeout(() => {
+			moneyManager.subtractMoneyRate(0.02, 2)
+		}, (Math.random() * 10 + 5) * 1000)
 	}
 
 	setScreenBounds() {

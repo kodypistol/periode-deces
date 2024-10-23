@@ -33,6 +33,20 @@ body {
 	image-rendering: crisp-edges;
 	transform: scale(2);
 	/* filter: blur(1px); */
+
+	.money-counter {
+		position: absolute;
+		top: 0;
+		right: 0;
+		background-color: white;
+		padding: 2px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+		z-index: 2;
+	}
 }
 
 .wallpaper {

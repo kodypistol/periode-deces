@@ -11,6 +11,8 @@ import Head from 'components/Head.js'
 import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
 
+import moneyManager from 'core/MoneyManager.js'
+
 export default class Main {
 	constructor() {
 		this.experience = new Experience()
@@ -96,6 +98,7 @@ export default class Main {
 		const handleComplete = () => {
 			setTimeout(repeat, timeout)
 			this.leftSelectionMode = true
+			this.rightSelectionMode = true
 			randomTask.off('task:complete', handleComplete)
 		}
 
@@ -113,6 +116,164 @@ export default class Main {
 		}
 
 		setTimeout(repeat, timeout)
+	}
+
+	_selectionBehavior() {
+		const selectMaterials = {
+			left: new MeshBasicMaterial({ color: 'orange', side: BackSide }),
+			right: new MeshBasicMaterial({ color: 'violet', side: BackSide }),
+		}
+		const clonedMeshes = []
+		this.tasks.forEach((task) => {
+			const clonedMesh = task.mesh.clone()
+			clonedMesh.name = 'clonedMesh'
+			clonedMesh.scale.addScalar(0.01)
+			// clonedMesh.position.z = -0.2
+			clonedMesh.traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.left
+				}
+			})
+			clonedMesh.visible = false
+			clonedMeshes.push(clonedMesh)
+			this.scene.add(clonedMesh)
+		})
+
+		//left
+		let leftIndexSelection = 0
+		this.leftSelectionMode = true
+
+		//first selection
+		clonedMeshes[leftIndexSelection].visible = true
+		clonedMeshes[leftIndexSelection].traverse((child) => {
+			if (child.material) {
+				child.material = selectMaterials.left
+			}
+		})
+
+		//select task
+		this.experience.axis.on(`down:left`, (event) => {
+			if (!this.leftSelectionMode) return
+			if (event.key === 'a') {
+				const selectedTask = this.tasks[leftIndexSelection]
+				const outlineMesh = clonedMeshes[leftIndexSelection]
+				if (!selectedTask.isShowed) {
+					// material red and return to original
+					gsap.to(selectMaterials.left.color, {
+						r: 1,
+						g: 0,
+						b: 0,
+						duration: 0.2,
+						repeat: 1,
+						yoyo: true,
+					})
+					return
+				}
+				this.leftSelectionMode = false
+				selectedTask.isShowed = false
+				selectedTask.playTask('left')
+				outlineMesh.visible = false
+				const handleComplete = () => {
+					this.leftSelectionMode = true
+					outlineMesh.visible = true
+					selectedTask.off('task:complete', handleComplete)
+				}
+				selectedTask.on('task:complete', handleComplete)
+			}
+		})
+
+		// move selection
+		this.experience.axis.on(`joystick:quickmove:left`, (event) => {
+			if (event.direction === 'up' || event.direction === 'down') return
+			if (!this.leftSelectionMode) return
+
+			clonedMeshes[leftIndexSelection].visible = false
+
+			if (event.direction === 'left') {
+				leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
+
+				if (rightIndexSelection === leftIndexSelection)
+					leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
+			}
+			if (event.direction === 'right') {
+				leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
+				if (rightIndexSelection === leftIndexSelection)
+					leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
+			}
+			clonedMeshes[leftIndexSelection].visible = true
+			clonedMeshes[leftIndexSelection].traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.left
+				}
+			})
+		})
+
+		//right
+		let rightIndexSelection = 1
+		this.rightSelectionMode = true
+
+		//first selection
+		clonedMeshes[rightIndexSelection].visible = true
+		clonedMeshes[rightIndexSelection].traverse((child) => {
+			if (child.material) {
+				child.material = selectMaterials.right
+			}
+		})
+		//select task
+		this.experience.axis.on(`down:right`, (event) => {
+			if (!this.rightSelectionMode) return
+			if (event.key === 'a') {
+				const selectedTask = this.tasks[rightIndexSelection]
+				const outlineMesh = clonedMeshes[rightIndexSelection]
+				if (!selectedTask.isShowed) {
+					// material red and return to original
+					gsap.to(selectMaterials.right.color, {
+						r: 1,
+						g: 0,
+						b: 0,
+						duration: 0.2,
+						repeat: 1,
+						yoyo: true,
+					})
+					return
+				}
+				this.rightSelectionMode = false
+				selectedTask.isShowed = false
+				selectedTask.playTask('right')
+				outlineMesh.visible = false
+				const handleComplete = () => {
+					this.rightSelectionMode = true
+					outlineMesh.visible = true
+					selectedTask.off('task:complete', handleComplete)
+				}
+				selectedTask.on('task:complete', handleComplete)
+			}
+		})
+
+		// move selection
+		this.experience.axis.on(`joystick:quickmove:right`, (event) => {
+			if (event.direction === 'up' || event.direction === 'down') return
+			if (!this.rightSelectionMode) return
+
+			clonedMeshes[rightIndexSelection].visible = false
+
+			if (event.direction === 'left') {
+				rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
+				if (leftIndexSelection === rightIndexSelection)
+					rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
+			}
+			if (event.direction === 'right') {
+				rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
+				if (leftIndexSelection === rightIndexSelection)
+					rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
+			}
+			clonedMeshes[rightIndexSelection].visible = true
+			clonedMeshes[rightIndexSelection].traverse((child) => {
+				if (child.material) {
+					child.material = selectMaterials.right
+				}
+			})
+		})
 	}
 
 	_playStartAnimation() {
