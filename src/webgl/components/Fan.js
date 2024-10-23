@@ -14,7 +14,7 @@ export default class Fan extends Component {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.debug = this.experience.debug
-		this.day = this.experience.day
+		this.day = this.experience.dayManager
 
 		this._createMaterial()
 		this._createMesh()

@@ -17,8 +17,6 @@ import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRe
 import Graph from './activities/Graph'
 import EventEmitter from 'core/EventEmitter.js'
 
-import moneyManager from 'core/MoneyManager'
-
 export default class Computer extends EventEmitter {
 	constructor(_position = new Vector3(0, 0, 0)) {
 		super()
@@ -27,6 +25,7 @@ export default class Computer extends EventEmitter {
 		this.debug = this.experience.debug
 		this.camera = this.experience.camera // Get the camera for projection
 		this.resources = this.scene.resources
+		this.moneyManager = this.experience.moneyManager
 		this.position = _position
 
 		this.css3dRenderer = this.setCss3dRenderer()
@@ -141,16 +140,16 @@ export default class Computer extends EventEmitter {
 
 		const moneySpan = document.createElement('span')
 
-		moneySpan.textContent = moneyManager.formatNumber(moneyManager.money)
+		moneySpan.textContent = this.moneyManager.formatNumber(this.moneyManager.money)
 
 		moneyDisplay.appendChild(moneySpan)
 
-		moneyManager.setOnMoneyChangeCallback((newMoney) => {
-			moneySpan.textContent = moneyManager.formatNumber(newMoney)
+		this.moneyManager.setOnMoneyChangeCallback((newMoney) => {
+			moneySpan.textContent = this.moneyManager.formatNumber(newMoney)
 		})
 
 		setTimeout(() => {
-			moneyManager.subtractMoneyRate(0.02, 2)
+			this.moneyManager.subtractMoneyRate(0.02, 2)
 		}, (Math.random() * 10 + 5) * 1000)
 	}
 

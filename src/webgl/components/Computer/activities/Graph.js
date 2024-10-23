@@ -13,7 +13,7 @@ export default class Graph extends EventEmitter {
 		this.resources = this.scene.resources
 		this.axis = this.experience.axis
 		this.time = this.experience.time
-		this.day = this.experience.day
+		this.day = this.experience.dayManager
 
 		this._element = document.body.querySelector('.graph')
 		this._notification = this._element.querySelector('.notification')

@@ -11,14 +11,13 @@ import Head from 'components/Head.js'
 import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
 
-import moneyManager from 'core/MoneyManager.js'
-
 export default class Main {
 	constructor() {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.axis = this.experience.axis
-		this.day = this.experience.day
+		this.dayManager = this.experience.dayManager
+		this.moneyManager = this.experience.moneyManager
 		this.scene.resources = new Resources(sources)
 
 		this.tasks = []
@@ -30,8 +29,8 @@ export default class Main {
 			this._start()
 			this._addEventListeners()
 		})
-		this.day.on('day:changed', () => {
-			moneyManager.startIncrement()
+		this.dayManager.on('day:changed', () => {
+			this.moneyManager.startIncrement()
 			this._randomTasks()
 			this._randomFocusTasks()
 		})
@@ -307,7 +306,7 @@ export default class Main {
 
 	_handleAxisDown(e) {
 		if (e.key === 'a' && !this._isGameStarted) {
-			this.day.setDay(1)
+			this.dayManager.setDay(1)
 			this._playStartAnimation()
 			this._isGameStarted = true
 		}

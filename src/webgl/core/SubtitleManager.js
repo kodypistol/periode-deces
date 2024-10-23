@@ -10,7 +10,7 @@ export class SubtitleManager extends EventEmitter {
 		this._qteElement = document.querySelector('.qte')
 		this._nextElement = document.querySelector('.next')
 		this.experience = new Experience()
-		this.day = this.experience.day
+		this.day = this.experience.dayManager
 
 		this.typeAudio = new Audio('/audio/type.mp3')
 	}

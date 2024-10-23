@@ -9,6 +9,7 @@ import InteractionManager from 'core/InteractionManager.js'
 import AxisManager from './AxisManager.js'
 import { SubtitleManager } from 'core/SubtitleManager.js'
 import DayManager from './DayManager.js'
+import MoneyManager from './MoneyManager.js'
 
 let instance = null
 
@@ -34,7 +35,8 @@ export default class Experience {
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
 		this.axis = new AxisManager()
-		this.day = new DayManager()
+		this.dayManager = new DayManager()
+		this.moneyManager = new MoneyManager()
 		this.sceneManager = new SceneManager()
 		this.activeScene = this.sceneManager.currentScene
 		this.renderer = new Renderer()

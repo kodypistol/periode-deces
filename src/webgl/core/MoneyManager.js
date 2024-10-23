@@ -1,4 +1,4 @@
-class MoneyManager {
+export default class MoneyManager {
 	constructor() {
 		// Implement singleton pattern
 		if (MoneyManager.instance) {
@@ -157,7 +157,3 @@ class MoneyManager {
 		console.log('MoneyManager Renderizado')
 	}
 }
-
-// Export the singleton instance
-const moneyManager = new MoneyManager()
-export default moneyManager
