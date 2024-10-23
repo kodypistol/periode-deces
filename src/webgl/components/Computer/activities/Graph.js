@@ -13,7 +13,7 @@ export default class Graph extends EventEmitter {
 		this.resources = this.scene.resources
 		this.axis = this.experience.axis
 		this.time = this.experience.time
-		this.day = this.experience.dayManager
+		this.dayManager = this.experience.dayManager
 
 		this._element = document.body.querySelector('.graph')
 		this._notification = this._element.querySelector('.notification')
@@ -75,8 +75,8 @@ export default class Graph extends EventEmitter {
 			ease: 'steps(1)',
 			onComplete: () => {
 				// TODO: CONVERT SCORE TO MONEY SCALE HERE
-				this.day.tasksCount++
-				console.log(this.day.tasksCount);
+				this.dayManager.tasksCount++
+				console.log(this.dayManager.tasksCount);
 
 				this.trigger('end') // Notify parent
 			},

@@ -10,7 +10,7 @@ export class SubtitleManager extends EventEmitter {
 		this._qteElement = document.querySelector('.qte')
 		this._nextElement = document.querySelector('.next')
 		this.experience = new Experience()
-		this.day = this.experience.dayManager
+		this.dayManager = this.experience.dayManager
 
 		this.typeAudio = new Audio('/audio/type.mp3')
 	}
@@ -106,8 +106,8 @@ export class SubtitleManager extends EventEmitter {
 			if (index === children.length) {
 				this.playSubtitle(this.currentSubtitle.success)
 				// TODO: ADD MONEY SCALE
-				this.day.tasksCount++
-				console.log(this.day.tasksCount);
+				this.dayManager.tasksCount++
+				console.log(this.dayManager.tasksCount);
 
 				endQte()
 			}
