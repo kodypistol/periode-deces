@@ -31,6 +31,7 @@ export default class Main {
 			this._addEventListeners()
 		})
 		this.day.on('day:changed', () => {
+			moneyManager.startIncrement()
 			this._randomTasks()
 			this._randomFocusTasks()
 		})
