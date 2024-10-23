@@ -1,5 +1,4 @@
-// webgl/utils/JoystickSelectionManager.js
-import { BackSide, MeshBasicMaterial } from 'three'
+import { BackSide, MeshBasicMaterial, Color } from 'three'
 import gsap from 'gsap'
 import Experience from 'core/Experience.js'
 
@@ -10,102 +9,222 @@ export default class JoystickSelectionManager {
 		this.scene = this.experience.scene
 		this.tasks = tasks
 
-		this.leftSelectionMode = true
+		this.isSelectionActive = true
+		this.currentSelectionIndex = 0
 
-		// Bind methods for event listeners
-		this.handleLeftSelect = this.handleLeftSelect.bind(this)
-		this.handleLeftMove = this.handleLeftMove.bind(this)
+		this.outlineMeshes = []
+		this.keysDown = {}
+		this.eventsAttached = false
+
+		this.handleKeyDown = this.handleKeyDown.bind(this)
+		this.handleKeyUp = this.handleKeyUp.bind(this)
+		this.handleMove = this.handleMove.bind(this)
 
 		this.init()
 	}
 
 	init() {
-		this.selectMaterial = new MeshBasicMaterial({ color: 'orange', side: BackSide })
-		this.clonedMeshes = []
+		this.createOutlineMeshes()
+		this.setupEventListeners()
+		this.updateSelection(this.currentSelectionIndex)
+	}
 
-		this.tasks.forEach((task) => {
-			const clonedMesh = task.mesh.clone()
-			clonedMesh.name = 'clonedMesh'
-			clonedMesh.scale.addScalar(0.01)
-			clonedMesh.traverse((child) => {
-				if (child.material) {
-					child.material = this.selectMaterial
+	createOutlineMeshes() {
+		this.outlineMeshes = this.tasks
+			.map((task, index) => {
+				if (!task.mesh) {
+					console.warn(`Task at index ${index} does not have a mesh property.`)
+					return null
 				}
+
+				// Clone the mesh without scaling
+				const outlineMesh = task.mesh.clone()
+				outlineMesh.name = 'outlineMesh'
+
+				// Create a new material for the outline mesh
+				const outlineMaterial = new MeshBasicMaterial({
+					color: 0x00ff00, // Initial color (green for available)
+					side: BackSide, // Render the back faces
+					transparent: true,
+					opacity: 1,
+					depthTest: true,
+					depthWrite: false,
+				})
+
+				outlineMesh.traverse((child) => {
+					if (child.isMesh) {
+						child.material = outlineMaterial
+					}
+				})
+
+				// Ensure the outlineMesh is rendered behind the original mesh
+				outlineMesh.renderOrder = -1
+				outlineMesh.scale.addScalar(0.01)
+
+				outlineMesh.visible = false
+				this.scene.add(outlineMesh)
+				return outlineMesh
 			})
-			clonedMesh.visible = false
-			this.clonedMeshes.push(clonedMesh)
-			this.scene.add(clonedMesh)
+			.filter((mesh) => mesh !== null)
+	}
+
+	setupEventListeners() {
+		if (this.eventsAttached) return
+		this.axis.on('down:left', this.handleKeyDown)
+		this.axis.on('up:left', this.handleKeyUp)
+		this.axis.on('joystick:quickmove:left', this.handleMove)
+		this.eventsAttached = true
+	}
+
+	removeEventListeners() {
+		if (!this.eventsAttached) return
+		this.axis.off('down:left', this.handleKeyDown)
+		this.axis.off('up:left', this.handleKeyUp)
+		this.axis.off('joystick:quickmove:left', this.handleMove)
+		this.eventsAttached = false
+	}
+
+	handleKeyDown(event) {
+		if (!this.isSelectionActive) return
+		if (this.keysDown[event.key]) return
+
+		this.keysDown[event.key] = true
+
+		if (event.key === 'a') {
+			this.handleSelect()
+		}
+	}
+
+	handleKeyUp(event) {
+		this.keysDown[event.key] = false
+	}
+
+	handleSelect() {
+		const selectedTask = this.tasks[this.currentSelectionIndex]
+
+		if (!selectedTask.isAvailable) {
+			this.flashInvalidSelection()
+			return
+		}
+
+		selectedTask.playTask()
+		this.outlineMeshes[this.currentSelectionIndex].visible = false
+	}
+
+	handleMove(event) {
+		if (!this.isSelectionActive) return
+		if (event.direction !== 'left' && event.direction !== 'right') return
+
+		const direction = event.direction === 'left' ? -1 : 1
+		this.changeSelection(direction)
+	}
+
+	changeSelection(direction) {
+		// Hide current selection
+		if (this.outlineMeshes[this.currentSelectionIndex]) {
+			this.stopBlinking(this.outlineMeshes[this.currentSelectionIndex])
+			this.outlineMeshes[this.currentSelectionIndex].visible = false
+		}
+
+		const totalTasks = this.tasks.length
+		this.currentSelectionIndex = (this.currentSelectionIndex + direction + totalTasks) % totalTasks
+
+		// Show new selection
+		if (this.outlineMeshes[this.currentSelectionIndex]) {
+			this.outlineMeshes[this.currentSelectionIndex].visible = true
+			this.startBlinking(this.outlineMeshes[this.currentSelectionIndex], this.tasks[this.currentSelectionIndex])
+		}
+	}
+
+	updateSelection(index) {
+		this.outlineMeshes.forEach((mesh) => {
+			if (mesh) {
+				this.stopBlinking(mesh)
+				mesh.visible = false
+			}
 		})
 
-		this.setupLeftSelection()
+		if (this.outlineMeshes[index]) {
+			this.outlineMeshes[index].visible = true
+			this.startBlinking(this.outlineMeshes[index], this.tasks[index])
+		}
 	}
 
-	setupLeftSelection() {
-		this.leftIndexSelection = 0
-		this.leftSelectionMode = true
-
-		// Initial selection
-		this.clonedMeshes[this.leftIndexSelection].visible = true
-
-		// Event listeners
-		this.axis.on('down:left', this.handleLeftSelect)
-		this.axis.on('joystick:quickmove:left', this.handleLeftMove)
-	}
-
-	handleLeftSelect(event) {
-		if (!this.leftSelectionMode) return
-		if (event.key === 'a') {
-			const selectedTask = this.tasks[this.leftIndexSelection]
-			const outlineMesh = this.clonedMeshes[this.leftIndexSelection]
-			if (!selectedTask.isShowed) {
-				// Flash red to indicate invalid selection
-				gsap.to(this.selectMaterial.color, {
-					r: 1,
-					g: 0,
-					b: 0,
-					duration: 0.2,
-					repeat: 1,
+	startBlinking(outlineMesh, task) {
+		const color = task.isAvailable ? new Color(0x00ff00) : new Color(0xff0000) // Green if available, red if not
+		outlineMesh.traverse((child) => {
+			if (child.isMesh) {
+				child.material.color = color.clone()
+				child.material.opacity = 1
+				child.blinkTween = gsap.to(child.material, {
+					opacity: 0.5,
+					duration: 0.5,
+					repeat: -1,
 					yoyo: true,
+					ease: 'sine.inOut',
 				})
-				return
 			}
-			this.leftSelectionMode = false
-			selectedTask.isShowed = false
-			selectedTask.playTask() // No need to pass 'left' or 'right'
-			outlineMesh.visible = false
+		})
+	}
 
-			const handleComplete = () => {
-				this.leftSelectionMode = true
-				outlineMesh.visible = true
-				selectedTask.off('task:complete', handleComplete)
+	stopBlinking(outlineMesh) {
+		outlineMesh.traverse((child) => {
+			if (child.isMesh) {
+				if (child.blinkTween) {
+					child.blinkTween.kill()
+					child.blinkTween = null
+				}
+				child.material.opacity = 1
 			}
-			selectedTask.on('task:complete', handleComplete)
+		})
+	}
+
+	flashInvalidSelection() {
+		const outlineMesh = this.outlineMeshes[this.currentSelectionIndex]
+		if (outlineMesh) {
+			outlineMesh.traverse((child) => {
+				if (child.isMesh) {
+					const originalColor = child.material.color.clone()
+					gsap.to(child.material.color, {
+						r: 1,
+						g: 0,
+						b: 0,
+						duration: 0.1,
+						yoyo: true,
+						repeat: 1,
+						onComplete: () => {
+							child.material.color.copy(originalColor)
+						},
+					})
+				}
+			})
 		}
 	}
 
-	handleLeftMove(event) {
-		if (event.direction === 'up' || event.direction === 'down') return
-		if (!this.leftSelectionMode) return
-
-		this.clonedMeshes[this.leftIndexSelection].visible = false
-
-		if (event.direction === 'left') {
-			this.leftIndexSelection = (this.leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
+	setEnabled(enabled) {
+		console.log(`JoystickSelectionManager setEnabled: ${enabled}`)
+		this.isSelectionActive = enabled
+		if (!enabled) {
+			this.removeEventListeners()
+			this.outlineMeshes.forEach((mesh) => {
+				if (mesh) {
+					this.stopBlinking(mesh)
+					mesh.visible = false
+				}
+			})
+		} else {
+			this.setupEventListeners()
+			this.updateSelection(this.currentSelectionIndex)
 		}
-		if (event.direction === 'right') {
-			this.leftIndexSelection = (this.leftIndexSelection + 1) % this.tasks.length
-		}
-		this.clonedMeshes[this.leftIndexSelection].visible = true
 	}
 
 	destroy() {
-		// Remove event listeners
-		this.axis.off('down:left', this.handleLeftSelect)
-		this.axis.off('joystick:quickmove:left', this.handleLeftMove)
-
-		// Remove cloned meshes from the scene
-		this.clonedMeshes.forEach((mesh) => {
-			this.scene.remove(mesh)
+		this.removeEventListeners()
+		this.outlineMeshes.forEach((mesh) => {
+			if (mesh) {
+				this.stopBlinking(mesh)
+				this.scene.remove(mesh)
+			}
 		})
 	}
 }

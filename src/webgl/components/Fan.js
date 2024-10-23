@@ -1,73 +1,45 @@
-import Experience from 'core/Experience.js'
-import { MeshBasicMaterial, Vector2 } from 'three'
+import Task from 'core/Task'
+import { MeshBasicMaterial, MeshStandardMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
-import EventEmitter from '../core/EventEmitter'
-import Component from '../core/Component'
-import { gsap } from 'gsap'
 
 const SETTINGS = {
 	TURNS: 4,
 }
-export default class Fan extends Component {
-	constructor() {
-		super()
-		this.experience = new Experience()
-		this.scene = this.experience.scene
-		this.debug = this.experience.debug
 
-		this._createMaterial()
-		this._createMesh()
-
+export default class Fan extends Task {
+	constructor(options = {}) {
+		super(options)
 		this.targetRotation = 0
 	}
 
-	_createMaterial() {
-		const texture = this.scene.resources.items.bakeTexture
-		// texture.flipY = false
-		// texture.channels = 1
+	_createMesh() {
+		console.log('Fan _createMesh: this.resources:', this.resources)
+		const texture = this.resources.items.bakeTexture
 		this._material = new MeshBasicMaterial({ map: texture })
 
-		this._witnessMaterial = new MeshBasicMaterial({ map: texture })
-	}
+		const fanModel = this.resources.items.fanModel
+		if (!fanModel) {
+			console.error('fanModel not found in resources.items')
+			return
+		}
 
-	_createMesh() {
-		this.mesh = this.scene.resources.items.fanModel.scene.children[0].clone()
+		this.mesh = fanModel.scene.children[0].clone()
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
-				child.material = this._material
-				// child.material.depthTest = false
+				child.material = this._material.clone()
 				if (child.name === 'HELICES') {
 					this.helix = child
-				}
-				if (child.name === 'BOUTON') {
-					this.witness = child
-					child.material = this._witnessMaterial
-					// child.material.depthTest = false
 				}
 			}
 		})
 		this.mesh.name = 'fan'
-
-		this.scene.resources.items.taskBackgrounds.scene.traverse((child) => {
-			if (child.name.includes('fan')) {
-				this.backgroundMesh = child
-				this.backgroundMesh.material = new MeshBasicMaterial({ color: 0x000000 })
-				this.backgroundMesh.visible = false
-			}
-		})
-
 		this.add(this.mesh)
-		this.add(this.backgroundMesh)
-		// addObjectDebug(this.debug.ui, this.mesh)
 	}
 
-	/**
-	 * @param {'left' | 'right'} side
-	 */
-	playTask(side = 'left') {
+	playTask() {
+		if (!this.isAvailable || this.isPlaying) return
 		this.isPlaying = true
-		this.showTaskTl?.kill()
-		this.witness.material.color.set(0xffffff)
+		this.hideTask()
 
 		let lastAngle = new Vector2()
 
@@ -82,32 +54,27 @@ export default class Fan extends Component {
 			lastAngle = angle
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
-				this.trigger('task:complete')
-				this.isPlaying = false
-				this.experience.axis.off(`joystick:move:${side}`, handleMove)
-
-				this.targetRotation = Math.PI * 2 * SETTINGS.TURNS
-
-				setTimeout(() => {
-					this.targetRotation = 0
-					this.helix.rotation.x = 0
-				}, 1000)
+				this.completeTask()
+				this.axis.off(`joystick:move:right`, handleMove)
+				this.targetRotation = 0
+				this.helix.rotation.x = 0
 			}
 		}
 
-		this.experience.axis.on(`joystick:move:${side}`, handleMove)
-	}
-
-	showTask() {
-		this.showTaskTl = gsap.to(this.witness.material.color, {
-			r: 100,
-			duration: 0.5,
-			repeat: -1,
-			yoyo: true,
-		})
+		this.axis.on(`joystick:move:right`, handleMove)
 	}
 
 	update() {
-		this.helix.rotation.x = lerp(this.helix.rotation.x, -this.targetRotation, 0.01 * this.experience.time.delta)
+		if (this.helix) {
+			this.helix.rotation.x = lerp(this.helix.rotation.x, -this.targetRotation, 0.01 * this.experience.time.delta)
+		}
+	}
+
+	reset() {
+		super.reset()
+		this.targetRotation = 0
+		if (this.helix) {
+			this.helix.rotation.x = 0
+		}
 	}
 }

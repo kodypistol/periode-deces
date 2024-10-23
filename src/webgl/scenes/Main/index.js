@@ -1,21 +1,23 @@
-// webgl/scenes/Main/index.js
 import Experience from 'core/Experience.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
 import Computer from 'components/Computer/index.js'
-import Background from 'components/Background.js'
 import Phone from 'components/Phone/Phone.js'
+import Background from 'components/Background.js'
 import Desk from 'components/Desk.js'
 import Head from 'components/Head.js'
 import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
+import TaskManager from 'core/TaskManager.js'
 
 export default class Main {
 	constructor() {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
 		this.axis = this.experience.axis
+
+		// Assign resources to this.scene.resources
 		this.scene.resources = new Resources(sources)
 
 		this.tasks = []
@@ -23,6 +25,7 @@ export default class Main {
 		this._isGameStarted = false
 		this._isGameOver = false
 
+		// Listen for resources to be ready
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
@@ -36,23 +39,35 @@ export default class Main {
 
 		this._createSceneComponents()
 
+		// Initialize tasks after resources are loaded
+		this.tasks.forEach((task) => {
+			task.init()
+			this.scene.add(task)
+		})
+		this.focusTasks.forEach((task) => {
+			task.init()
+			this.scene.add(task)
+		})
+
 		// Initialize the JoystickSelectionManager
 		this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
+
+		// Initialize the TaskManager
+		this.taskManager = new TaskManager({
+			tasks: this.tasks,
+			focusTasks: this.focusTasks,
+			axis: this.axis,
+			selectionManager: this.joystickSelectionManager,
+		})
 	}
 
 	_reset() {
-		this.tasks.forEach((task) => {
-			task.reset()
-		})
-
-		this.focusTasks.forEach((task) => {
-			task.reset()
-		})
-
+		this.taskManager.reset()
 		this._isGameStarted = false
 		this._isGameOver = false
 
-		// Destroy and re-initialize the JoystickSelectionManager
+		gsap.to(this._gameOverElement, { autoAlpha: 0, duration: 0.25, ease: 'sine.inOut' })
+
 		this.joystickSelectionManager.destroy()
 		this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
 	}
@@ -61,53 +76,16 @@ export default class Main {
 		this.background = new Background()
 		this.desk = new Desk()
 
-		this.head = new Head()
+		// Instantiate tasks (do not call init yet)
+		this.fan = new Fan({ experience: this.experience })
+		this.computer = new Computer({ experience: this.experience })
+		this.phone = new Phone({ experience: this.experience })
+
+		// Instantiate the Head focus task
+		this.head = new Head({ experience: this.experience })
+
+		this.tasks.push(this.fan, this.computer, this.phone)
 		this.focusTasks.push(this.head)
-
-		this.fan = new Fan()
-		this.scene.add(this.fan)
-		this.tasks.push(this.fan)
-
-		this.computer = new Computer()
-		this.tasks.push(this.computer)
-
-		this.phone = new Phone()
-		this.tasks.push(this.phone)
-	}
-
-	_randomTasks(timeout = 10000) {
-		setInterval(() => {
-			const randomIndex = Math.floor(Math.random() * this.tasks.length)
-			const randomTask = this.tasks[randomIndex]
-			if (randomTask.isPlaying || randomTask.isShowed) return
-			randomTask.showTask()
-			randomTask.isShowed = true
-		}, timeout)
-	}
-
-	_randomFocusTasks(timeout = 30000) {
-		let randomTask
-
-		const handleComplete = () => {
-			setTimeout(repeat, timeout)
-			this.leftSelectionMode = true
-			randomTask.off('task:complete', handleComplete)
-		}
-
-		const repeat = () => {
-			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
-				// Prevent subtitle conflict
-				setTimeout(repeat, timeout)
-				return
-			}
-			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
-			randomTask = this.focusTasks[randomIndex]
-			randomTask.playTask()
-			this.leftSelectionMode = false
-			randomTask.on('task:complete', handleComplete)
-		}
-
-		setTimeout(repeat, timeout)
 	}
 
 	_playStartAnimation() {
@@ -123,8 +101,7 @@ export default class Main {
 				duration: 0.25,
 				ease: 'sine.inOut',
 				onComplete: () => {
-					this._randomTasks()
-					this._randomFocusTasks()
+					this.taskManager.start()
 				},
 			},
 			1,
@@ -135,7 +112,7 @@ export default class Main {
 		const gameOverTimeline = gsap.timeline()
 
 		gameOverTimeline.to(this._gameOverElement, {
-			opacity: 1,
+			autoAlpha: 1,
 			duration: 0.25,
 			ease: 'sine.inOut',
 			onComplete: () => {
@@ -146,9 +123,7 @@ export default class Main {
 
 	_handleRestart(e) {
 		if (e.key === 'a') {
-			// Reset the game
 			this._reset()
-			// Remove this event listener after resetting
 			this.axis.off('down', this._handleRestart)
 		}
 	}
@@ -159,7 +134,7 @@ export default class Main {
 			this._isGameStarted = true
 		}
 
-		if (e.key === 'w' && this._isGameStarted) {
+		if (e.key === 'w' && this._isGameStarted && !this._isGameOver) {
 			this._playGameOverAnimation()
 			this._isGameOver = true
 		}
@@ -170,7 +145,15 @@ export default class Main {
 	}
 
 	update() {
-		if (this.fan) this.fan.update()
-		if (this.computer) this.computer.update()
+		this.tasks.forEach((task) => {
+			if (typeof task.update === 'function') {
+				task.update()
+			}
+		})
+		this.focusTasks.forEach((task) => {
+			if (typeof task.update === 'function') {
+				task.update()
+			}
+		})
 	}
 }

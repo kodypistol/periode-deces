@@ -44,7 +44,8 @@ body {
 	left: 0;
 }
 
-.graph {
+.graph,
+.call {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -53,7 +54,8 @@ body {
 	z-index: 1;
 }
 
-.graph .notification {
+.graph .notification,
+.call .notification {
 	top: 20%;
 	left: 10%;
 	position: absolute;
@@ -62,7 +64,8 @@ body {
 	transform: scale(0);
 }
 
-.graph .activity {
+.graph .activity,
+.call .activity {
 	top: 5%;
 	left: 3%;
 	position: absolute;
@@ -101,11 +104,13 @@ body {
 	padding-top: 2px;
 }
 
-.graph .notification img {
+.graph .notification img,
+.call .notification img {
 	width: 100%;
 }
 
-.graph .completed {
+.graph .completed,
+.call .completed {
 	position: absolute;
 	top: 30%;
 	left: 10%;
@@ -117,43 +122,14 @@ body {
 	opacity: 0;
 }
 
-.graph .completed img {
+.graph .completed img,
+.call .completed img {
 	width: 100%;
 }
 
-.graph .completed img:nth-child(2) {
+.graph .completed img:nth-child(2),
+.call .completed img:nth-child(2) {
 	width: 70%;
-}
-
-.call {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-
-	display: none;
-}
-
-.call .notification {
-	top: 20%;
-	left: 10%;
-	position: absolute;
-	width: 30%;
-	height: 50%;
-}
-
-.call .activity {
-	top: 5%;
-	left: 3%;
-	position: absolute;
-	width: 55%;
-	height: 80%;
-	/* background-color: red; */
-}
-
-.call .notification img {
-	width: 100%;
 }
 
 .mail {
@@ -202,7 +178,11 @@ body {
 	font-style: italic;
 	text-align: center;
 	text-wrap: balance;
-	text-shadow: 1px 1px 2px #000, -1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000;
+	text-shadow:
+		1px 1px 2px #000,
+		-1px 1px 2px #000,
+		-1px -1px 2px #000,
+		1px -1px 2px #000;
 	z-index: 10;
 	user-select: none;
 
