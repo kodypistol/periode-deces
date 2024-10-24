@@ -12,19 +12,14 @@ export default class Graph extends EventEmitter {
 		this.camera = this.experience.camera
 		this.resources = this.scene.resources
 		this.axis = this.experience.axis
-
-		this._element = document.body.querySelector('.graph')
-		this._notification = this._element.querySelector('.notification')
-		this._activity = this._element.querySelector('.activity')
-		this._graphCanvas = this._element.querySelector('.canvas')
-		this._scoreNumber = this._element.querySelector('.number')
-		this._completedElement = this._element.querySelector('.completed')
+		this.computer = this.experience.computer
+		this.computerScreenElement = this.experience.computer.screenElement.element
+		this.init()
 
 		this.context = this._createContext()
 
 		// Graph data and settings
 		this.originalGraph = this._generateRandomGraph() // Random trading graph (hard coded for now)
-		this.userScoreGraph = [] // The user's graph based on key inputs
 		this.userGraph = [] // The user's graph based on key inputs
 		this.currentX = 0 // Track the current position in X
 		this.currentY = this._graphCanvas.height / 2 // Start drawing in the middle
@@ -34,6 +29,36 @@ export default class Graph extends EventEmitter {
 
 		// Bind event handlers
 		this._updateJoystick = this._updateJoystick.bind(this)
+	}
+
+	init() {
+		this._element = document.createElement('div')
+		this._element.className = 'graph'
+
+		this._element.innerHTML = `
+      <div class="notification">
+				<img src="/graph-notification.png" alt="" />
+			</div>
+      <div class="activity">
+        <img class="top" src="/graph-top.png" alt="" />
+        <canvas class="canvas"></canvas>
+        <div class="bottom">
+          <img src="/graph-bottom.png" alt="" />
+          <p class="number">1%</p>
+        </div>
+        <div class="completed">
+          <img src="/completed.png" alt="" />
+          <img src="/benef-graph.png" alt="" />
+        </div>
+      </div>
+    `
+		this.computerScreenElement.prepend(this._element)
+
+		this._notification = this._element.querySelector('.notification')
+		this._activity = this._element.querySelector('.activity')
+		this._graphCanvas = this._element.querySelector('.canvas')
+		this._scoreNumber = this._element.querySelector('.number')
+		this._completedElement = this._element.querySelector('.completed')
 	}
 
 	showTask() {
@@ -68,7 +93,7 @@ export default class Graph extends EventEmitter {
 			yoyo: true,
 			ease: 'steps(1)',
 			onComplete: () => {
-				this.trigger('end') // Notify parent
+				this.trigger('activity:end', [this])
 			},
 		})
 	}
@@ -232,40 +257,6 @@ export default class Graph extends EventEmitter {
 			}
 		}
 	}
-
-	// _calculateScore() {
-	//     const maxSamplePoints = 50;  // Number of points to compare (fewer points for better performance)
-	//     const userGraphLength = Math.min(this.userGraph.length, this.originalGraph.length);  // Use the shorter graph
-	//     const step = Math.max(1, Math.floor(userGraphLength / maxSamplePoints));  // Ensure we don’t step too fast
-
-	//     let totalDifference = 0;
-	//     let pointsCompared = 0;
-
-	//     // Sample fewer points to avoid too many comparisons
-	//     for (let i = 0; i < userGraphLength; i += step) {
-	//         const originalPoint = this.originalGraph[i];
-	//         const userPoint = this.userGraph[i];
-
-	//         if (originalPoint && userPoint) {
-	//             const distance = Math.abs(originalPoint.y - userPoint.y);  // Only compare Y values
-	//             totalDifference += distance;
-	//             pointsCompared++;
-	//         }
-
-	//         // If the total difference is getting too high early, we can stop
-	//         if (totalDifference > 10000) {  // Example threshold, adjust as needed
-	//             break;
-	//         }
-	//     }
-
-	//     // Prevent division by zero and ensure maxDifference is correctly calculated
-	//     const maxDifference = this._displayHeight * pointsCompared;
-	//     const accuracy = Math.max(0, (1 - totalDifference / maxDifference)) * 100;
-
-	//     // Display score
-	//     this._scoreNumber.innerHTML = `${accuracy.toFixed(2)}%`;
-	//     this._scoreNumber.style.backgroundColor = accuracy > 50 ? 'green' : 'red';
-	// }
 
 	_calculateScore() {
 		// Update the score display

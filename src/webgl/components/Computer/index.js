@@ -2,20 +2,43 @@ import Task from 'core/Task'
 import Graph from './activities/Graph'
 import { MeshBasicMaterial, Object3D } from 'three'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
+import EventEmitter from 'core/EventEmitter.js'
 
 export default class Computer extends Task {
 	constructor(options = {}) {
 		super(options)
 		this.camera = this.experience.camera // Get the camera for projection
+		this.sizes = this.experience.sizes
+		this.activities = []
 
-		this._graphActivity = new Graph()
+		// this._graphActivity = new Graph()
+		//
+		// this._graphActivity.on('end', () => {
+		// 	this._graphActivity.hide()
+		// 	this._graphActivity.reset()
+		// 	this.completeTask()
+		// 	this.isPlaying = false
+		// })
 
-		this._graphActivity.on('end', () => {
-			this._graphActivity.hide()
-			this._graphActivity.reset()
-			this.completeTask()
-			this.isPlaying = false
+		this.sizes.on('resize', this.resize.bind(this))
+	}
+
+	init() {
+		super.init()
+		this.experience.computer = this
+
+		this.activities.push(new Graph())
+
+		this.activities.forEach((activity) => {
+			activity.on('activity:end', this.handleEndActivity.bind(this))
 		})
+	}
+
+	handleEndActivity(activity) {
+		activity.hide()
+		activity.reset()
+		this.activeActivity = null
+		this.completeTask()
 	}
 
 	_createMesh() {
@@ -88,13 +111,24 @@ export default class Computer extends Task {
 		return screenPoint
 	}
 
+	showTask() {
+		super.showTask()
+
+		const randomIndex = Math.floor(Math.random() * this.activities.length)
+		const randomActivity = this.activities[randomIndex]
+		this.activeActivity = randomActivity
+
+		this.activeActivity.showTask()
+	}
+
 	playTask() {
-		if (!this.isAvailable || this.isPlaying) return
-		console.log('play')
+		if (!this.isAvailable || this.isPlaying) {
+			return
+		}
 		this.isPlaying = true
 		this.hideTask()
-		this._graphActivity.showTask()
-		this._graphActivity.playTask()
+
+		this.activeActivity.playTask()
 	}
 
 	update() {
@@ -102,6 +136,10 @@ export default class Computer extends Task {
 		if (this.css3dRenderer && this.css3dScene && this.camera.instance) {
 			this.css3dRenderer.render(this.css3dScene, this.camera.instance)
 		}
+	}
+
+	resize() {
+		this.css3dRenderer.setSize(window.innerWidth, window.innerHeight)
 	}
 
 	reset() {

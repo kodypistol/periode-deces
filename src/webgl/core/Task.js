@@ -63,7 +63,9 @@ export default class Task extends Component {
 
 	hideTask() {
 		this.isAvailable = false
-		if (this.showTaskTl) this.showTaskTl.kill()
+		if (this.showTaskTl) {
+			this.showTaskTl.kill()
+		}
 		this.materials.forEach((material) => {
 			material.opacity = 1
 		})
