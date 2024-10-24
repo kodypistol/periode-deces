@@ -13,6 +13,7 @@ export default class MoneyManager {
 		this.additionalRates = [] // Additive rate modifiers (for money subtraction)
 		this.timer = null
 		this.onMoneyChange = null // Callback function
+		this.isMoneyDecreased = false
 
 		MoneyManager.instance = this // Save the instance
 
@@ -55,10 +56,14 @@ export default class MoneyManager {
 		// Programar la reversión del multiplicador
 		modifier.timeoutId = setTimeout(() => {
 			this.removeModifier(modifier)
-			this.element.style.color = 'black'
+			if (this.element && !this.isMoneyDecreased) {
+				this.element.style.color = 'black'
+			} else {
+				this.element.style.color = 'red'
+			}
 		}, durationInSeconds * 1000)
 
-		this.element.style.color = 'green'
+		factor > 0 ? this.element.style.color = 'green' : this.element.style.color = 'red'
 
 		console.log(`Tasa multiplicada por ${factor} durante ${durationInSeconds} segundos.`)
 	}
@@ -82,12 +87,30 @@ export default class MoneyManager {
 		modifier.timeoutId = setTimeout(() => {
 			this.removeAdditionalRate(modifier)
 			// Restaurar el color del elemento
-			if (this.element) {
+			if (this.element && !this.isMoneyDecreased) {
 				this.element.style.color = 'black'
+			} else {
+				this.element.style.color = 'red'
 			}
 		}, durationInSeconds * 1000)
 
 		console.log(`Restando dinero a una tasa de ${rate} durante ${durationInSeconds} segundos.`)
+	}
+
+	// Método para disminuir el dinero a una tasa específica permanentemente
+	subtractMoneyRatePermanent(rate) {
+		const modifier = {
+			rate: -rate, // Tasa negativa para restar dinero
+		}
+		this.additionalRates.push(modifier)
+		this.updateCurrentRate()
+
+		// Cambiar el color del elemento a rojo
+		if (this.element) {
+			this.element.style.color = 'red'
+		}
+
+		console.log(`Restando dinero a una tasa de ${rate} de forma permanente.`)
 	}
 
 	// Método para actualizar la tasa actual basada en los modificadores activos
@@ -121,6 +144,40 @@ export default class MoneyManager {
 		if (index !== -1) {
 			this.additionalRates.splice(index, 1)
 			this.updateCurrentRate()
+		}
+	}
+
+	// Método para eliminar un modificador de tasa adicional y actualizar la tasa
+	removePermanentRate(rate) {
+		const modifier = this.additionalRates.find(mod => mod.rate === -rate);
+		if (modifier) {
+			this.removeAdditionalRate(modifier);
+			if (this.element) {
+				this.element.style.color = 'black'
+			}
+			console.log(`Tasa permanente de ${rate} eliminada.`)
+		} else {
+			console.warn(`No se encontró una tasa permanente de ${rate}.`)
+		}
+	}
+
+	resetAllRates() {
+		// Limpiar todos los modificadores pendientes
+		for (const mod of this.rateModifiers) {
+			clearTimeout(mod.timeoutId)
+		}
+		this.rateModifiers = []
+		this.currentRate = this.baseRate
+
+		// Limpiar todos los modificadores de tasa adicionales pendientes
+		for (const mod of this.additionalRates) {
+			clearTimeout(mod.timeoutId)
+		}
+		this.additionalRates = []
+		this.updateCurrentRate()
+
+		if (this.element) {
+			this.element.style.color = 'black'
 		}
 	}
 

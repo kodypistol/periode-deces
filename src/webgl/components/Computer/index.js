@@ -46,15 +46,24 @@ export default class Computer extends EventEmitter {
 
 		this._graphActivity.on('end', () => {
 			this._graphActivity.hide()
-			this._graphActivity.reset()
+			this._graphActivity._reset()
 			this.trigger('task:complete')
 			this.isPlaying = false
 		})
 	}
 
+	_reset() {
+		this.isPlaying = false
+		this._graphActivity._reset()
+	}
+
 	showTask() {
 		//TODO: Show random task
 		this._graphActivity.showTask()
+	}
+
+	hideTask() {
+		this._graphActivity.hide()
 	}
 
 	playTask(side) {
@@ -147,10 +156,6 @@ export default class Computer extends EventEmitter {
 		this.moneyManager.setOnMoneyChangeCallback((newMoney) => {
 			moneySpan.textContent = this.moneyManager.formatNumber(newMoney)
 		})
-
-		setTimeout(() => {
-			this.moneyManager.subtractMoneyRate(0.02, 2)
-		}, (Math.random() * 10 + 5) * 1000)
 	}
 
 	setScreenBounds() {

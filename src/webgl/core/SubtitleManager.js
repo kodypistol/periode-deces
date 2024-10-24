@@ -11,6 +11,7 @@ export class SubtitleManager extends EventEmitter {
 		this._nextElement = document.querySelector('.next')
 		this.experience = new Experience()
 		this.dayManager = this.experience.dayManager
+		this.moneyManager = this.experience.moneyManager
 
 		this.typeAudio = new Audio('/audio/type.mp3')
 	}
@@ -100,15 +101,16 @@ export class SubtitleManager extends EventEmitter {
 			} else {
 				this.playSubtitle(this.currentSubtitle.error)
 				// TODO: ADD MONEY DECREASE
+				this.moneyManager.subtractMoneyRate(0.05, 5)
 				endQte()
 			}
 
 			if (index === children.length) {
 				this.playSubtitle(this.currentSubtitle.success)
 				// TODO: ADD MONEY SCALE
+				this.moneyManager.multiplyRate(5, 5)
 				this.dayManager.tasksCount++
 				console.log(this.dayManager.tasksCount);
-
 				endQte()
 			}
 		}

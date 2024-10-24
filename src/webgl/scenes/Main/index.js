@@ -10,15 +10,16 @@ import Desk from 'components/Desk.js'
 import Head from 'components/Head.js'
 import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
+import Horloge from '@/webgl/components/Horloge'
 
 export default class Main {
 	constructor() {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
+		this.scene.resources = new Resources(sources)
 		this.axis = this.experience.axis
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
-		this.scene.resources = new Resources(sources)
 
 		this.tasks = []
 		this.focusTasks = []
@@ -28,11 +29,33 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
+			console.log(this.scene);
+
+		})
+		this.dayManager.on('day:finished', () => {
+			// this._reset()
+			this.tasks.forEach((task) => {
+				task._reset()
+				task.isPlaying = false
+				task.hideTask()
+			})
+
+			this.focusTasks.forEach((task) => {
+				task._reset()
+			})
+			this.moneyManager.stop()
 		})
 		this.dayManager.on('day:changed', () => {
+			this.moneyManager.resetAllRates()
 			this.moneyManager.startIncrement()
 			this._randomTasks()
 			this._randomFocusTasks()
+		})
+		this.dayManager.on('day:gameOver', () => {
+			this._isGameOver = true
+			this._playGameOverAnimation()
+			this._reset()
+			this.dayManager.stop()
 		})
 	}
 
@@ -47,13 +70,20 @@ export default class Main {
 		this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
 	}
 
+	_gameOver() {
+		this.tasks = []
+		this.focusTasks = []
+	}
+
 	_reset() {
 		this.tasks.forEach((task) => {
-			task.reset()
+			task._reset()
+			task.isPlaying = false
+			task.hideTask()
 		})
 
 		this.focusTasks.forEach((task) => {
-			task.reset()
+			task._reset()
 		})
 
 		this._isGameStarted = false
@@ -69,7 +99,7 @@ export default class Main {
 		this.desk = new Desk()
 
 		this.head = new Head()
-		// this.focusTasks.push(this.head)
+		this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
 		this.scene.add(this.fan)
@@ -79,7 +109,9 @@ export default class Main {
 		this.tasks.push(this.computer)
 
 		this.phone = new Phone()
-		// this.tasks.push(this.phone)
+		this.tasks.push(this.phone)
+
+		this.horloge = new Horloge()
 	}
 
 	_randomTasks(timeout = 10000) {
@@ -298,7 +330,8 @@ export default class Main {
 	_handleRestart(e) {
 		if (e.key === 'a') {
 			// Reset the game
-			this._reset()
+			// this._reset()
+			window.location.reload()
 			// Remove this event listener after resetting
 			this.axis.off('down', this._handleRestart)
 		}
@@ -324,10 +357,10 @@ export default class Main {
 	update() {
 		if (this.fan) this.fan.update()
 		if (this.computer) this.computer.update()
+		if(this.horloge) this.horloge.update()
 	}
 
 	destroy() {
 		this.scene.clear()
-
 	}
 }

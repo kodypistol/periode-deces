@@ -14,6 +14,7 @@ export default class Graph extends EventEmitter {
 		this.axis = this.experience.axis
 		this.time = this.experience.time
 		this.dayManager = this.experience.dayManager
+		this.moneyManager = this.experience.moneyManager
 
 		this._element = document.body.querySelector('.graph')
 		this._notification = this._element.querySelector('.notification')
@@ -48,6 +49,13 @@ export default class Graph extends EventEmitter {
 		})
 	}
 
+	hideTask() {
+		gsap.to(this._notification, {
+			duration: 0.2,
+			scale: 0,
+		})
+	}
+
 	playTask() {
 		this._bindEvents()
 		gsap.to(this._notification, {
@@ -74,10 +82,8 @@ export default class Graph extends EventEmitter {
 			yoyo: true,
 			ease: 'steps(1)',
 			onComplete: () => {
-				// TODO: CONVERT SCORE TO MONEY SCALE HERE
+				this.moneyManager.multiplyRate(this.score / 10, 5)
 				this.dayManager.tasksCount++
-				console.log(this.dayManager.tasksCount);
-
 				this.trigger('end') // Notify parent
 			},
 		})
@@ -92,7 +98,7 @@ export default class Graph extends EventEmitter {
 			yoyo: true,
 			ease: 'steps(1)',
 			onComplete: () => {
-				// TODO: CONVERT SCORE TO MONEY DECREASE HERE
+				this.moneyManager.subtractMoneyRate(0.05, 5)
 				this.trigger('end') // Notify parent
 			},
 		})
@@ -109,7 +115,7 @@ export default class Graph extends EventEmitter {
 		})
 	}
 
-	reset() {
+	_reset() {
 		this.isGameActive = false
 		this.userGraph = []
 		this.currentX = 0
@@ -336,9 +342,6 @@ export default class Graph extends EventEmitter {
 				this.end()
 			}
 
-			console.log(this.playTime, this.timeLimit);
-
-
 			if (this.playTime > this.timeLimit) {
 				this.isPlaying = false
 				this.isGameActive = false
@@ -366,7 +369,6 @@ export default class Graph extends EventEmitter {
 		// update playtime
 		if (this.isPlaying) {
 			this.playTime += this.time.delta
-			// console.log(this.playTime);
 		}
 	}
 }

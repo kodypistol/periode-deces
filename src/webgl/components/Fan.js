@@ -15,11 +15,18 @@ export default class Fan extends Component {
 		this.scene = this.experience.scene
 		this.debug = this.experience.debug
 		this.dayManager = this.experience.dayManager
+		this.moneyManager = this.experience.moneyManager
+		this.isGameFinished = false
 
 		this._createMaterial()
 		this._createMesh()
 
 		this.targetRotation = 0
+	}
+
+	_reset() {
+		this.targetRotation = 0
+		this.helix.rotation.x = 0
 	}
 
 	_createMaterial() {
@@ -83,8 +90,12 @@ export default class Fan extends Component {
 			lastAngle = angle
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
+				this.isGameFinished = true
+				if(this.moneyManager.isMoneyDecreased) {
+					this.moneyManager.removePermanentRate(0.015)
+					this.moneyManager.isMoneyDecreased = false
+				}
 				this.trigger('task:complete')
-				//TODO: ADD MONEY SCALE
 				this.dayManager.tasksCount++
 				this.isPlaying = false
 				this.experience.axis.off(`joystick:move:${side}`, handleMove)
@@ -95,6 +106,10 @@ export default class Fan extends Component {
 					this.targetRotation = 0
 					this.helix.rotation.x = 0
 				}, 1000)
+
+				setTimeout(() => {
+					this.isGameFinished = false
+				}, 4000)
 			}
 		}
 
@@ -108,6 +123,17 @@ export default class Fan extends Component {
 			repeat: -1,
 			yoyo: true,
 		})
+		setTimeout(() => {
+			if (!this.isGameFinished) {
+				this.moneyManager.isMoneyDecreased = true
+				this.moneyManager.subtractMoneyRatePermanent(0.015)
+			}
+		}, 5000)
+	}
+
+	hideTask() {
+		this.showTaskTl?.kill()
+		this.witness.material.color.set(0xffffff)
 	}
 
 	update() {

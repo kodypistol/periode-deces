@@ -12,6 +12,11 @@ export default class Head extends EventEmitter {
 		this._createMesh()
 	}
 
+	_reset() {
+		this.mesh.position.y = 2
+		this.mesh.rotation.z = 0.2
+	}
+
 	_createMesh() {
 		this.mesh = this.scene.resources.items.headModel.scene.clone()
 		this.mesh.position.y = 2

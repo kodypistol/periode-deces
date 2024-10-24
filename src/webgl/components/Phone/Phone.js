@@ -39,6 +39,15 @@ export default class Phone extends EventEmitter {
 		this.targetRotation = 0
 	}
 
+	_reset() {
+		this.shakeAnim.pause()
+		this.answerAnim.pause()
+		this.resetAnim.pause()
+		this.calling.pause()
+		this.talking.pause()
+		this.closeCall.pause()
+	}
+
 	_setMaterial() {
 		const texture = this.resources.items.bakeTexture
 		texture.channel = 1
@@ -90,6 +99,15 @@ export default class Phone extends EventEmitter {
 		// 	this.resetAnim.play()
 		// 	this.trigger('task:fail')
 		// }, this.duration * 1000)
+	}
+
+	hideTask() {
+		this.shakeAnim.pause()
+		this.calling.pause()
+		this.answerAnim.reverse()
+		this.talking.pause()
+		this.closeCall.pause()
+		this.resetAnim.play()
 	}
 
 	/**

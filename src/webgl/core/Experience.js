@@ -35,8 +35,8 @@ export default class Experience {
 		this.camera = new Camera()
 		this.interactionManager = new InteractionManager(this.camera.instance)
 		this.axis = new AxisManager()
-		this.dayManager = new DayManager()
 		this.moneyManager = new MoneyManager()
+		this.dayManager = new DayManager()
 		this.sceneManager = new SceneManager()
 		this.activeScene = this.sceneManager.currentScene
 		this.renderer = new Renderer()
@@ -60,6 +60,7 @@ export default class Experience {
 
 	update() {
 		if (this.activeScene.update) this.activeScene.update()
+		if (this.dayManager.update) this.dayManager.update()
 		this.renderer.update()
 		this.debug.update()
 		this.interactionManager.update()

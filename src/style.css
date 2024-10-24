@@ -20,6 +20,23 @@ body {
 	image-rendering: pixelated;
 }
 
+.horloge-screen {
+	position: relative;
+	width: 63px;
+	height: 27px;
+	background-color: black;
+	color: #E20314;
+	overflow: hidden;
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+	transform: scale(2);
+	border-radius: 3px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 25px;
+}
+
 .computer-screen {
 	position: relative;
 	width: 150px;
