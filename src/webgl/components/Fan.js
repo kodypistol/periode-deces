@@ -4,7 +4,9 @@ import { lerp } from 'three/src/math/MathUtils.js'
 
 const SETTINGS = {
 	TURNS: 4,
+	NAS_BUTTONS_CHANGE_INTERVAL: 1,
 }
+
 export default class Fan extends Task {
 	constructor(options = {}) {
 		super(options)
@@ -12,6 +14,11 @@ export default class Fan extends Task {
 		this.moneyManager = this.experience.moneyManager
 		this.isGameFinished = false
 		this.targetRotation = 0
+		this.nasButtons = []
+		this.nasButtonTweens = []
+
+		this._createNASButtonsMaterial()
+		this._createNASButtonsMesh()
 	}
 
 	_createMesh() {
@@ -38,6 +45,53 @@ export default class Fan extends Task {
 		this.add(this.mesh)
 	}
 
+	_createNASButtonsMaterial() {
+		const texture = this.scene.resources.items.NASTexture
+		this.NASButtonsMaterial = new MeshBasicMaterial({ map: texture })
+	}
+
+	_createNASButtonsMesh() {
+		this.NASButtonsMesh = this.scene.resources.items.nasButtonsModel.scene.clone()
+		this.NASButtonsMesh.traverse((child) => {
+			if (child.isMesh) {
+				console.log(child)
+				this.nasButtons.push(child)
+
+				child.material = new MeshBasicMaterial({ map: this.scene.resources.items.NASTexture })
+			}
+		})
+		this.NASButtonsMesh.name = 'nasButtons'
+		this.add(this.NASButtonsMesh)
+	}
+
+	animateNASButtonsSequentially() {
+		this.nasButtonTweens = []
+		// Clear previous tweens
+		this.nasButtons.forEach((button, index) => {
+			const tween = gsap.to(button.material.color, {
+				r: 100, // Adjust color as needed
+				duration: 0.5,
+				repeat: -1,
+				yoyo: true,
+				paused: true, // Initially pause the animation
+			})
+			// Start the animation with a delay for each button
+			gsap.delayedCall(SETTINGS.NAS_BUTTONS_CHANGE_INTERVAL * index, () => {
+				if (!this.isGameFinished) {
+					tween.play() // Start the tween after the delay
+				}
+			})
+			this.nasButtonTweens.push(tween) // Store the tween to stop later
+		})
+	}
+
+	stopNASButtonsAnimation() {
+		this.nasButtonTweens.forEach((tween) => tween.kill()) // Stop all tweens
+		this.nasButtons.forEach((button) => {
+			button.material.color.set(0xffffff) // Reset button color
+		})
+	}
+
 	playTask() {
 		if (!this.isAvailable || this.isPlaying) {
 			return
@@ -60,10 +114,13 @@ export default class Fan extends Task {
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
 				this.completeTask()
 				this.isGameFinished = true
+				this.stopNASButtonsAnimation()
+
 				if (this.moneyManager.isMoneyDecreased) {
 					this.moneyManager.removePermanentRate(0.015)
 					this.moneyManager.isMoneyDecreased = false
 				}
+
 				this.dayManager.tasksCount++
 				this.isPlaying = false
 				this.axis.off(`joystick:move:right`, handleMove)
@@ -81,6 +138,16 @@ export default class Fan extends Task {
 		}
 
 		this.axis.on(`joystick:move:right`, handleMove)
+	}
+
+	showTask() {
+		super.showTask()
+		this.animateNASButtonsSequentially()
+	}
+
+	hideTask() {
+		super.hideTask()
+		this.stopNASButtonsAnimation()
 	}
 
 	update() {

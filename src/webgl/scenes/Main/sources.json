@@ -44,6 +44,22 @@
 		"colorSpace": "srgb"
 	},
 	{
+		"name": "NASTexture",
+		"type": "texture",
+		"path": "textures/NASTexture.png",
+		"colorSpace": "srgb"
+	},
+	{
+		"name": "nasModel",
+		"type": "gltf",
+		"path": "models/nas.glb"
+	},
+	{
+		"name": "nasButtonsModel",
+		"type": "gltf",
+		"path": "models/nas-buttons.glb"
+	},
+	{
 		"name": "horlogeModel",
 		"type": "gltf",
 		"path": "models/horloge-digitale.glb"

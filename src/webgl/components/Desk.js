@@ -20,12 +20,18 @@ export default class Desk {
 
 	_createMesh() {
 		this.mesh = this.scene.resources.items.deskModel.scene.clone()
+
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material = this._material
 				if (child.name === '_NAS') {
+
+					// replace mesh with this.scene.resources.items.sasModel.scene.clone()
+					child.geometry = this.scene.resources.items.nasModel.scene.clone().children[0].geometry
 					// child.geometry.attributes.uv = child.geometry.attributes.uv1.clone()
-					child.material = new MeshBasicMaterial({ color: 0x333333, side: 0 })
+					child.material = new MeshBasicMaterial({ map: this.scene.resources.items.NASTexture })
+					//flipY
+					child.material.map.flipY = false
 				}
 			}
 		})
