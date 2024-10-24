@@ -1,3 +1,5 @@
+import Experience from './Experience.js'
+
 export default class MoneyManager {
 	constructor() {
 		// Implement singleton pattern
@@ -14,6 +16,9 @@ export default class MoneyManager {
 		this.timer = null
 		this.onMoneyChange = null // Callback function
 		this.isMoneyDecreased = false
+
+		this.experience = new Experience()
+		this.audioManager = this.experience.audioManager
 
 		MoneyManager.instance = this // Save the instance
 
@@ -53,6 +58,8 @@ export default class MoneyManager {
 		this.rateModifiers.push(modifier)
 		this.updateCurrentRate()
 
+		this.audioManager.play('taskCompleteAudio')
+
 		// Programar la reversión del multiplicador
 		modifier.timeoutId = setTimeout(() => {
 			this.removeModifier(modifier)
@@ -63,7 +70,7 @@ export default class MoneyManager {
 			}
 		}, durationInSeconds * 1000)
 
-		factor > 0 ? this.element.style.color = 'green' : this.element.style.color = 'red'
+		factor > 0 ? (this.element.style.color = 'green') : (this.element.style.color = 'red')
 
 		console.log(`Tasa multiplicada por ${factor} durante ${durationInSeconds} segundos.`)
 	}
@@ -78,7 +85,7 @@ export default class MoneyManager {
 		this.additionalRates.push(modifier)
 		this.updateCurrentRate()
 
-		// Cambiar el color del elemento a rojo
+		this.audioManager.play('taskErrorAudio')
 		if (this.element) {
 			this.element.style.color = 'red'
 		}
@@ -149,9 +156,9 @@ export default class MoneyManager {
 
 	// Método para eliminar un modificador de tasa adicional y actualizar la tasa
 	removePermanentRate(rate) {
-		const modifier = this.additionalRates.find(mod => mod.rate === -rate);
+		const modifier = this.additionalRates.find((mod) => mod.rate === -rate)
 		if (modifier) {
-			this.removeAdditionalRate(modifier);
+			this.removeAdditionalRate(modifier)
 			if (this.element) {
 				this.element.style.color = 'white'
 			}

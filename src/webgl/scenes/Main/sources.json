@@ -151,5 +151,50 @@
 		"name": "ambiantAudio",
 		"type": "audio",
 		"path": "audio/ambiant.mp3"
+	},
+	{
+		"name": "fanAudio",
+		"type": "audio",
+		"path": "audio/fan.mp3"
+	},
+	{
+		"name": "gameOverAudio",
+		"type": "audio",
+		"path": "audio/game-over.mp3"
+	},
+	{
+		"name": "mouseAudio",
+		"type": "audio",
+		"path": "audio/mouse.mp3"
+	},
+	{
+		"name": "notificationAudio",
+		"type": "audio",
+		"path": "audio/notification.mp3"
+	},
+	{
+		"name": "phoneHangUpAudio",
+		"type": "audio",
+		"path": "audio/phone-hang-up.mp3"
+	},
+	{
+		"name": "phonePickUpAudio",
+		"type": "audio",
+		"path": "audio/phone-pick-up.mp3"
+	},
+	{
+		"name": "selectJoystickAudio",
+		"type": "audio",
+		"path": "audio/select-joystick.mp3"
+	},
+	{
+		"name": "taskCompleteAudio",
+		"type": "audio",
+		"path": "audio/task-completed.mp3"
+	},
+	{
+		"name": "taskErrorAudio",
+		"type": "audio",
+		"path": "audio/task-error.mp3"
 	}
 ]
