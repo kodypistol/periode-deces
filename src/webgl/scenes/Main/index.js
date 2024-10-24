@@ -31,9 +31,19 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
-			console.log(this.scene);
-
+			console.log('CURRENT SCENE', this.scene)
 		})
+
+		// Listen for day changes
+		this.dayManager.on('day:changed', () => {
+			const dayIndex = this.dayManager.day.index
+			const dayGroupName = this.dayManager.getCurrentDayGroupName()
+			this.scene.resources.loadGroup(dayGroupName)
+			this.scene.resources.on('groupLoaded:' + dayGroupName, () => {
+				this.updateSceneForDay(dayIndex)
+			})
+		})
+
 		this.dayManager.on('day:finished', () => {
 			// this._reset()
 			this.tasks.forEach((task) => {
@@ -115,6 +125,12 @@ export default class Main {
 		this.tasks.push(this.phone)
 
 		this.horloge = new Horloge()
+	}
+
+	updateSceneForDay(dayIndex) {
+		// Update components that need to change
+		this.desk.updateDeskModelForDay(dayIndex)
+		// Update other components if necessary
 	}
 
 	_randomTasks(timeout = 10000) {
@@ -387,7 +403,7 @@ export default class Main {
 	update() {
 		if (this.fan) this.fan.update()
 		if (this.computer) this.computer.update()
-		if(this.horloge) this.horloge.update()
+		if (this.horloge) this.horloge.update()
 	}
 
 	destroy() {

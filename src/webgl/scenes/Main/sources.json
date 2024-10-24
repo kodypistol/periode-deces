@@ -1,86 +1,215 @@
-[
-	{
-		"name": "bakeTexture",
-		"type": "texture",
-		"path": "textures/bake.png",
-		"colorSpace": "srgb",
-		"flipY": false
-	},
-	{
-		"name": "bakeBackgroundTexture",
-		"type": "texture",
-		"path": "textures/bake-background-2.png",
-		"colorSpace": "srgb",
-		"flipY": false
-	},
-	{
-		"name": "postItWolfTexture",
-		"type": "texture",
-		"path": "textures/post-it/wolf.jpg",
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "posterWolfTexture",
-		"type": "texture",
-		"path": "textures/post-it/wolf-poster.png",
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "posterGirlTexture",
-		"type": "texture",
-		"path": "textures/post-it/girl.png",
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "postItZiziTexture",
-		"type": "texture",
-		"path": "textures/post-it/zizi.jpg",
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "horloge",
-		"type": "texture",
-		"path": "textures/horloge-digitale.png",
-		"colorSpace": "srgb"
-	},
-	{
-		"name": "horlogeModel",
-		"type": "gltf",
-		"path": "models/horloge-digitale.glb"
-	},
-	{
-		"name": "taskBackgrounds",
-		"type": "gltf",
-		"path": "models/task-backgrounds.glb"
-	},
-	{
-		"name": "deskModel",
-		"type": "gltf",
-		"path": "models/model.glb"
-	},
-	{
-		"name": "fanModel",
-		"type": "gltf",
-		"path": "models/fan.glb"
-	},
-	{
-		"name": "backgroundModel",
-		"type": "gltf",
-		"path": "models/background-2.glb"
-	},
-	{
-		"name": "phoneModel",
-		"type": "gltf",
-		"path": "models/Phone/Phone.glb"
-	},
-	{
-		"name": "computerModel",
-		"type": "gltf",
-		"path": "models/computer.glb"
-	},
-	{
-		"name": "headModel",
-		"type": "gltf",
-		"path": "models/head.glb"
-	}
-]
+{
+	"internModels": [
+		{
+			"name": "bakeTexture",
+			"type": "texture",
+			"path": "textures/bake.png",
+			"colorSpace": "srgb",
+			"flipY": false
+		},
+		{
+			"name": "bakeBackgroundTexture",
+			"type": "texture",
+			"path": "textures/bake-background-2.png",
+			"colorSpace": "srgb",
+			"flipY": false
+		},
+		{
+			"name": "postItWolfTexture",
+			"type": "texture",
+			"path": "textures/post-it/wolf.jpg",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "posterWolfTexture",
+			"type": "texture",
+			"path": "textures/post-it/wolf-poster.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "posterGirlTexture",
+			"type": "texture",
+			"path": "textures/post-it/girl.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "postItZiziTexture",
+			"type": "texture",
+			"path": "textures/post-it/zizi.jpg",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "deskModel",
+			"type": "gltf",
+			"path": "models/model.glb"
+		},
+		{
+			"name": "fanModel",
+			"type": "gltf",
+			"path": "models/fan.glb"
+		},
+		{
+			"name": "backgroundModel",
+			"type": "gltf",
+			"path": "models/background-2.glb"
+		},
+		{
+			"name": "computerModel",
+			"type": "gltf",
+			"path": "models/computer.glb"
+		},
+		{
+			"name": "headModel",
+			"type": "gltf",
+			"path": "models/head.glb"
+		}
+	],
+	"managerModels": [
+		{
+			"name": "bakeTexture",
+			"type": "texture",
+			"path": "textures/bake.png",
+			"colorSpace": "srgb",
+			"flipY": false
+		},
+		{
+			"name": "bakeBackgroundTexture",
+			"type": "texture",
+			"path": "textures/bake-background-2.png",
+			"colorSpace": "srgb",
+			"flipY": false
+		},
+		{
+			"name": "postItWolfTexture",
+			"type": "texture",
+			"path": "textures/post-it/wolf.jpg",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "posterWolfTexture",
+			"type": "texture",
+			"path": "textures/post-it/wolf-poster.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "posterGirlTexture",
+			"type": "texture",
+			"path": "textures/post-it/girl.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "postItZiziTexture",
+			"type": "texture",
+			"path": "textures/post-it/zizi.jpg",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "deskModel",
+			"type": "gltf",
+			"path": "models/model.glb"
+		},
+		{
+			"name": "fanModel",
+			"type": "gltf",
+			"path": "models/fan.glb"
+		},
+		{
+			"name": "backgroundModel",
+			"type": "gltf",
+			"path": "models/background-2.glb"
+		},
+		{
+			"name": "computerModel",
+			"type": "gltf",
+			"path": "models/computer.glb"
+		},
+		{
+			"name": "headModel",
+			"type": "gltf",
+			"path": "models/head.glb"
+		}
+	],
+	"subBossModels": [
+		{
+			"name": "bakeTexture",
+			"type": "texture",
+			"path": "textures/bake.png",
+			"colorSpace": "srgb",
+			"flipY": false
+		},
+		{
+			"name": "bakeBackgroundTexture",
+			"type": "texture",
+			"path": "textures/bake-background-2.png",
+			"colorSpace": "srgb",
+			"flipY": false
+		},
+		{
+			"name": "postItWolfTexture",
+			"type": "texture",
+			"path": "textures/post-it/wolf.jpg",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "posterWolfTexture",
+			"type": "texture",
+			"path": "textures/post-it/wolf-poster.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "posterGirlTexture",
+			"type": "texture",
+			"path": "textures/post-it/girl.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "postItZiziTexture",
+			"type": "texture",
+			"path": "textures/post-it/zizi.jpg",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "deskModel",
+			"type": "gltf",
+			"path": "models/model.glb"
+		},
+		{
+			"name": "fanModel",
+			"type": "gltf",
+			"path": "models/fan.glb"
+		},
+		{
+			"name": "backgroundModel",
+			"type": "gltf",
+			"path": "models/background-2.glb"
+		},
+		{
+			"name": "computerModel",
+			"type": "gltf",
+			"path": "models/computer.glb"
+		},
+		{
+			"name": "headModel",
+			"type": "gltf",
+			"path": "models/head.glb"
+		}
+	],
+	"persistent": [
+		{
+			"name": "horlogeModel",
+			"type": "gltf",
+			"path": "models/horloge-digitale.glb"
+		},
+		{
+			"name": "horloge",
+			"type": "texture",
+			"path": "textures/horloge-digitale.png",
+			"colorSpace": "srgb"
+		},
+		{
+			"name": "phoneModel",
+			"type": "gltf",
+			"path": "models/Phone/Phone.glb"
+		}
+	]
+}

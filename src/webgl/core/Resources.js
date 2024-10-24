@@ -11,26 +11,30 @@ export default class Resources extends EventEmitter {
 		this.experience = new Experience()
 		this.debug = this.experience.debug
 
-		this.sources = sources
+		// Organize sources and groups
+		this.sources = []
+		this.groups = {}
+		this.groupSources = {}
+		this.groupLoads = {}
 
-		/**
-		 * @type {{[name: string]: Texture | CubeTexture | Object3D | AudioBuffer}}
-		 */
+		for (this.groupName in sources) {
+			const groupResources = sources[this.groupName]
+			this.groups[this.groupName] = []
+			this.groupSources[this.groupName] = groupResources
+
+			for (const resource of groupResources) {
+				resource.group = this.groupName
+				this.sources.push(resource)
+				this.groups[this.groupName].push(resource.name)
+			}
+		}
+
 		this.items = {}
-		this.toLoad = this.sources.length
+		this.toLoad = 0
 		this.loaded = 0
 
-		if (this.toLoad === 0) {
-			console.warn('No resources to load.')
-			this.trigger('ready')
-			return
-		}
-
-		if (!this.debug.active || this.debug.debugParams.LoadingScreen) {
-			this.setLoadingScreen()
-		}
-		this.setLoaders()
-		this.startLoading()
+		// Load the persistent group by default
+		this.loadGroup('persistent')
 	}
 
 	setLoadingScreen() {
@@ -74,34 +78,66 @@ export default class Resources extends EventEmitter {
 		this.loaders.audioLoader = new AudioLoader()
 	}
 
-	startLoading() {
+	loadGroup(groupName) {
+		const groupResources = this.groupSources[groupName]
+		if (!groupResources) {
+			console.warn(`Group ${groupName} does not exist.`)
+			return
+		}
+
+		// Initialize group load tracking
+		if (!this.groupLoads[groupName]) {
+			this.groupLoads[groupName] = {
+				toLoad: groupResources.length,
+				loaded: 0,
+			}
+		}
+
+		this.toLoad += groupResources.length
+
+		if (this.toLoad === 0) {
+			console.warn('No resources to load.')
+			this.trigger('ready')
+			return
+		}
+
+		if (!this.debug.active || this.debug.debugParams.LoadingScreen) {
+			this.setLoadingScreen()
+		}
+		if (!this.loaders) {
+			this.setLoaders()
+		}
+		this.startLoading(groupResources, groupName)
+	}
+
+	startLoading(groupResources, groupName) {
 		if (this.debug.active && this.debug.debugParams.ResourceLog) {
 			console.group('🖼️ Resources')
 			console.debug('⏳ Loading resources...')
 			this.totalStartTime = performance.now()
 		}
 		// Load each source
-		for (const source of this.sources) {
+		for (const source of groupResources) {
 			source.startTime = performance.now()
 			switch (source.type) {
 				case 'gltf':
 					this.loaders.gltfLoader.load(source.path, (file) => {
-						this.sourceLoaded(source, file)
+						this.sourceLoaded(source, file, groupName)
 					})
 					break
 				case 'texture':
 					this.loaders.textureLoader.load(source.path, (file) => {
-						this.sourceLoaded(source, file)
+						this.sourceLoaded(source, file, groupName)
 					})
 					break
 				case 'cubeTexture':
 					this.loaders.cubeTextureLoader.load(source.path, (file) => {
-						this.sourceLoaded(source, file)
+						this.sourceLoaded(source, file, groupName)
 					})
 					break
 				case 'audio':
 					this.loaders.audioLoader.load(source.path, (file) => {
-						this.sourceLoaded(source, file)
+						this.sourceLoaded(source, file, groupName)
 					})
 					break
 				default:
@@ -112,21 +148,27 @@ export default class Resources extends EventEmitter {
 	}
 
 	sourceLoaded(source, file) {
-		const { name, path, type, startTime, ...rest } = source
+		const { name, path, type, startTime, group, ...rest } = source
 		Object.assign(file, rest)
-		this.items[source.name] = file
+
+		// Store resource in items using its name
+		this.items[name] = file
 		this.loaded++
-		source.endTime = performance.now()
-		source.loadTime = Math.floor(source.endTime - source.startTime)
+		this.groupLoads[this.groupName].loaded++
 
 		if (this.debug.active && this.debug.debugParams.ResourceLog)
 			console.debug(
-				`%c🖼️ ${source.name}%c loaded in ${source.loadTime}ms. (${this.loaded}/${this.toLoad})`,
+				`%c🖼️ ${name}%c loaded in ${source.loadTime}ms. (${this.loaded}/${this.toLoad})`,
 				'font-weight: bold',
-				'font-weight: normal',
+				'font-weight: normal'
 			)
 		if (this.loadingScreenElement) {
 			this.loadingBarElement.style.transform = `scaleX(${this.loaded / this.toLoad})`
+		}
+
+		// Check if group is fully loaded
+		if (this.groupLoads[this.groupName].loaded === this.groupLoads[this.groupName].toLoad) {
+			this.trigger('groupLoaded:' + this.groupName)
 		}
 
 		if (this.loaded === this.toLoad) {
