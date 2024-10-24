@@ -14,50 +14,59 @@ export class SubtitleManager extends EventEmitter {
 		this.moneyManager = this.experience.moneyManager
 
 		this.typeAudio = new Audio('/audio/type.mp3')
+
+		// Hide the subtitle element initially
+		this._subtitleElement.style.opacity = '0'
 	}
 
 	playSubtitle(key) {
+		// Clear existing text and hide the "next" button
 		this._subtitleElement.innerText = ''
 		this._nextElement.style.opacity = '0'
+
 		this.currentSubtitle = subtitles[key]
 		if (!this.currentSubtitle) throw new Error('key doesnt exist')
+
+		// Set subtitle text color if specified
 		this._subtitleElement.style.color = this.currentSubtitle.color || ''
+
 		const splitText = this.currentSubtitle.text.split('')
 
+		// Create span elements for each character
 		splitText.forEach((char) => {
 			const span = document.createElement('span')
 			span.style.visibility = 'hidden'
 			span.innerText = char
 			this._subtitleElement.appendChild(span)
 		})
-		this.tl = gsap
-			// .to(
-			// 	this._subtitleElement,
-			// 	{
-			// 		opacity: 1,
-			// 	},
-			// 	0
-			// )
-			.to(this._subtitleElement.querySelectorAll('span'), {
-				stagger: {
-					each: 0.05,
-					onComplete: () => {
-						this.typeAudio.play()
-					},
-				},
-				visibility: 'visible',
+
+		// Show the subtitle element before starting the animation
+		this._subtitleElement.style.opacity = '1'
+
+		// Animate the appearance of characters
+		this.tl = gsap.timeline()
+		this.tl.to(this._subtitleElement.querySelectorAll('span'), {
+			stagger: {
+				each: 0.05,
 				onComplete: () => {
-					this._nextElement.style.opacity = '1'
-					if (this.currentSubtitle.success) {
-						this.playQte()
-					}
+					this.typeAudio.play()
 				},
-			})
+			},
+			visibility: 'visible',
+			onComplete: () => {
+				this._nextElement.style.opacity = '1'
+				if (this.currentSubtitle.success) {
+					this.playQte()
+				}
+			},
+		})
 	}
 
 	next() {
 		if (this.blockSubtitle) return
-		if (this.tl.progress() < 1) {
+
+		if (this.tl && this.tl.progress() < 1) {
+			// Fast-forward the animation if it's still in progress
 			this.tl.seek(this.tl.duration())
 			this._nextElement.style.opacity = '1'
 			if (this.currentSubtitle.success) {
@@ -68,10 +77,13 @@ export class SubtitleManager extends EventEmitter {
 		}
 
 		if (this.currentSubtitle.next) {
+			// Play the next subtitle
 			this.playSubtitle(this.currentSubtitle.next)
 			this.typeAudio.play()
 		} else {
+			// No more subtitles; clear text and hide the subtitle element
 			this._subtitleElement.innerText = ''
+			this._subtitleElement.style.opacity = '0' // Hide the subtitle element
 			this.trigger('finish')
 		}
 		this._nextElement.style.opacity = '0'
@@ -93,6 +105,11 @@ export class SubtitleManager extends EventEmitter {
 			this._qteElement.style.opacity = '0'
 			this.experience.axis.off('down', handleDown)
 			this.blockSubtitle = false
+
+			// Hide the subtitle element after QTE ends if no subtitles are displayed
+			if (!this.currentSubtitle.next) {
+				this._subtitleElement.style.opacity = '0'
+			}
 		}
 
 		const handleDown = (event) => {
