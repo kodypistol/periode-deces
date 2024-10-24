@@ -43,7 +43,7 @@ export default class JoystickSelectionManager {
 
 				// Create a new material for the outline mesh
 				const outlineMaterial = new MeshBasicMaterial({
-					color: 0x00ff00, // Initial color (green for available)
+					color: 0xff4b9f, // Initial color (green for available)
 					side: BackSide, // Render the back faces
 					transparent: true,
 					opacity: 1,
@@ -152,7 +152,7 @@ export default class JoystickSelectionManager {
 	}
 
 	startBlinking(outlineMesh, task) {
-		const color = task.isAvailable ? new Color(0x00ff00) : new Color(0xff0000) // Green if available, red if not
+		const color = task.isAvailable ? new Color(0xff4b9f) : new Color(0x2222db) // Green if available, red if not
 		outlineMesh.traverse((child) => {
 			if (child.isMesh) {
 				child.material.color = color.clone()

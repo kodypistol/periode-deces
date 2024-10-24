@@ -88,7 +88,7 @@ export default class Computer extends Task {
 		// Position it on the screen point
 		cssObject.position.copy(this.screenPoint.position)
 		cssObject.rotation.copy(this.screenPoint.rotation)
-		cssObject.scale.set(0.0105, 0.0105, 0.0105)
+		cssObject.scale.set(0.0105, 0.011, 0.0105)
 
 		this.css3dScene.add(cssObject)
 
@@ -97,7 +97,7 @@ export default class Computer extends Task {
 
 	setScreenPoint() {
 		const screenPoint = new Object3D()
-		screenPoint.position.set(0.06, 2.17, -0.47)
+		screenPoint.position.set(0.06, 2.16, -0.47)
 		this.scene.add(screenPoint)
 		return screenPoint
 	}

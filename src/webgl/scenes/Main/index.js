@@ -156,6 +156,8 @@ export default class Main {
 				this.axis.on('down', this._handleRestart.bind(this))
 			},
 		})
+
+		gameOverTimeline.play()
 	}
 
 	_handleRestart(e) {

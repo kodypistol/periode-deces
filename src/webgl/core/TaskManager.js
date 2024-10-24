@@ -1,5 +1,3 @@
-import EventEmitter from 'core/EventEmitter.js'
-
 export default class TaskManager {
 	constructor(options = {}) {
 		this.tasks = options.tasks || []
@@ -43,7 +41,7 @@ export default class TaskManager {
 
 	_startFocusTaskScheduler() {
 		const interval = 30000 // Adjust interval as needed
-		this.focusTaskTimeout = setTimeout(this._triggerFocusTask.bind(this), interval)
+		this.focusTaskTimeout = setInterval(this._triggerFocusTask.bind(this), interval)
 	}
 
 	_triggerFocusTask() {
@@ -61,9 +59,6 @@ export default class TaskManager {
 
 			randomTask.playTask()
 		}
-
-		const interval = 15000 // Adjust interval as needed
-		this.focusTaskTimeout = setTimeout(this._triggerFocusTask.bind(this), interval)
 	}
 
 	pauseAllTasks() {

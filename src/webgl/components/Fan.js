@@ -144,6 +144,13 @@ export default class Fan extends Task {
 	showTask() {
 		super.showTask()
 		this.animateNASButtonsSequentially()
+
+		setTimeout(() => {
+			if (!this.isGameFinished) {
+				this.moneyManager.isMoneyDecreased = true
+				this.moneyManager.subtractMoneyRatePermanent(0.015)
+			}
+		}, 5000)
 	}
 
 	hideTask() {
