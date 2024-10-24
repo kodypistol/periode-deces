@@ -1,15 +1,10 @@
-import Experience from 'core/Experience.js'
+import Task from 'core/Task'
 import gsap from 'gsap'
-import EventEmitter from 'core/EventEmitter.js'
 
-export default class Head extends EventEmitter {
-	constructor() {
-		super()
-		this.experience = new Experience()
-		this.scene = this.experience.scene
-		this.debug = this.experience.debug
-
-		this._createMesh()
+export default class Head extends Task {
+	constructor(options = {}) {
+		super(options)
+		this.selectionManager = options.selectionManager
 	}
 
 	_reset() {
@@ -18,7 +13,13 @@ export default class Head extends EventEmitter {
 	}
 
 	_createMesh() {
-		this.mesh = this.scene.resources.items.headModel.scene.clone()
+		const headModel = this.resources.items.headModel
+		if (!headModel) {
+			console.error('headModel not found in resources.items')
+			return
+		}
+
+		this.mesh = headModel.scene.clone()
 		this.mesh.position.y = 2
 		this.mesh.position.x = -0.5
 		this.mesh.position.z = -1
@@ -26,10 +27,15 @@ export default class Head extends EventEmitter {
 		this.mesh.scale.set(2, 2, 2)
 
 		this.mesh.name = 'head'
-		this.scene.add(this.mesh)
+		this.add(this.mesh)
 	}
 
 	playTask() {
+		if (this.isPlaying) return
+		this.isPlaying = true
+
+		// The TaskManager will handle pausing other tasks and the selection manager
+
 		this.experience.camera.headAnimation()
 		gsap.to(this.mesh.position, {
 			y: 2.8,
@@ -64,10 +70,15 @@ export default class Head extends EventEmitter {
 						y: 2,
 					})
 					this.experience.axis.off('down', handleDown)
-					this.trigger('task:complete')
+					this.completeTask()
 					this.experience.camera.resetAnimation()
 				})
 			},
 		})
+	}
+
+	completeTask() {
+		super.completeTask()
+		// The TaskManager will handle resuming other tasks and the selection manager
 	}
 }

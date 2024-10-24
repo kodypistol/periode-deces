@@ -17,8 +17,8 @@ export default class Horloge extends Component {
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
 
-				this._createMaterial()
-				this._createMesh()
+		this._createMaterial()
+		this._createMesh()
 
 		this.css3dRenderer = this.setCss3dRenderer()
 		this.css3dScene = this.setCss3dScene()
@@ -26,6 +26,8 @@ export default class Horloge extends Component {
 		this.screenPoint = this.setScreenPoint()
 		this.screenElement = this.setScreenElement()
 		this.screenBounds = this.setScreenBounds()
+
+		this.experience.sizes.on('resize', this.resize.bind(this))
 	}
 
 	_createMaterial() {
@@ -39,12 +41,9 @@ export default class Horloge extends Component {
 
 	_createMesh() {
 		this.mesh = this.resources.items.horlogeModel.scene.clone()
-		console.log(this.mesh);
 
 		this.mesh.traverse((child) => {
 			if (child.isMesh) {
-				console.log(child);
-
 				child.material = this.material
 			}
 		})
@@ -100,11 +99,15 @@ export default class Horloge extends Component {
 		const screenPoint = new Mesh(new BoxGeometry(0.1, 0.1, 0.1), new MeshBasicMaterial({ color: 0xff0000 }))
 		// screenPoint.position.set(-0.97194, 0.24741, 1.466)
 		screenPoint.position.set(-0.97694, 1.426, -0.34741)
-		screenPoint.rotation.y = Math.PI / 6;
+		screenPoint.rotation.y = Math.PI / 6
 
 		this.scene.add(screenPoint)
 
 		return screenPoint
+	}
+
+	resize() {
+		this.css3dRenderer.setSize(window.innerWidth, window.innerHeight)
 	}
 
 	update() {

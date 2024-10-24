@@ -1,16 +1,16 @@
-// webgl/scenes/Main/index.js
 import Experience from 'core/Experience.js'
 import Resources from 'core/Resources.js'
 import sources from './sources.json'
 import Fan from 'components/Fan.js'
 import Computer from 'components/Computer/index.js'
-import Background from 'components/Background.js'
 import Phone from 'components/Phone/Phone.js'
+import Background from 'components/Background.js'
 import Desk from 'components/Desk.js'
 import Head from 'components/Head.js'
 import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
-import Horloge from '@/webgl/components/Horloge'
+import Horloge from 'components/Horloge.js'
+import TaskManager from 'core/TaskManager.js'
 
 export default class Main {
 	constructor() {
@@ -21,7 +21,7 @@ export default class Main {
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
 
-		this.MoneyCounter = this.setMoneyCounter()
+		this.setMoneyCounter()
 
 		this.tasks = []
 		this.focusTasks = []
@@ -31,13 +31,11 @@ export default class Main {
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
-			console.log(this.scene);
-
 		})
+
 		this.dayManager.on('day:finished', () => {
-			// this._reset()
 			this.tasks.forEach((task) => {
-				task._reset()
+				task.reset()
 				task.isPlaying = false
 				task.hideTask()
 			})
@@ -47,12 +45,12 @@ export default class Main {
 			})
 			this.moneyManager.stop()
 		})
+
 		this.dayManager.on('day:changed', () => {
 			this.moneyManager.resetAllRates()
 			this.moneyManager.startIncrement()
-			this._randomTasks()
-			this._randomFocusTasks()
 		})
+
 		this.dayManager.on('day:gameOver', () => {
 			this._isGameOver = true
 			this._playGameOverAnimation()
@@ -69,8 +67,26 @@ export default class Main {
 
 		this._createSceneComponents()
 
+		// Initialize tasks after resources are loaded
+		this.tasks.forEach((task) => {
+			task.init()
+			this.scene.add(task)
+		})
+		this.focusTasks.forEach((task) => {
+			task.init()
+			this.scene.add(task)
+		})
+
 		// Initialize the JoystickSelectionManager
 		this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
+
+		// Initialize the TaskManager
+		this.taskManager = new TaskManager({
+			tasks: this.tasks,
+			focusTasks: this.focusTasks,
+			axis: this.axis,
+			selectionManager: this.joystickSelectionManager,
+		})
 	}
 
 	_gameOver() {
@@ -79,20 +95,12 @@ export default class Main {
 	}
 
 	_reset() {
-		this.tasks.forEach((task) => {
-			task._reset()
-			task.isPlaying = false
-			task.hideTask()
-		})
-
-		this.focusTasks.forEach((task) => {
-			task._reset()
-		})
-
+		this.taskManager.reset()
 		this._isGameStarted = false
 		this._isGameOver = false
 
-		// Destroy and re-initialize the JoystickSelectionManager
+		gsap.to(this._gameOverElement, { autoAlpha: 0, duration: 0.25, ease: 'sine.inOut' })
+
 		this.joystickSelectionManager.destroy()
 		this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
 	}
@@ -101,214 +109,18 @@ export default class Main {
 		this.background = new Background()
 		this.desk = new Desk()
 
-		this.head = new Head()
-		this.focusTasks.push(this.head)
+		// Instantiate tasks (do not call init yet)
+		this.fan = new Fan({ experience: this.experience })
+		this.computer = new Computer({ experience: this.experience })
+		this.phone = new Phone({ experience: this.experience })
 
-		this.fan = new Fan()
-		this.scene.add(this.fan)
-		this.tasks.push(this.fan)
-
-		this.computer = new Computer()
-		this.tasks.push(this.computer)
-
-		this.phone = new Phone()
-		this.tasks.push(this.phone)
+		// Instantiate the Head focus task
+		this.head = new Head({ experience: this.experience })
 
 		this.horloge = new Horloge()
-	}
 
-	_randomTasks(timeout = 10000) {
-		setInterval(() => {
-			const randomIndex = Math.floor(Math.random() * this.tasks.length)
-			const randomTask = this.tasks[randomIndex]
-			if (randomTask.isPlaying || randomTask.isShowed) return
-			randomTask.showTask()
-			randomTask.isShowed = true
-		}, timeout)
-	}
-
-	_randomFocusTasks(timeout = 5000) {
-		let randomTask
-
-		const handleComplete = () => {
-			setTimeout(repeat, timeout)
-			this.leftSelectionMode = true
-			this.rightSelectionMode = true
-			randomTask.off('task:complete', handleComplete)
-		}
-
-		const repeat = () => {
-			if (this.tasks.find((task) => task.mesh.name === 'phone').isPlaying) {
-				// Prevent subtitle conflict
-				setTimeout(repeat, timeout)
-				return
-			}
-			const randomIndex = Math.floor(Math.random() * this.focusTasks.length)
-			randomTask = this.focusTasks[randomIndex]
-			randomTask.playTask()
-			this.leftSelectionMode = false
-			randomTask.on('task:complete', handleComplete)
-		}
-
-		setTimeout(repeat, timeout)
-	}
-
-	_selectionBehavior() {
-		const selectMaterials = {
-			left: new MeshBasicMaterial({ color: 'orange', side: BackSide }),
-			right: new MeshBasicMaterial({ color: 'violet', side: BackSide }),
-		}
-		const clonedMeshes = []
-		this.tasks.forEach((task) => {
-			const clonedMesh = task.mesh.clone()
-			clonedMesh.name = 'clonedMesh'
-			clonedMesh.scale.addScalar(0.01)
-			// clonedMesh.position.z = -0.2
-			clonedMesh.traverse((child) => {
-				if (child.material) {
-					child.material = selectMaterials.left
-				}
-			})
-			clonedMesh.visible = false
-			clonedMeshes.push(clonedMesh)
-			this.scene.add(clonedMesh)
-		})
-
-		//left
-		let leftIndexSelection = 0
-		this.leftSelectionMode = true
-
-		//first selection
-		clonedMeshes[leftIndexSelection].visible = true
-		clonedMeshes[leftIndexSelection].traverse((child) => {
-			if (child.material) {
-				child.material = selectMaterials.left
-			}
-		})
-
-		//select task
-		this.experience.axis.on(`down:left`, (event) => {
-			if (!this.leftSelectionMode) return
-			if (event.key === 'a') {
-				const selectedTask = this.tasks[leftIndexSelection]
-				const outlineMesh = clonedMeshes[leftIndexSelection]
-				if (!selectedTask.isShowed) {
-					// material red and return to original
-					gsap.to(selectMaterials.left.color, {
-						r: 1,
-						g: 0,
-						b: 0,
-						duration: 0.2,
-						repeat: 1,
-						yoyo: true,
-					})
-					return
-				}
-				this.leftSelectionMode = false
-				selectedTask.isShowed = false
-				selectedTask.playTask('left')
-				outlineMesh.visible = false
-				const handleComplete = () => {
-					this.leftSelectionMode = true
-					outlineMesh.visible = true
-					selectedTask.off('task:complete', handleComplete)
-				}
-				selectedTask.on('task:complete', handleComplete)
-			}
-		})
-
-		// move selection
-		this.experience.axis.on(`joystick:quickmove:left`, (event) => {
-			if (event.direction === 'up' || event.direction === 'down') return
-			if (!this.leftSelectionMode) return
-
-			clonedMeshes[leftIndexSelection].visible = false
-
-			if (event.direction === 'left') {
-				leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
-
-				if (rightIndexSelection === leftIndexSelection)
-					leftIndexSelection = (leftIndexSelection - 1 + this.tasks.length) % this.tasks.length
-			}
-			if (event.direction === 'right') {
-				leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
-				if (rightIndexSelection === leftIndexSelection)
-					leftIndexSelection = (leftIndexSelection + 1 + this.tasks.length) % this.tasks.length
-			}
-			clonedMeshes[leftIndexSelection].visible = true
-			clonedMeshes[leftIndexSelection].traverse((child) => {
-				if (child.material) {
-					child.material = selectMaterials.left
-				}
-			})
-		})
-
-		//right
-		let rightIndexSelection = 1
-		this.rightSelectionMode = true
-
-		//first selection
-		clonedMeshes[rightIndexSelection].visible = true
-		clonedMeshes[rightIndexSelection].traverse((child) => {
-			if (child.material) {
-				child.material = selectMaterials.right
-			}
-		})
-		//select task
-		this.experience.axis.on(`down:right`, (event) => {
-			if (!this.rightSelectionMode) return
-			if (event.key === 'a') {
-				const selectedTask = this.tasks[rightIndexSelection]
-				const outlineMesh = clonedMeshes[rightIndexSelection]
-				if (!selectedTask.isShowed) {
-					// material red and return to original
-					gsap.to(selectMaterials.right.color, {
-						r: 1,
-						g: 0,
-						b: 0,
-						duration: 0.2,
-						repeat: 1,
-						yoyo: true,
-					})
-					return
-				}
-				this.rightSelectionMode = false
-				selectedTask.isShowed = false
-				selectedTask.playTask('right')
-				outlineMesh.visible = false
-				const handleComplete = () => {
-					this.rightSelectionMode = true
-					outlineMesh.visible = true
-					selectedTask.off('task:complete', handleComplete)
-				}
-				selectedTask.on('task:complete', handleComplete)
-			}
-		})
-
-		// move selection
-		this.experience.axis.on(`joystick:quickmove:right`, (event) => {
-			if (event.direction === 'up' || event.direction === 'down') return
-			if (!this.rightSelectionMode) return
-
-			clonedMeshes[rightIndexSelection].visible = false
-
-			if (event.direction === 'left') {
-				rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
-				if (leftIndexSelection === rightIndexSelection)
-					rightIndexSelection = (rightIndexSelection - 1 + this.tasks.length) % this.tasks.length
-			}
-			if (event.direction === 'right') {
-				rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
-				if (leftIndexSelection === rightIndexSelection)
-					rightIndexSelection = (rightIndexSelection + 1 + this.tasks.length) % this.tasks.length
-			}
-			clonedMeshes[rightIndexSelection].visible = true
-			clonedMeshes[rightIndexSelection].traverse((child) => {
-				if (child.material) {
-					child.material = selectMaterials.right
-				}
-			})
-		})
+		this.tasks.push(this.fan, this.computer, this.phone)
+		this.focusTasks.push(this.head)
 	}
 
 	_playStartAnimation() {
@@ -316,6 +128,21 @@ export default class Main {
 
 		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
 		startTimeline.to(this._overlayElement, { opacity: 1, duration: 0, ease: 'sine.inOut', delay: '0.25' }, 0)
+		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
+		startTimeline.to(
+			this._dayPanelElement,
+			{
+				autoAlpha: 0,
+				delay: 0.5,
+				duration: 0.25,
+				ease: 'sine.inOut',
+				onComplete: () => {
+					this.taskManager.start()
+					this.moneyManager.startIncrement()
+				},
+			},
+			1,
+		)
 	}
 
 	_playGameOverAnimation() {
@@ -329,6 +156,8 @@ export default class Main {
 				this.axis.on('down', this._handleRestart.bind(this))
 			},
 		})
+
+		gameOverTimeline.play()
 	}
 
 	_handleRestart(e) {
@@ -348,7 +177,7 @@ export default class Main {
 			this._isGameStarted = true
 		}
 
-		if (e.key === 'w' && this._isGameStarted) {
+		if (e.key === 'w' && this._isGameStarted && !this._isGameOver) {
 			this._playGameOverAnimation()
 			this._isGameOver = true
 		}
@@ -369,9 +198,19 @@ export default class Main {
 	}
 
 	update() {
-		if (this.fan) this.fan.update()
-		if (this.computer) this.computer.update()
-		if(this.horloge) this.horloge.update()
+		this.tasks.forEach((task) => {
+			if (typeof task.update === 'function') {
+				task.update()
+			}
+		})
+		this.focusTasks.forEach((task) => {
+			if (typeof task.update === 'function') {
+				task.update()
+			}
+		})
+		if (this.horloge) {
+			this.horloge.update()
+		}
 	}
 
 	destroy() {

@@ -1,7 +1,6 @@
-import EventEmitter from '@/webgl/core/EventEmitter'
-import Experience from 'core/Experience.js'
+import Task from 'core/Task'
+import { MeshBasicMaterial } from 'three'
 import { gsap } from 'gsap'
-import { MeshBasicMaterial, Vector2 } from 'three'
 
 const CALL = {
 	DURATION: 4, // seconds
@@ -10,52 +9,41 @@ const CALL = {
 		TALKING: 1,
 	},
 }
-export default class Phone extends EventEmitter {
-	/**
-	 *
-	 * @param {'left' | 'right'} _side
-	 */
-	constructor({ duration = 10, side = 'left' } = {}) {
-		super()
 
-		this.experience = new Experience()
-		this.scene = this.experience.scene
+export default class Phone extends Task {
+	constructor(options = {}) {
+		super(options)
+		this.side = options.side || 'right'
+		this.duration = options.duration || 10
 		this.camera = this.experience.camera.instance
-		this.resources = this.scene.resources
-		this.debug = this.experience.debug
-		this.axis = this.experience.axis
+
+		// Initialize audio elements
 		this.calling = new Audio('/audio/phone/ringtone.mp3')
 		this.calling.loop = true
 		this.talking = new Audio('/audio/phone/talking.mp3')
 		this.talking.loop = true
 		this.closeCall = new Audio('/audio/phone/close_call.mp3')
-		this.side = side
-		this.duration = duration
 
-		this._setMaterial()
-		this._setModel()
-		this._setDebug()
-
-		this.targetRotation = 0
+		// Prepare animations (will initialize after mesh is created)
+		this.telModel = null
+		this.baseTalValues = null
+		this.answerAnim = null
+		this.shakeAnim = null
+		this.resetAnim = null
 	}
 
-	_reset() {
-		this.shakeAnim.pause()
-		this.answerAnim.pause()
-		this.resetAnim.pause()
-		this.calling.pause()
-		this.talking.pause()
-		this.closeCall.pause()
-	}
-
-	_setMaterial() {
+	_createMesh() {
 		const texture = this.resources.items.bakeTexture
 		texture.channel = 1
 		this._material = new MeshBasicMaterial({ map: texture })
-	}
 
-	_setModel() {
-		this.mesh = this.resources.items.phoneModel.scene.clone()
+		const phoneModel = this.resources.items.phoneModel
+		if (!phoneModel) {
+			console.error('phoneModel not found in resources.items')
+			return
+		}
+
+		this.mesh = phoneModel.scene.clone()
 		this.mesh.name = 'phone'
 
 		this.mesh.traverse((child) => {
@@ -64,110 +52,66 @@ export default class Phone extends EventEmitter {
 			}
 		})
 
+		// Get the telephone handset model
 		this.telModel = this.mesh.children.find(({ name }) => name === 'tel')
 		this.baseTalValues = {
 			rotation: this.telModel.rotation.clone(),
 			position: this.telModel.position.clone(),
 		}
-		this._setShakeAnim()
+
+		this.add(this.mesh)
+
+		// Now that the telModel is available, set up animations
 		this._setAnswerAnim()
+		this._setShakeAnim()
 		this._setResetAnim()
-
-		this.scene.resources.items.taskBackgrounds.scene.traverse((child) => {
-			if (child.name.includes('phone')) {
-				this.backgroundMesh = child
-				this.backgroundMesh.material = new MeshBasicMaterial({ color: 0x000000 })
-				this.backgroundMesh.visible = false
-			}
-		})
-
-		this.scene.add(this.backgroundMesh)
-		this.scene.add(this.mesh)
 	}
 
-	/**
-	 * Activate the CTA of the call (ringing)
-	 */
-	showTask() {
-		this.shakeAnim.play()
-		this.calling.volume = CALL.VOLUMES.CALLING
-		this.calling.play()
-		// this.playTask()
-
-		// this.outCall = setTimeout(() => {
-		// 	this.shakeAnim.pause()
-		// 	this.resetAnim.play()
-		// 	this.trigger('task:fail')
-		// }, this.duration * 1000)
-	}
-
-	hideTask() {
-		this.shakeAnim.pause()
-		this.calling.pause()
-		this.answerAnim.reverse()
-		this.talking.pause()
-		this.closeCall.pause()
-		this.resetAnim.play()
-	}
-
-	/**
-	 * Deactivate the CTA of the call (ringing)
-	 */
-	ratio() {
-		this.answerAnim.reverse()
-	}
-
-	/**
-	 * @param {'left' | 'right'} side
-	 */
-	playTask(side = 'left') {
+	playTask() {
+		if (!this.isAvailable || this.isPlaying) return
 		this.isPlaying = true
-		this.experience.subtitlesManager.playSubtitle('client')
+		this.hideTask()
+
 		this.shakeAnim.pause()
 		this.calling.pause()
 		this.answerAnim.play()
+
+		this.experience.subtitlesManager.playSubtitle('client')
+
 		const handleDown = (event) => {
 			if (event.key === 'a') {
 				this.experience.subtitlesManager.next()
 			}
 		}
-		this.axis.on(`down:${side}`, handleDown)
+
+		this.axis.on(`down:right`, handleDown)
+
 		this.experience.subtitlesManager.on('finish', () => {
 			this.answerAnim.reverse()
-			this.trigger('task:complete')
-			this.axis.off(`down:${side}`, handleDown)
+			this.completeTask()
+			this.axis.off(`down:right`, handleDown)
 			this.isPlaying = false
 		})
 	}
 
-	_handlePlayTask(e) {
-		if (e.key !== 'a') return
-		this.axis.off('down:' + this.side, this._handlePlayTask)
-		gsap.to(this.calling, { volume: 0, duration: 0.25, onComplete: () => this.calling.pause() })
+	showTask() {
+		super.showTask()
+		this.shakeAnim.play()
+		this.calling.volume = CALL.VOLUMES.CALLING
+		this.calling.play()
+	}
 
+	hideTask() {
+		super.hideTask()
 		this.shakeAnim.pause()
-		this.answerAnim.play()
-
-		this.talking.volume = CALL.VOLUMES.TALKING
-		this.talking.play()
-
-		setTimeout(() => {
-			gsap.to(this.talking, { volume: 0, duration: 0.25, onComplete: () => this.talking.pause() })
-
-			this.answerAnim.pause()
-			this.resetAnim.play()
-
-			this.trigger('task:complete')
-		}, CALL.DURATION * 1000)
+		gsap.to(this.calling, { volume: 0, duration: 0.25, onComplete: () => this.calling.pause() })
 	}
 
 	_setAnswerAnim() {
 		const duration = 1.25
 		const sideF = this.side === 'left' ? -1 : 1
 
-		const target = new Vector2()
-		this.camera.getViewSize(1, target) // result written to target
-		const dist = target.x * 0.5
+		const dist = 1 // Adjust this value based on your camera setup
 
 		this.answerAnim = gsap
 			.timeline({ paused: true })
@@ -179,7 +123,7 @@ export default class Phone extends EventEmitter {
 					z: (Math.PI / 2) * sideF,
 					ease: 'power2.inOut',
 				},
-				0
+				0,
 			)
 			.to(
 				this.telModel.position,
@@ -190,7 +134,7 @@ export default class Phone extends EventEmitter {
 					z: this.camera.position.z,
 					ease: 'power2.inOut',
 				},
-				0
+				0,
 			)
 	}
 
@@ -208,7 +152,7 @@ export default class Phone extends EventEmitter {
 				z: this.telModel.rotation.z - 0.05,
 				ease: 'bounce.out',
 			},
-			0
+			0,
 		)
 
 		this.shakeAnim.to(
@@ -218,7 +162,7 @@ export default class Phone extends EventEmitter {
 				y: this.telModel.position.y + 0.1,
 				ease: 'bounce.out',
 			},
-			0
+			0,
 		)
 	}
 
@@ -235,7 +179,7 @@ export default class Phone extends EventEmitter {
 					z: this.baseTalValues.rotation.z,
 					ease: 'power2.inOut',
 				},
-				0
+				0,
 			)
 			.to(
 				this.telModel.position,
@@ -249,11 +193,16 @@ export default class Phone extends EventEmitter {
 						this.closeCall.play()
 					},
 				},
-				0
+				0,
 			)
 	}
 
-	_setDebug() {
-		// const debugFolder = addObjectDebug(this.debug.ui, this.model)
+	reset() {
+		super.reset()
+		if (this.shakeAnim) this.shakeAnim.pause(0)
+		if (this.answerAnim) this.answerAnim.pause(0)
+		if (this.resetAnim) this.resetAnim.pause(0)
+		gsap.to(this.calling, { volume: 0, duration: 0.25, onComplete: () => this.calling.pause() })
+		gsap.to(this.talking, { volume: 0, duration: 0.25, onComplete: () => this.talking.pause() })
 	}
 }

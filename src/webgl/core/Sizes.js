@@ -6,7 +6,7 @@ export default class Sizes extends EventEmitter {
 		super()
 
 		// Setup
-		this.downScale = 2
+		this.downScale = 3
 		this.width = window.innerWidth / this.downScale
 		this.height = window.innerHeight / this.downScale
 		this.pixelRatio = Math.min(devicePixelRatio, 1)
