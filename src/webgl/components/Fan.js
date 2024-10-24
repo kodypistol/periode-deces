@@ -1,14 +1,16 @@
 import Task from 'core/Task'
-import { MeshBasicMaterial, MeshStandardMaterial, Vector2 } from 'three'
+import { MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
 
 const SETTINGS = {
 	TURNS: 4,
 }
-
 export default class Fan extends Task {
 	constructor(options = {}) {
 		super(options)
+		this.dayManager = this.experience.dayManager
+		this.moneyManager = this.experience.moneyManager
+		this.isGameFinished = false
 		this.targetRotation = 0
 	}
 
@@ -37,7 +39,9 @@ export default class Fan extends Task {
 	}
 
 	playTask() {
-		if (!this.isAvailable || this.isPlaying) return
+		if (!this.isAvailable || this.isPlaying) {
+			return
+		}
 		this.isPlaying = true
 		this.hideTask()
 
@@ -55,9 +59,24 @@ export default class Fan extends Task {
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
 				this.completeTask()
+				this.isGameFinished = true
+				if (this.moneyManager.isMoneyDecreased) {
+					this.moneyManager.removePermanentRate(0.015)
+					this.moneyManager.isMoneyDecreased = false
+				}
+				this.dayManager.tasksCount++
+				this.isPlaying = false
 				this.axis.off(`joystick:move:right`, handleMove)
-				this.targetRotation = 0
-				this.helix.rotation.x = 0
+				this.targetRotation = Math.PI * 2 * SETTINGS.TURNS
+
+				setTimeout(() => {
+					this.targetRotation = 0
+					this.helix.rotation.x = 0
+				}, 1000)
+
+				setTimeout(() => {
+					this.isGameFinished = false
+				}, 4000)
 			}
 		}
 

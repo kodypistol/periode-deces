@@ -1,6 +1,7 @@
 import Task from 'core/Task'
-import { MeshBasicMaterial, MeshStandardMaterial, Vector2 } from 'three'
+import { MeshBasicMaterial, Vector2 } from 'three'
 import { gsap } from 'gsap'
+import EventEmitter from 'core/EventEmitter.js'
 
 const CALL = {
 	DURATION: 4, // seconds

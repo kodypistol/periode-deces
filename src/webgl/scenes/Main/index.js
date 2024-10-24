@@ -9,26 +9,55 @@ import Desk from 'components/Desk.js'
 import Head from 'components/Head.js'
 import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
+import Horloge from 'components/Horloge.js'
 import TaskManager from 'core/TaskManager.js'
 
 export default class Main {
 	constructor() {
 		this.experience = new Experience()
 		this.scene = this.experience.scene
-		this.axis = this.experience.axis
-
-		// Assign resources to this.scene.resources
 		this.scene.resources = new Resources(sources)
+		this.axis = this.experience.axis
+		this.dayManager = this.experience.dayManager
+		this.moneyManager = this.experience.moneyManager
+
+		this.MoneyCounter = this.setMoneyCounter()
 
 		this.tasks = []
 		this.focusTasks = []
 		this._isGameStarted = false
 		this._isGameOver = false
 
-		// Listen for resources to be ready
 		this.scene.resources.on('ready', () => {
 			this._start()
 			this._addEventListeners()
+		})
+
+		this.dayManager.on('day:finished', () => {
+			this.tasks.forEach((task) => {
+				task._reset()
+				task.isPlaying = false
+				task.hideTask()
+			})
+
+			this.focusTasks.forEach((task) => {
+				task._reset()
+			})
+			this.moneyManager.stop()
+		})
+
+		this.dayManager.on('day:changed', () => {
+			this.moneyManager.resetAllRates()
+			this.moneyManager.startIncrement()
+			this._randomTasks()
+			this._randomFocusTasks()
+		})
+
+		this.dayManager.on('day:gameOver', () => {
+			this._isGameOver = true
+			this._playGameOverAnimation()
+			this._reset()
+			this.dayManager.stop()
 		})
 	}
 
@@ -36,6 +65,7 @@ export default class Main {
 		this._startMenuElement = document.getElementById('start-menu')
 		this._dayPanelElement = document.getElementById('day-panel')
 		this._gameOverElement = document.getElementById('game-over')
+		this._overlayElement = document.getElementById('overlay')
 
 		this._createSceneComponents()
 
@@ -61,6 +91,11 @@ export default class Main {
 		})
 	}
 
+	_gameOver() {
+		this.tasks = []
+		this.focusTasks = []
+	}
+
 	_reset() {
 		this.taskManager.reset()
 		this._isGameStarted = false
@@ -84,6 +119,8 @@ export default class Main {
 		// Instantiate the Head focus task
 		this.head = new Head({ experience: this.experience })
 
+		this.horloge = new Horloge()
+
 		this.tasks.push(this.fan, this.computer, this.phone)
 		this.focusTasks.push(this.head)
 	}
@@ -92,6 +129,7 @@ export default class Main {
 		const startTimeline = gsap.timeline()
 
 		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
+		startTimeline.to(this._overlayElement, { opacity: 1, duration: 0, ease: 'sine.inOut', delay: '0.25' }, 0)
 		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
 		startTimeline.to(
 			this._dayPanelElement,
@@ -102,7 +140,7 @@ export default class Main {
 				ease: 'sine.inOut',
 				onComplete: () => {
 					this.taskManager.start()
-				},
+					this.moneyManager.startIncrement()				},
 			},
 			1,
 		)
@@ -112,7 +150,7 @@ export default class Main {
 		const gameOverTimeline = gsap.timeline()
 
 		gameOverTimeline.to(this._gameOverElement, {
-			autoAlpha: 1,
+			opacity: 1,
 			duration: 0.25,
 			ease: 'sine.inOut',
 			onComplete: () => {
@@ -123,13 +161,17 @@ export default class Main {
 
 	_handleRestart(e) {
 		if (e.key === 'a') {
-			this._reset()
+			// Reset the game
+			// this._reset()
+			window.location.reload()
+			// Remove this event listener after resetting
 			this.axis.off('down', this._handleRestart)
 		}
 	}
 
 	_handleAxisDown(e) {
 		if (e.key === 'a' && !this._isGameStarted) {
+			this.dayManager.setDay(1)
 			this._playStartAnimation()
 			this._isGameStarted = true
 		}
@@ -144,6 +186,16 @@ export default class Main {
 		this.axis.on('down', this._handleAxisDown.bind(this))
 	}
 
+	setMoneyCounter() {
+		const moneyDisplay = document.querySelector('#overlay .score #count')
+
+		moneyDisplay.textContent = this.moneyManager.formatNumber(this.moneyManager.money)
+
+		this.moneyManager.setOnMoneyChangeCallback((newMoney) => {
+			moneyDisplay.textContent = this.moneyManager.formatNumber(newMoney)
+		})
+	}
+
 	update() {
 		this.tasks.forEach((task) => {
 			if (typeof task.update === 'function') {
@@ -155,5 +207,12 @@ export default class Main {
 				task.update()
 			}
 		})
+		if(this.horloge) {
+			this.horloge.update()
+		}
+	}
+
+	destroy() {
+		this.scene.clear()
 	}
 }

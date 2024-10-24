@@ -26,4 +26,8 @@ export default class Main {
 	update() {
 		if (this.computer) this.computer.update()
 	}
+
+	destroy() {
+		this.scene.clear()
+	}
 }

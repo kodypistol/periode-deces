@@ -7,6 +7,11 @@ export default class Head extends Task {
 		this.selectionManager = options.selectionManager
 	}
 
+	_reset() {
+		this.mesh.position.y = 2
+		this.mesh.rotation.z = 0.2
+	}
+
 	_createMesh() {
 		const headModel = this.resources.items.headModel
 		if (!headModel) {

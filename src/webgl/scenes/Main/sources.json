@@ -38,6 +38,17 @@
 		"colorSpace": "srgb"
 	},
 	{
+		"name": "horloge",
+		"type": "texture",
+		"path": "textures/horloge-digitale.png",
+		"colorSpace": "srgb"
+	},
+	{
+		"name": "horlogeModel",
+		"type": "gltf",
+		"path": "models/horloge-digitale.glb"
+	},
+	{
 		"name": "taskBackgrounds",
 		"type": "gltf",
 		"path": "models/task-backgrounds.glb"
