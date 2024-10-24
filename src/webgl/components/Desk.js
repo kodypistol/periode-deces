@@ -25,7 +25,6 @@ export default class Desk {
 			if (child.isMesh) {
 				child.material = this._material
 				if (child.name === '_NAS') {
-
 					// replace mesh with this.scene.resources.items.sasModel.scene.clone()
 					child.geometry = this.scene.resources.items.nasModel.scene.clone().children[0].geometry
 					// child.geometry.attributes.uv = child.geometry.attributes.uv1.clone()
@@ -33,6 +32,10 @@ export default class Desk {
 					//flipY
 					child.material.map.flipY = false
 				}
+			}
+
+			if (child.name === 'Paper') {
+				child.position.y += 0.003
 			}
 		})
 		this.mesh.name = 'background'
