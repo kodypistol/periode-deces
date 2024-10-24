@@ -295,7 +295,7 @@ export default class Main {
 				onComplete: () => {
 					this._randomTasks()
 					this._randomFocusTasks()
-					moneyManager.startIncrement()
+					this.moneyManager.startIncrement()
 				},
 			},
 			1
@@ -344,10 +344,10 @@ export default class Main {
 	setMoneyCounter() {
 		const moneyDisplay = document.querySelector('#overlay .score #count')
 
-		moneyDisplay.textContent = moneyManager.formatNumber(moneyManager.money)
+		moneyDisplay.textContent = this.moneyManager.formatNumber(this.moneyManager.money)
 
-		moneyManager.setOnMoneyChangeCallback((newMoney) => {
-			moneyDisplay.textContent = moneyManager.formatNumber(newMoney)
+		this.moneyManager.setOnMoneyChangeCallback((newMoney) => {
+			moneyDisplay.textContent = this.moneyManager.formatNumber(newMoney)
 		})
 	}
 
