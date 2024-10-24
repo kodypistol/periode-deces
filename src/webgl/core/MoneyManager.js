@@ -16,7 +16,7 @@ export default class MoneyManager {
 
 		MoneyManager.instance = this // Save the instance
 
-		this.element = document.querySelector('.money-counter')
+		this.element = document.getElementById('overlay')
 	}
 
 	// Método para establecer la función de callback cuando el dinero cambia
@@ -55,7 +55,7 @@ export default class MoneyManager {
 		// Programar la reversión del multiplicador
 		modifier.timeoutId = setTimeout(() => {
 			this.removeModifier(modifier)
-			this.element.style.color = 'black'
+			this.element.style.color = 'white'
 		}, durationInSeconds * 1000)
 
 		this.element.style.color = 'green'
@@ -83,7 +83,7 @@ export default class MoneyManager {
 			this.removeAdditionalRate(modifier)
 			// Restaurar el color del elemento
 			if (this.element) {
-				this.element.style.color = 'black'
+				this.element.style.color = 'white'
 			}
 		}, durationInSeconds * 1000)
 

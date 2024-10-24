@@ -20,6 +20,8 @@ export default class Main {
 		this.moneyManager = this.experience.moneyManager
 		this.scene.resources = new Resources(sources)
 
+		this.MoneyCounter = this.setMoneyCounter()
+
 		this.tasks = []
 		this.focusTasks = []
 		this._isGameStarted = false
@@ -40,6 +42,7 @@ export default class Main {
 		this._startMenuElement = document.getElementById('start-menu')
 		this._dayPanelElement = document.getElementById('day-panel')
 		this._gameOverElement = document.getElementById('game-over')
+		this._overlayElement = document.getElementById('overlay')
 
 		this._createSceneComponents()
 
@@ -280,6 +283,23 @@ export default class Main {
 		const startTimeline = gsap.timeline()
 
 		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
+		startTimeline.to(this._overlayElement, { opacity: 1, duration: 0, ease: 'sine.inOut', delay: '0.25' }, 0)
+		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
+		startTimeline.to(
+			this._dayPanelElement,
+			{
+				autoAlpha: 0,
+				delay: 0.5,
+				duration: 0.25,
+				ease: 'sine.inOut',
+				onComplete: () => {
+					this._randomTasks()
+					this._randomFocusTasks()
+					moneyManager.startIncrement()
+				},
+			},
+			1
+		)
 	}
 
 	_playGameOverAnimation() {
@@ -321,6 +341,16 @@ export default class Main {
 		this.axis.on('down', this._handleAxisDown.bind(this))
 	}
 
+	setMoneyCounter() {
+		const moneyDisplay = document.querySelector('#overlay .score #count')
+
+		moneyDisplay.textContent = moneyManager.formatNumber(moneyManager.money)
+
+		moneyManager.setOnMoneyChangeCallback((newMoney) => {
+			moneyDisplay.textContent = moneyManager.formatNumber(newMoney)
+		})
+	}
+
 	update() {
 		if (this.fan) this.fan.update()
 		if (this.computer) this.computer.update()
@@ -328,6 +358,5 @@ export default class Main {
 
 	destroy() {
 		this.scene.clear()
-
 	}
 }
