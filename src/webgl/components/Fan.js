@@ -7,6 +7,7 @@ import { gsap } from 'gsap'
 
 const SETTINGS = {
 	TURNS: 4,
+	NAS_BUTTONS_CHANGE_INTERVAL: 1,
 }
 export default class Fan extends Component {
 	constructor() {
@@ -17,9 +18,14 @@ export default class Fan extends Component {
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
 		this.isGameFinished = false
+		this.nasButtons = []
+		this.nasButtonTweens = []
 
 		this._createMaterial()
 		this._createMesh()
+
+		this._createNASButtonsMaterial()
+		this._createNASButtonsMesh()
 
 		this.targetRotation = 0
 	}
@@ -69,6 +75,53 @@ export default class Fan extends Component {
 		// addObjectDebug(this.debug.ui, this.mesh)
 	}
 
+	_createNASButtonsMaterial() {
+		const texture = this.scene.resources.items.NASTexture
+		this.NASButtonsMaterial = new MeshBasicMaterial({ map: texture })
+	}
+
+	_createNASButtonsMesh() {
+		this.NASButtonsMesh = this.scene.resources.items.nasButtonsModel.scene.clone()
+		this.NASButtonsMesh.traverse((child) => {
+			if (child.isMesh) {
+				console.log(child);
+				this.nasButtons.push(child)
+
+				child.material = new MeshBasicMaterial({ map: this.scene.resources.items.NASTexture })
+			}
+		})
+		this.NASButtonsMesh.name = 'nasButtons'
+		this.add(this.NASButtonsMesh)
+	}
+
+	animateNASButtonsSequentially() {
+		this.nasButtonTweens = []
+		// Clear previous tweens
+		this.nasButtons.forEach((button, index) => {
+				const tween = gsap.to(button.material.color, {
+						r: 100,  // Adjust color as needed
+						duration: 0.5,
+						repeat: -1,
+						yoyo: true,
+						paused: true,  // Initially pause the animation
+				})
+				// Start the animation with a delay for each button
+				gsap.delayedCall(SETTINGS.NAS_BUTTONS_CHANGE_INTERVAL * index, () => {
+						if (!this.isGameFinished) {
+								tween.play()  // Start the tween after the delay
+						}
+				})
+				this.nasButtonTweens.push(tween)  // Store the tween to stop later
+		})
+	}
+
+	stopNASButtonsAnimation() {
+		this.nasButtonTweens.forEach(tween => tween.kill())  // Stop all tweens
+		this.nasButtons.forEach(button => {
+				button.material.color.set(0xffffff)  // Reset button color
+		})
+}
+
 	/**
 	 * @param {'left' | 'right'} side
 	 */
@@ -91,6 +144,7 @@ export default class Fan extends Component {
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
 				this.isGameFinished = true
+				this.stopNASButtonsAnimation()
 				if(this.moneyManager.isMoneyDecreased) {
 					this.moneyManager.removePermanentRate(0.015)
 					this.moneyManager.isMoneyDecreased = false
@@ -123,6 +177,9 @@ export default class Fan extends Component {
 			repeat: -1,
 			yoyo: true,
 		})
+
+		this.animateNASButtonsSequentially()
+
 		setTimeout(() => {
 			if (!this.isGameFinished) {
 				this.moneyManager.isMoneyDecreased = true
@@ -134,6 +191,7 @@ export default class Fan extends Component {
 	hideTask() {
 		this.showTaskTl?.kill()
 		this.witness.material.color.set(0xffffff)
+		this.stopNASButtonsAnimation()
 	}
 
 	update() {
