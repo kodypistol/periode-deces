@@ -11,6 +11,7 @@ import gsap from 'gsap'
 import JoystickSelectionManager from 'core/JoystickSelectionManager.js'
 import Horloge from 'components/Horloge.js'
 import TaskManager from 'core/TaskManager.js'
+import AudioManager from 'utils/AudioManager.js'
 
 export default class Main {
 	constructor() {
@@ -20,6 +21,8 @@ export default class Main {
 		this.axis = this.experience.axis
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
+
+		this.audioManager = new AudioManager()
 
 		this.setMoneyCounter()
 
@@ -141,7 +144,7 @@ export default class Main {
 					this.moneyManager.startIncrement()
 				},
 			},
-			1,
+			1
 		)
 	}
 

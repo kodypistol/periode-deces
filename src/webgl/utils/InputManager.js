@@ -53,11 +53,12 @@ class InputManager extends EventEmitter {
 	setMouseEvents() {
 		addEventListener('mousedown', (event) => {
 			this.trigger('mousedown', [event])
-
-			this.triggerOnce('audioContextReady', [event])
 		})
 		addEventListener('mouseup', ({ event }) => {
 			this.trigger('mouseup', [event])
+		})
+		addEventListener('keydown', ({ event }) => {
+			this.triggerOnce('audioContextReady', [event])
 		})
 	}
 }

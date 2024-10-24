@@ -36,6 +36,12 @@ export default class AudioManager {
 					volume: 1,
 					autoplay: false,
 				},
+				ambiant: {
+					buffer: this.resources.items.ambiantAudio,
+					loop: true,
+					volume: 1,
+					autoplay: true,
+				},
 			}
 			this.setAudios()
 			if (this.debug.active) this.setDebug()
@@ -43,6 +49,7 @@ export default class AudioManager {
 
 		InputManager.on('audioContextReady', () => {
 			this.audioContextReady = true
+			console.log('audio context ready')
 
 			Object.keys(this.audios).forEach((key) => {
 				const audio = this.audios[key]

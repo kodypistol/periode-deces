@@ -98,5 +98,10 @@
 		"name": "headModel",
 		"type": "gltf",
 		"path": "models/head.glb"
+	},
+	{
+		"name": "ambiantAudio",
+		"type": "audio",
+		"path": "audio/ambiant.mp3"
 	}
 ]
