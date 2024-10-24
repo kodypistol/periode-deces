@@ -127,7 +127,7 @@ export default class Main {
 		}, timeout)
 	}
 
-	_randomFocusTasks(timeout = 30000) {
+	_randomFocusTasks(timeout = 5000) {
 		let randomTask
 
 		const handleComplete = () => {
@@ -316,22 +316,6 @@ export default class Main {
 
 		startTimeline.to(this._startMenuElement, { autoAlpha: 0, duration: 0.5, ease: 'sine.inOut' }, 0)
 		startTimeline.to(this._overlayElement, { opacity: 1, duration: 0, ease: 'sine.inOut', delay: '0.25' }, 0)
-		startTimeline.to(this._dayPanelElement, { autoAlpha: 1, duration: 0.25, ease: 'sine.inOut' }, 0)
-		startTimeline.to(
-			this._dayPanelElement,
-			{
-				autoAlpha: 0,
-				delay: 0.5,
-				duration: 0.25,
-				ease: 'sine.inOut',
-				onComplete: () => {
-					this._randomTasks()
-					this._randomFocusTasks()
-					this.moneyManager.startIncrement()
-				},
-			},
-			1
-		)
 	}
 
 	_playGameOverAnimation() {
