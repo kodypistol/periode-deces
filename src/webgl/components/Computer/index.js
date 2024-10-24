@@ -1,17 +1,5 @@
 import Experience from 'core/Experience.js'
-import fragmentShader from './fragment.glsl'
-import vertexShader from './vertex.glsl'
-import {
-	BoxGeometry,
-	Mesh,
-	Scene,
-	ShaderMaterial,
-	MeshNormalMaterial,
-	Vector3,
-	Object3D,
-	MeshBasicMaterial,
-} from 'three'
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
+import { BoxGeometry, Mesh, Scene, Vector3, MeshBasicMaterial } from 'three'
 import addObjectDebug from '@/webgl/utils/addObjectDebug'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
 import Graph from './activities/Graph'
@@ -33,7 +21,6 @@ export default class Computer extends EventEmitter {
 
 		this.screenPoint = this.setScreenPoint()
 		this.screenElement = this.setScreenElement()
-		this.screenMoneyCounter = this.setScreenMoneyCounter()
 		this.screenBounds = this.setScreenBounds()
 
 		this.setMaterial()
@@ -72,14 +59,6 @@ export default class Computer extends EventEmitter {
 	}
 
 	setMaterial() {
-		// this.material = new ShaderMaterial({
-		// 	fragmentShader,
-		// 	vertexShader,
-		// 	uniforms: {
-		// 		uOpacity: { value: 1 },
-		// 	},
-		// })
-
 		const texture = this.resources.items.bakeTexture
 		texture.channel = 1
 
@@ -141,21 +120,6 @@ export default class Computer extends EventEmitter {
 		this.css3dScene.add(cssObject)
 
 		return cssObject
-	}
-
-	setScreenMoneyCounter() {
-		const screen = document.querySelector('.computer-screen')
-		const moneyDisplay = screen.querySelector('.money-counter')
-
-		const moneySpan = document.createElement('span')
-
-		moneySpan.textContent = this.moneyManager.formatNumber(this.moneyManager.money)
-
-		moneyDisplay.appendChild(moneySpan)
-
-		this.moneyManager.setOnMoneyChangeCallback((newMoney) => {
-			moneySpan.textContent = this.moneyManager.formatNumber(newMoney)
-		})
 	}
 
 	setScreenBounds() {

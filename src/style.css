@@ -50,19 +50,23 @@ body {
 	image-rendering: crisp-edges;
 	transform: scale(2);
 	/* filter: blur(1px); */
+}
 
-	.money-counter {
-		position: absolute;
-		top: 0;
-		right: 0;
-		background-color: white;
-		padding: 2px;
+.overlay {
+	opacity: 0;
+	position: fixed;
+	top: 24px;
+	left: 24px;
+	display: block;
+	z-index: 1;
+
+	.score {
+		background-color: #150f00c1;
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
 		align-items: center;
-		overflow: hidden;
-		z-index: 2;
+		gap: 16px;
+		padding: 8px 32px;
+		font-size: 42px;
 	}
 }
 
@@ -219,27 +223,22 @@ body {
 }
 
 .subtitle {
+	/* opacity: 0; */
 	position: fixed;
 	bottom: 100px;
 	left: 0;
 	right: 0;
 	width: 80%;
 	margin: auto;
-	font-size: 32px;
-	font-family: 'Times New Roman', serif;
-	font-weight: 500;
-	color: #f5e082;
-	/* color: #ffcd38; */
-	font-style: italic;
-	text-align: center;
-	text-wrap: balance;
-	text-shadow: 1px 1px 2px #000, -1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000;
+	font-size: 42px;
 	z-index: 10;
 	user-select: none;
 
-	span {
-		/*background: rgba(0,0,0,.5);*/
-	}
+	background-color: #150f00c1;
+	padding: 8px 24px;
+
+	text-transform: uppercase;
+	text-align: center;
 }
 
 .qte {
@@ -270,6 +269,8 @@ body {
 	opacity: 0;
 
 	animation: pulse 1s infinite steps(1);
+
+	z-index: 999999999;
 }
 
 .hide-element {

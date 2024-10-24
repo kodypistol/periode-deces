@@ -17,7 +17,7 @@ export default class MoneyManager {
 
 		MoneyManager.instance = this // Save the instance
 
-		this.element = document.querySelector('.money-counter')
+		this.element = document.getElementById('overlay')
 	}
 
 	// Método para establecer la función de callback cuando el dinero cambia

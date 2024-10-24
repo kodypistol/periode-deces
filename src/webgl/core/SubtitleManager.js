@@ -30,21 +30,29 @@ export class SubtitleManager extends EventEmitter {
 			span.innerText = char
 			this._subtitleElement.appendChild(span)
 		})
-		this.tl = gsap.to(this._subtitleElement.querySelectorAll('span'), {
-			stagger: {
-				each: 0.05,
-				onComplete: () => {
-					this.typeAudio.play()
+		this.tl = gsap
+			// .to(
+			// 	this._subtitleElement,
+			// 	{
+			// 		opacity: 1,
+			// 	},
+			// 	0
+			// )
+			.to(this._subtitleElement.querySelectorAll('span'), {
+				stagger: {
+					each: 0.05,
+					onComplete: () => {
+						this.typeAudio.play()
+					},
 				},
-			},
-			visibility: 'visible',
-			onComplete: () => {
-				this._nextElement.style.opacity = '1'
-				if (this.currentSubtitle.success) {
-					this.playQte()
-				}
-			},
-		})
+				visibility: 'visible',
+				onComplete: () => {
+					this._nextElement.style.opacity = '1'
+					if (this.currentSubtitle.success) {
+						this.playQte()
+					}
+				},
+			})
 	}
 
 	next() {
