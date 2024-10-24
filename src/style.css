@@ -184,7 +184,8 @@ body {
 	width: 100%;
 }
 
-.graph .completed {
+.graph .completed,
+.graph .failed {
 	position: absolute;
 	top: 30%;
 	left: 10%;
@@ -196,7 +197,8 @@ body {
 	opacity: 0;
 }
 
-.graph .completed img {
+.graph .completed img,
+.graph .failed img {
 	width: 100%;
 }
 

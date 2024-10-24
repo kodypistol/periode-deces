@@ -6,25 +6,25 @@ import { MeshBasicMaterial } from "three";
 const PARAMS = [
 	{
 		index: 1,
-		duration: 120,
+		duration: 60,
 		workHours: [9, 17],
-		tasks: 3,
-		money: 10, // in K€
+		tasks: 0,
+		money: 0, // in K€
 		role: "Stagiaire",
 	},
 	{
 		index: 2,
-		duration: 120,
+		duration: 5,
 		workHours: [9, 19],
-		tasks: 4,
-		money: 100, // in K€
+		tasks: 0,
+		money: 0, // in K€
 		role: "Chef d'équipe",
 	},
 	{
 		index: 3,
 		duration: 120,
 		workHours: [9, 21],
-		tasks: 5,
+		tasks: 0,
 		money: 500, // in K€
 		role: "Bras droit du patron",
 	},
@@ -60,7 +60,7 @@ export default class DayManager extends EventEmitter {
 		this._dayCounterElement.innerHTML = this.day.index
 		this._dayRoleElement.innerHTML = this.day.role
 
-		this.trigger('day:finished')
+		this.trigger('day:finished', this.day.index)
 		this.playChangeDayAnimation()
 	}
 
@@ -87,7 +87,7 @@ export default class DayManager extends EventEmitter {
 				duration: 0.25,
 				ease: 'sine.inOut',
 				onComplete: () => {
-					this.trigger('day:changed')
+					this.trigger('day:changed', this.day.index)
 					this.isDayStarted = true
 				},
 			},
