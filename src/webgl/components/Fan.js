@@ -1,6 +1,7 @@
 import Task from 'core/Task'
 import { MeshBasicMaterial, Vector2 } from 'three'
 import { lerp } from 'three/src/math/MathUtils.js'
+import { gsap } from 'gsap'
 
 const SETTINGS = {
 	TURNS: 4,

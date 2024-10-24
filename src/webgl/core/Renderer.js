@@ -1,5 +1,5 @@
 import Experience from 'core/Experience.js'
-import { CustomToneMapping, NoToneMapping, ShaderChunk, WebGLRenderer } from 'three'
+import { CustomToneMapping, NoToneMapping, ShaderChunk, Vector2, WebGLRenderer } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 
@@ -13,6 +13,7 @@ export default class Renderer {
 
 		this._createInstance()
 		this._createToneMapping()
+		this._createSnapVertices()
 		// this._createPostprocessing()
 	}
 
@@ -54,6 +55,44 @@ export default class Renderer {
       return color;
     }
   `,
+		)
+	}
+
+	_createSnapVertices() {
+		const resolution = new Vector2(320, 240)
+
+		ShaderChunk.project_vertex = ShaderChunk.project_vertex.replace(
+			'gl_Position = projectionMatrix * mvPosition;',
+			`
+            vec4 pos = projectionMatrix * mvPosition;
+            float dist = length(mvPosition);
+            float affine = dist + (mvPosition.w * 8.0) / dist * 0.5;
+            vAffine = affine;
+            pos.xyz /= pos.w;
+            pos.xy = floor(vec2(${resolution.toArray()}) * pos.xy) / vec2(${resolution.toArray()});
+            pos.xyz *= pos.w;
+            gl_Position = pos;
+            `,
+		)
+
+		ShaderChunk.uv_pars_vertex =
+			`
+            varying vec2 vUv;
+            varying float vAffine;
+        ` + ShaderChunk.uv_pars_vertex
+
+		ShaderChunk.uv_pars_fragment =
+			`
+            varying vec2 vUv;
+            varying float vAffine;
+        ` + ShaderChunk.uv_pars_fragment
+
+		ShaderChunk.map_fragment = ShaderChunk.map_fragment.replace(
+			'vec4 texelColor = texture2D( map, vUv );',
+			`
+            vec2 uv = vUv / vAffine;
+            vec4 texelColor = texture2D( map, uv );
+            `,
 		)
 	}
 

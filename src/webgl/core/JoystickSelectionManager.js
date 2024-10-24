@@ -60,6 +60,7 @@ export default class JoystickSelectionManager {
 				// Ensure the outlineMesh is rendered behind the original mesh
 				outlineMesh.renderOrder = -1
 				outlineMesh.scale.addScalar(0.01)
+				outlineMesh.position.addScalar(-0.01)
 
 				outlineMesh.visible = false
 				this.scene.add(outlineMesh)

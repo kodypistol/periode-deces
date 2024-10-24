@@ -21,7 +21,7 @@ export default class Main {
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
 
-		this.MoneyCounter = this.setMoneyCounter()
+		this.setMoneyCounter()
 
 		this.tasks = []
 		this.focusTasks = []
@@ -35,7 +35,7 @@ export default class Main {
 
 		this.dayManager.on('day:finished', () => {
 			this.tasks.forEach((task) => {
-				task._reset()
+				task.reset()
 				task.isPlaying = false
 				task.hideTask()
 			})
@@ -49,8 +49,6 @@ export default class Main {
 		this.dayManager.on('day:changed', () => {
 			this.moneyManager.resetAllRates()
 			this.moneyManager.startIncrement()
-			this._randomTasks()
-			this._randomFocusTasks()
 		})
 
 		this.dayManager.on('day:gameOver', () => {
@@ -140,7 +138,8 @@ export default class Main {
 				ease: 'sine.inOut',
 				onComplete: () => {
 					this.taskManager.start()
-					this.moneyManager.startIncrement()				},
+					this.moneyManager.startIncrement()
+				},
 			},
 			1,
 		)
@@ -207,7 +206,7 @@ export default class Main {
 				task.update()
 			}
 		})
-		if(this.horloge) {
+		if (this.horloge) {
 			this.horloge.update()
 		}
 	}
