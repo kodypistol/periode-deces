@@ -57,7 +57,7 @@ export default class MoneyManager {
 		modifier.timeoutId = setTimeout(() => {
 			this.removeModifier(modifier)
 			if (this.element && !this.isMoneyDecreased) {
-				this.element.style.color = 'black'
+				this.element.style.color = 'white'
 			} else {
 				this.element.style.color = 'red'
 			}
@@ -88,7 +88,7 @@ export default class MoneyManager {
 			this.removeAdditionalRate(modifier)
 			// Restaurar el color del elemento
 			if (this.element && !this.isMoneyDecreased) {
-				this.element.style.color = 'black'
+				this.element.style.color = 'white'
 			} else {
 				this.element.style.color = 'red'
 			}
@@ -153,7 +153,7 @@ export default class MoneyManager {
 		if (modifier) {
 			this.removeAdditionalRate(modifier);
 			if (this.element) {
-				this.element.style.color = 'black'
+				this.element.style.color = 'white'
 			}
 			console.log(`Tasa permanente de ${rate} eliminada.`)
 		} else {
@@ -177,7 +177,7 @@ export default class MoneyManager {
 		this.updateCurrentRate()
 
 		if (this.element) {
-			this.element.style.color = 'black'
+			this.element.style.color = 'white'
 		}
 	}
 
