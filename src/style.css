@@ -206,6 +206,7 @@ body {
 }
 
 .subtitle {
+	/* opacity: 0; */
 	position: fixed;
 	bottom: 100px;
 	left: 0;
@@ -251,6 +252,8 @@ body {
 	opacity: 0;
 
 	animation: pulse 1s infinite steps(1);
+
+	z-index: 999999999;
 }
 
 .hide-element {

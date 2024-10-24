@@ -72,7 +72,7 @@ export default class Main {
 		this.desk = new Desk()
 
 		this.head = new Head()
-		// this.focusTasks.push(this.head)
+		this.focusTasks.push(this.head)
 
 		this.fan = new Fan()
 		this.scene.add(this.fan)
@@ -82,7 +82,7 @@ export default class Main {
 		this.tasks.push(this.computer)
 
 		this.phone = new Phone()
-		// this.tasks.push(this.phone)
+		this.tasks.push(this.phone)
 	}
 
 	_randomTasks(timeout = 10000) {
