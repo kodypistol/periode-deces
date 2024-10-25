@@ -25,7 +25,6 @@ export default class Fan extends Task {
 	}
 
 	_createMesh() {
-		console.log('Fan _createMesh: this.resources:', this.resources)
 		const texture = this.resources.items.bakeTexture
 		this._material = new MeshBasicMaterial({ map: texture })
 
@@ -179,6 +178,7 @@ export default class Fan extends Task {
 
 	reset() {
 		super.reset()
+		this.hideTask()
 		this.targetRotation = 0
 		if (this.helix) {
 			this.helix.rotation.x = 0

@@ -6,26 +6,26 @@ import { MeshBasicMaterial } from 'three'
 const PARAMS = [
 	{
 		index: 1,
-		duration: 60,
+		duration: 5,
 		workHours: [9, 17],
 		tasks: 0,
-		money: 10, // in K€
+		money: 0, // in K€
 		role: "Stagiaire",
 	},
 	{
 		index: 2,
-		duration: 90,
+		duration: 5,
 		workHours: [9, 19],
 		tasks: 0,
-		money: 100, // in K€
+		money: 0, // in K€
 		role: "CDD Évolutif",
 	},
 	{
 		index: 3,
-		duration: 120,
+		duration: 5,
 		workHours: [9, 21],
 		tasks: 0,
-		money: 200, // in K€
+		money: 0, // in K€
 		role: "Assistant du manager régional",
 	},
 ]

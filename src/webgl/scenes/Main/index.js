@@ -113,9 +113,8 @@ export default class Main {
 				console.log(username, input.value);
 
 					input.value = username;
+					this.username = input.value;
 			});
-
-			console.log(this.axis.instance.virtualKeyboard._component);
 			this.axis.instance.virtualKeyboard._component.style.zIndex = 1000;
 
 
@@ -130,12 +129,11 @@ export default class Main {
 			)
 
 			this.axis.instance.virtualKeyboard.addEventListener("validate", (username) => {
-				console.log(username);
 
 				this.axis.instance.virtualKeyboard.close();
 				this.leaderboard
 				.postScore({
-					username: username,
+					username: this.username,
 					value: this.moneyManager.money,
 				})
 				.then(() => {
