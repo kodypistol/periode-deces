@@ -29,7 +29,7 @@ export default class Graph extends EventEmitter {
 		this.currentX = 0 // Track the current position in X
 		this.currentY = this._graphCanvas.height / 2 // Start drawing in the middle
 		this.score = 0 // Score is not an actual score for now; it's just percentages
-		this.drawingSpeed = .2 // Constant horizontal drawing speed
+		this.drawingSpeed = 0.2 // Constant horizontal drawing speed
 		this.isGameActive = false
 		this.isPlaying = false
 		this.timeLimit = 7000
@@ -41,7 +41,7 @@ export default class Graph extends EventEmitter {
 
 	init() {
 		this._element = document.createElement('div')
-		this._element.className = 'graph'
+		this._element.className = 'activityContainer'
 
 		this._element.innerHTML = `
       <div class="notification">
@@ -324,7 +324,7 @@ export default class Graph extends EventEmitter {
 
 		this._joystickInterval = setInterval(() => {
 			if (!this.isGameActive) return
-			const step = .5 // How much the line moves vertically per arrow key press
+			const step = 0.5 // How much the line moves vertically per arrow key press
 
 			if (this._joystickBottom) {
 				this.currentY = Math.max(0, this.currentY + step) // Move up

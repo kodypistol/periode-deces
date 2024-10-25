@@ -72,6 +72,7 @@ body {
 
 .overlay-objectives {
 	opacity: 0;
+	pointer-events: none;
 	position: fixed;
 	top: 24px;
 	right: 24px;
@@ -160,7 +161,7 @@ body {
 	width: 100%;
 }
 
-.graph {
+.activityContainer {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -169,46 +170,77 @@ body {
 	z-index: 1;
 }
 
-.graph .notification {
-	top: 20%;
+.activityContainer .notification {
+	top: 10%;
 	left: 10%;
 	position: absolute;
 	width: 30%;
-	height: 50%;
+	height: 70%;
 	transform: scale(0);
 }
 
-.graph .activity {
+.activityContainer .activity {
 	top: 5%;
 	left: 3%;
 	position: absolute;
 	width: 55%;
 	height: 80%;
 	transform: scale(0);
+	display: flex;
+	flex-direction: column;
 }
 
-.graph .activity canvas {
+.activityContainer .buttons {
+	position: absolute;
+	right: 5%;
+	top: 50%;
+	transform: translateY(-50%) scale(0);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.activityContainer .buttons .btn {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 2px;
+}
+
+.activityContainer .buttons .btn .btn-icon {
+	width: 8px;
+	height: 8px;
+	filter: saturate(0) brightness(3);
+}
+
+.activityContainer .buttons .btn .text {
+	font-size: 6px;
+	color: white;
+	padding: 1px 5px;
+	background-color: #150f00;
+}
+
+.activityContainer .activity canvas {
 	width: 100%;
 	height: 40px;
 	margin-top: -2px;
 }
 
-.graph .activity .top {
+.activityContainer .activity .top {
 	width: 100%;
-	/* position: absolute; */
 }
 
-.graph .activity .bottom {
+.activityContainer .activity .bottom {
 	width: 100%;
 	display: flex;
-	margin-top: -2px;
 }
 
-.graph .activity .bottom img {
+.activityContainer .activity .bottom img {
 	width: 80%;
 }
 
-.graph .activity .bottom .number {
+.activityContainer .activity .bottom .number {
 	background-color: green;
 	font-size: 10px;
 	text-align: center;
@@ -217,12 +249,14 @@ body {
 	padding-top: 2px;
 }
 
-.graph .notification img {
+.activityContainer .notification img {
 	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
 
-.graph .completed,
-.graph .failed {
+.activityContainer .completed,
+.activityContainer .failed {
 	position: absolute;
 	top: 30%;
 	left: 10%;
@@ -234,13 +268,101 @@ body {
 	opacity: 0;
 }
 
-.graph .completed img,
-.graph .failed img {
+.activityContainer .completed img,
+.activityContainer .failed img {
 	width: 100%;
 }
 
-.graph .completed img:nth-child(2) {
+.activityContainer .completed img:nth-child(2) {
 	width: 70%;
+}
+
+.call .activity {
+	background-color: #1e1e1e;
+	padding: 1px;
+	box-sizing: border-box;
+}
+
+.call-members {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	height: 100%;
+}
+
+.call-members .row {
+	display: flex;
+	flex-direction: row;
+	gap: 1px;
+	height: 50%;
+}
+
+.row.up {
+	height: 80%;
+}
+
+.call-members .call-item {
+	display: flex;
+	width: 50%;
+	position: relative;
+	inset: 0;
+	overflow: hidden;
+	box-sizing: border-box;
+	border: 0.5px solid transparent;
+}
+
+.call-members .call-item .head {
+	z-index: 1;
+}
+
+.call-members .call-item .call-item-title {
+	position: absolute;
+	color: white;
+	padding: 0.5px 0.8px;
+	box-sizing: border-box;
+	left: 0;
+	bottom: 0;
+	font-family: VT323, serif;
+	font-size: 1.4px;
+	background-color: black;
+	z-index: 2;
+	width: fit-content;
+}
+
+.call-members .call-item .office-background {
+	z-index: 0;
+}
+
+.call-members .call-item img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transform-origin: center top;
+	transform: scale(1.4);
+}
+
+.activityContainer.call .bottom {
+	gap: 1px;
+	justify-content: center;
+	padding-top: 0.5px;
+}
+
+.activityContainer.call .bottom .cta {
+	width: 4px;
+	height: 4px;
+	object-fit: contain;
+	background-color: #3deb5d;
+	padding: 0 0.5px;
+	border-radius: 1.5px;
+	opacity: 0.5;
+}
+
+.activityContainer.call .bottom .logos {
+	width: 17px;
+	height: 4px;
+	object-fit: contain;
 }
 
 .subtitle {
@@ -447,7 +569,7 @@ body {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: #07B22C;
+		background-color: #07b22c;
 		padding: 20px;
 	}
 

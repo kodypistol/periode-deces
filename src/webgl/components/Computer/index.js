@@ -2,6 +2,7 @@ import Task from 'core/Task'
 import Graph from './activities/Graph'
 import { MeshBasicMaterial, Object3D } from 'three'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
+import Call from 'components/Computer/activities/Call.js'
 
 export default class Computer extends Task {
 	constructor(options = {}) {
@@ -17,7 +18,8 @@ export default class Computer extends Task {
 		super.init()
 		this.experience.computer = this
 
-		this.activities.push(new Graph())
+		// this.activities.push(new Graph())
+		this.activities.push(new Call())
 
 		this.activities.forEach((activity) => {
 			activity.on('activity:end', this.handleEndActivity.bind(this))
@@ -25,7 +27,7 @@ export default class Computer extends Task {
 	}
 
 	handleEndActivity(activity) {
-		console.log(activity);
+		console.log(activity)
 
 		activity.hide()
 		activity.reset()
@@ -129,7 +131,7 @@ export default class Computer extends Task {
 		if (this.css3dRenderer && this.css3dScene && this.camera.instance) {
 			this.css3dRenderer.render(this.css3dScene, this.camera.instance)
 		}
-		if(this.activeActivity) {
+		if (this.activeActivity) {
 			this.activeActivity.update()
 		}
 	}

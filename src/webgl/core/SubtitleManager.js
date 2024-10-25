@@ -25,7 +25,11 @@ export class SubtitleManager extends EventEmitter {
 		this._nextElement.style.opacity = '0'
 
 		this.currentSubtitle = subtitles[key]
-		if (!this.currentSubtitle) throw new Error('key doesnt exist')
+		if (!this.currentSubtitle) {
+			console.error(`Subtitle key "${key}" does not exist.`)
+			this.trigger('finish') // End the subtitle sequence gracefully
+			return
+		}
 
 		// Set subtitle text color if specified
 		this._subtitleElement.style.color = this.currentSubtitle.color || ''
@@ -124,18 +128,31 @@ export class SubtitleManager extends EventEmitter {
 				firstChild.style.opacity = 0.5
 				index++
 			} else {
-				this.playSubtitle(this.currentSubtitle.error)
-				// TODO: ADD MONEY DECREASE
+				if (this.currentSubtitle.error) {
+					this.playSubtitle(this.currentSubtitle.error)
+				} else {
+					console.error('Error key is missing in currentSubtitle.')
+					// Provide a fallback message
+					this._subtitleElement.innerText = 'You failed the task.'
+					this._subtitleElement.style.opacity = '1'
+				}
+				// Adjust money
 				this.moneyManager.subtractMoneyRate(0.05, 5)
 				endQte()
 			}
 
 			if (index === children.length) {
-				this.playSubtitle(this.currentSubtitle.success)
-				// TODO: ADD MONEY SCALE
+				if (this.currentSubtitle.success) {
+					this.playSubtitle(this.currentSubtitle.success)
+				} else {
+					console.error('Success key is missing in currentSubtitle.')
+					// Provide a fallback message
+					this._subtitleElement.innerText = 'You succeeded!'
+					this._subtitleElement.style.opacity = '1'
+				}
+				// Adjust money
 				this.moneyManager.multiplyRate(5, 5)
 				this.dayManager.tasksCount++
-				console.log(this.dayManager.tasksCount);
 				endQte()
 			}
 		}
