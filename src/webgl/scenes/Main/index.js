@@ -138,6 +138,16 @@ export default class Main {
 		this._overlayElement = document.getElementById('overlay')
 		this._overlayObjectives = document.getElementById('overlay-objectives')
 
+		gsap.to(
+			this._startMenuElement,
+			{
+				opacity: 1,
+				duration: 0.25,
+				ease: 'sine.inOut',
+			},
+			0,
+		)
+
 		this._createSceneComponents()
 
 		// // Initialize tasks after resources are loaded
