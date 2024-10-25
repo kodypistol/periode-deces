@@ -2,6 +2,7 @@ import Task from 'core/Task'
 import Graph from './activities/Graph'
 import { MeshBasicMaterial, Object3D } from 'three'
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
+import Call from 'components/Computer/activities/Call.js'
 
 export default class Computer extends Task {
 	constructor(options = {}) {
@@ -18,6 +19,9 @@ export default class Computer extends Task {
 		this.experience.computer = this
 
 		this.activities.push(new Graph())
+		this.activities.push(new Call())
+
+		this.activities[1].playTask()
 
 		this.activities.forEach((activity) => {
 			activity.on('activity:end', this.handleEndActivity.bind(this))
