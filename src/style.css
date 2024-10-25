@@ -427,6 +427,21 @@ body {
 	opacity: 0;
 }
 
+#input-name-screen {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	background-color: #150f00e5;
+	opacity: 0;
+	position: fixed;
+	z-index: 999;
+	opacity: 0;
+	top: 0;
+	left: 0;
+}
+
 .start-menu {
 	pointer-events: none;
 	background-color: #150f00c8;

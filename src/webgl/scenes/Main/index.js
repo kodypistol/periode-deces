@@ -88,8 +88,8 @@ export default class Main {
 		})
 
 		this.dayManager.on('day:gameWin', () => {
-			this.winYeah.play()
 			this.dayManager.stop()
+			this.subtitlesManager.stop()
 			this.tasks.forEach((task) => {
 				task.reset()
 				task.isPlaying = false
@@ -100,13 +100,47 @@ export default class Main {
 				task._reset()
 			})
 
-			this.leaderboard
+			this.taskManager.reset()
+
+			this.tasks = []
+			this.focusTasks = []
+
+			const input = document.querySelector("input");
+
+			this.axis.instance.virtualKeyboard.open();
+
+			this.axis.instance.virtualKeyboard.addEventListener("input", (username) => {
+				console.log(username, input.value);
+
+					input.value = username;
+			});
+
+			console.log(this.axis.instance.virtualKeyboard._component);
+			this.axis.instance.virtualKeyboard._component.style.zIndex = 1000;
+
+
+			gsap.to(
+				this._inputNameElement,
+				{
+					opacity: 1,
+					duration: 0.25,
+					ease: 'sine.inOut',
+				},
+				0,
+			)
+
+			this.axis.instance.virtualKeyboard.addEventListener("validate", (username) => {
+				console.log(username);
+
+				this.axis.instance.virtualKeyboard.close();
+				this.leaderboard
 				.postScore({
-					username: 'JuloPipooooo',
+					username: username,
 					value: this.moneyManager.money,
 				})
 				.then(() => {
 					// Get all scores
+					this.winYeah.play()
 					this.leaderboard.getScores().then((response) => {
 						console.log(response)
 						this.games = []
@@ -124,9 +158,37 @@ export default class Main {
 							document.querySelector('#leaderboard').appendChild(score)
 						})
 					})
-				})
 
-			this._playWinAnimation()
+					this._playWinAnimation()
+
+				})
+		});
+
+			// this.leaderboard
+			// 	.postScore({
+			// 		username: 'JuloPipooooo',
+			// 		value: this.moneyManager.money,
+			// 	})
+			// 	.then(() => {
+			// 		// Get all scores
+			// 		this.leaderboard.getScores().then((response) => {
+			// 			console.log(response)
+			// 			this.games = []
+			// 			this.top10 = []
+			// 			response.forEach((game, index) => {
+			// 				this.games.push(game)
+			// 			})
+			// 			this.games.sort((a, b) => b.value - a.value)
+			// 			this.top10 = this.games.slice(0, 10)
+
+			// 			this.top10.forEach((game, index) => {
+			// 				const score = document.createElement('div')
+			// 				score.classList.add('score')
+			// 				score.innerHTML = `<span>${index + 1}. ${game.username}</span> <span>${game.value}k €</span>`
+			// 				document.querySelector('#leaderboard').appendChild(score)
+			// 			})
+			// 		})
+			// 	})
 		})
 	}
 
@@ -135,6 +197,7 @@ export default class Main {
 		this._dayPanelElement = document.getElementById('day-panel')
 		this._gameOverElement = document.getElementById('game-over')
 		this._winScreenElement = document.getElementById('win-screen')
+		this._inputNameElement = document.getElementById('input-name-screen')
 		this._overlayElement = document.getElementById('overlay')
 		this._overlayObjectives = document.getElementById('overlay-objectives')
 

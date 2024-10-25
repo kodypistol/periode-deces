@@ -313,7 +313,7 @@ export default class AxisManager extends EventEmitter {
 	setLedsColor() {
 		// set 5 first leds to pink and the rest to blue
 		this.leds.forEach((led, index) => {
-			led.color = index < 5 ? 0xff00ff : 0x0000ff
+			led.setColor(index < 5 ? 0xff00ff : 0x0000ff)
 		})
 	}
 
