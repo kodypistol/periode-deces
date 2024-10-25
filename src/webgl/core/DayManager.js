@@ -6,10 +6,10 @@ import { MeshBasicMaterial } from "three";
 const PARAMS = [
 	{
 		index: 1,
-		duration: 60,
+		duration: 6,
 		workHours: [9, 17],
 		tasks: 0,
-		money: 0, // in K€
+		money: 1, // in K€
 		role: "Stagiaire",
 	},
 	{
@@ -17,16 +17,16 @@ const PARAMS = [
 		duration: 5,
 		workHours: [9, 19],
 		tasks: 0,
-		money: 0, // in K€
-		role: "Chef d'équipe",
+		money: 9, // in K€
+		role: "CDD Évolutif",
 	},
 	{
 		index: 3,
-		duration: 120,
+		duration: 5,
 		workHours: [9, 21],
 		tasks: 0,
-		money: 500, // in K€
-		role: "Bras droit du patron",
+		money: 0, // in K€
+		role: "Assistant du manager régional",
 	},
 ]
 
@@ -43,6 +43,7 @@ export default class DayManager extends EventEmitter {
 		this._dayPanelElement = document.getElementById('day-panel')
 		this._dayCounterElement = document.getElementById('day-counter')
 		this._dayRoleElement = document.getElementById('day-role')
+		this._dayKECounterElement = document.getElementById('ke-counter')
 	}
 
 	reset() {
@@ -59,6 +60,7 @@ export default class DayManager extends EventEmitter {
 		this.day = PARAMS[index - 1]
 		this._dayCounterElement.innerHTML = this.day.index
 		this._dayRoleElement.innerHTML = this.day.role
+		this._dayKECounterElement.innerHTML = this.day.money
 
 		this.trigger('day:finished', this.day.index)
 		this.playChangeDayAnimation()
@@ -105,6 +107,7 @@ export default class DayManager extends EventEmitter {
 				} else {
 					console.log("All days completed.");
 					// Handle what happens when all days are completed
+					this.trigger('day:gameWin')
 				}
 			} else {
 				console.log("Not enough tasks or money to proceed to the next day.");

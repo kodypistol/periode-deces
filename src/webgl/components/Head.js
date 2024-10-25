@@ -10,6 +10,9 @@ export default class Head extends Task {
 	_reset() {
 		this.mesh.position.y = 2
 		this.mesh.rotation.z = 0.2
+		this.completeTask()
+		this.experience.camera.resetAnimation()
+		this.experience.subtitlesManager.stop()
 	}
 
 	_createMesh() {

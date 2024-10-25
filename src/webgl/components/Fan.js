@@ -13,10 +13,12 @@ export default class Fan extends Task {
 		super(options)
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
+		this.subtitlesManager = this.experience.subtitlesManager
 		this.isGameFinished = false
 		this.targetRotation = 0
 		this.nasButtons = []
 		this.nasButtonTweens = []
+		this.tutorial = true
 
 		this._createNASButtonsMaterial()
 		this._createNASButtonsMesh()
@@ -96,9 +98,20 @@ export default class Fan extends Task {
 		if (!this.isAvailable || this.isPlaying) {
 			return
 		}
+		if (this.tutorial) {
+			this.subtitlesManager.playSubtitle('fanTuto')
+			const handleDown = (event) => {
+				if (event.key === 'a') {
+					this.subtitlesManager.next()
+				}
+			}
+			this.axis.on(`down:left`, handleDown)
+			this.subtitlesManager.on('finish', () => {
+				this.axis.off(`down:left`, handleDown)
+				this.tutorial = false
+			})
+		}
 		this.isPlaying = true
-		this.hideTask()
-
 		let lastAngle = new Vector2()
 
 		const handleMove = (event) => {
@@ -112,6 +125,7 @@ export default class Fan extends Task {
 			lastAngle = angle
 
 			if (this.targetRotation >= Math.PI * 2 * SETTINGS.TURNS) {
+				this.hideTask()
 				this.completeTask()
 				this.isGameFinished = true
 				this.stopNASButtonsAnimation()
@@ -169,5 +183,7 @@ export default class Fan extends Task {
 		if (this.helix) {
 			this.helix.rotation.x = 0
 		}
+		this.stopNASButtonsAnimation()
+		this.isGameFinished = false
 	}
 }

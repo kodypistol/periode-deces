@@ -1,4 +1,39 @@
 {
+	"intro": {
+		"text": "T'es qui ?",
+		"next": "intro2"
+	},
+	"intro2": {
+		"text": "Ah, le stagiaire...",
+		"next": "intro3"
+	},
+	"intro3": {
+		"text": "Le dernier a pas fait long feu 😂",
+		"next": "intro4"
+	},
+	"intro4": {
+		"text": "Bon écoute, c'est ton premier jour ici",
+		"next": "intro5"
+	},
+	"intro5": {
+		"text": "La boîte est challengeante, on est une grande famille",
+		"next": "intro6"
+	},
+	"intro6": {
+		"text": "J'ai besoin de toi pour prendre le lead sur mes tasks",
+		"next": "intro7"
+	},
+	"intro7": {
+		"text": "Si tu fais mal ton job, dans 3 heures on pivote",
+		"next": "intro8"
+	},
+	"intro8": {
+		"text": "Par contre, tu peux te faire des couilles en or si tu suis les process",
+		"next": "intro9"
+	},
+	"intro9": {
+		"text": "Bon, je dois forward un draft ASAP. Si je veux passer N+1, je dois ventiler mes assets et push le lead"
+	},
 	"colleague": {
 		"text": "Eh ben tu sais, cette année, on est partis à la campagne, histoire de changer d'air.",
 		"next": "colleague2"
@@ -108,5 +143,13 @@
 	"clientError": {
 		"text": "Pourquoi ne pas commencer par investir dans toi-même avant d'appeler un conseiller ?",
 		"color": "red"
+	},
+	"fanTuto": {
+		"text": "🕹️ Tourne le joystick droit pour ventiler tes assets",
+		"color": "#FCB637"
+	},
+	"graphTuto": {
+		"text": "🕹️ Trace la courbe avec le joystick de droite pour multiplier tes rendements",
+		"color": "#FCB637"
 	}
 }

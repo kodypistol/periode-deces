@@ -21,6 +21,13 @@
 		"flipY": false
 	},
 	{
+		"name": "julesTexture",
+		"type": "texture",
+		"path": "textures/jules.png",
+		"colorSpace": "srgb",
+		"flipY": false
+	},
+	{
 		"name": "bakeBackgroundTexture",
 		"type": "texture",
 		"path": "textures/bake-background.png",

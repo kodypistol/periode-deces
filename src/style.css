@@ -70,6 +70,43 @@ body {
 	}
 }
 
+.overlay-objectives {
+	opacity: 0;
+	position: fixed;
+	top: 24px;
+	right: 24px;
+	display: block;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+
+	.title {
+		background-color: #150f00c1;
+		display: flex;
+		align-items: center;
+		padding: 8px 32px;
+		font-size: 32px;
+	}
+
+	.score {
+		background-color: #150f00c1;
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 8px 32px;
+		font-size: 32px;
+	}
+
+	.time {
+		background-color: #150f00c1;
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 8px 32px;
+		font-size: 32px;
+	}
+}
+
 .wallpaper {
 	z-index: 0;
 	position: absolute;
@@ -281,7 +318,7 @@ body {
 	flex-direction: column;
 	width: 100%;
 	height: 100%;
-	opacity: 0;
+	/* opacity: 0; */
 }
 
 .start-menu-logo {
@@ -358,19 +395,19 @@ body {
 	}
 
 	.role-title {
-		white-space: nowrap;
 		display: flex;
 		align-items: baseline;
 		gap: 1rem;
 		color: white;
-		font-size: 10rem;
-		background-color: #150f00;
+		font-size: 7rem;
+		background-color: red;
 		padding: 0px 36px;
-		width: fit-content;
+		width: max-content;
+		max-width: 100%;
 		position: absolute;
 		transform: translate(-50%, -50%) rotate(-3deg);
 		left: 50%;
-		bottom: 0;
+		bottom: 5%;
 		z-index: 3;
 	}
 
@@ -390,10 +427,68 @@ body {
 	}
 }
 
+.winscreen {
+	pointer-events: none;
+	opacity: 0;
+	background-color: #150f00ec;
+	position: fixed;
+	z-index: 999;
+	top: 0;
+	left: 0;
+	justify-content: center;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	gap: 4rem;
+	width: 100%;
+	height: 100%;
+
+	.win-screen-title {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #07B22C;
+		padding: 20px;
+	}
+
+	.title {
+		text-transform: uppercase;
+		text-align: center;
+		font-size: 3rem;
+	}
+}
+
+#leaderboard {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+	width: 100%;
+
+	.score {
+		font-size: 32px;
+	}
+}
+
+.win-screen-cta {
+	height: 1.75rem;
+	font-size: 1.75rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	text-transform: uppercase;
+
+	img {
+		height: 100%;
+		animation: btnCTA 1.5s infinite;
+	}
+}
+
 .gameover {
 	pointer-events: none;
 	opacity: 0;
-	background-color: #150f00c8;
+	background-color: #150f00ec;
 	position: fixed;
 	z-index: 999;
 	top: 0;
@@ -412,7 +507,7 @@ body {
 		align-items: baseline;
 		gap: 3rem;
 		color: white;
-		font-size: 17.5rem;
+		font-size: 12.5rem;
 		font-weight: 400;
 		width: fit-content;
 		left: 50%;

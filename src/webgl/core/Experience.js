@@ -37,10 +37,10 @@ export default class Experience {
 		this.axis = new AxisManager()
 		this.moneyManager = new MoneyManager()
 		this.dayManager = new DayManager()
+		this.subtitlesManager = new SubtitleManager()
 		this.sceneManager = new SceneManager()
 		this.activeScene = this.sceneManager.currentScene
 		this.renderer = new Renderer()
-		this.subtitlesManager = new SubtitleManager()
 
 		// Resize event
 		this.sizes.on('resize', () => {
