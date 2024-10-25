@@ -41,7 +41,7 @@ export default class Renderer {
     //}
 
     vec3 CustomToneMapping( vec3 color ) {
-      float levels = 20.;
+      float levels = 70.;
 
       // Generate noise based on screen position
       //float noise = random(gl_FragCoord.xy);

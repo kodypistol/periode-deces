@@ -7,9 +7,37 @@
 		"flipY": false
 	},
 	{
+		"name": "bakeTexture2",
+		"type": "texture",
+		"path": "textures/bake-2.png",
+		"colorSpace": "srgb",
+		"flipY": false
+	},
+	{
+		"name": "bakeTexture3",
+		"type": "texture",
+		"path": "textures/bake-3.png",
+		"colorSpace": "srgb",
+		"flipY": false
+	},
+	{
 		"name": "bakeBackgroundTexture",
 		"type": "texture",
+		"path": "textures/bake-background.png",
+		"colorSpace": "srgb",
+		"flipY": false
+	},
+	{
+		"name": "bakeBackgroundTexture2",
+		"type": "texture",
 		"path": "textures/bake-background-2.png",
+		"colorSpace": "srgb",
+		"flipY": false
+	},
+	{
+		"name": "bakeBackgroundTexture3",
+		"type": "texture",
+		"path": "textures/bake-background-3.png",
 		"colorSpace": "srgb",
 		"flipY": false
 	},
@@ -72,7 +100,17 @@
 	{
 		"name": "deskModel",
 		"type": "gltf",
-		"path": "models/model.glb"
+		"path": "models/desk.glb"
+	},
+	{
+		"name": "deskModel2",
+		"type": "gltf",
+		"path": "models/desk-2.glb"
+	},
+	{
+		"name": "deskModel3",
+		"type": "gltf",
+		"path": "models/desk-3.glb"
 	},
 	{
 		"name": "fanModel",
@@ -82,7 +120,17 @@
 	{
 		"name": "backgroundModel",
 		"type": "gltf",
+		"path": "models/background.glb"
+	},
+	{
+		"name": "backgroundModel2",
+		"type": "gltf",
 		"path": "models/background-2.glb"
+	},
+	{
+		"name": "backgroundModel3",
+		"type": "gltf",
+		"path": "models/background-3.glb"
 	},
 	{
 		"name": "phoneModel",
@@ -98,5 +146,55 @@
 		"name": "headModel",
 		"type": "gltf",
 		"path": "models/head.glb"
+	},
+	{
+		"name": "ambiantAudio",
+		"type": "audio",
+		"path": "audio/ambiant.mp3"
+	},
+	{
+		"name": "fanAudio",
+		"type": "audio",
+		"path": "audio/fan.mp3"
+	},
+	{
+		"name": "gameOverAudio",
+		"type": "audio",
+		"path": "audio/game-over.mp3"
+	},
+	{
+		"name": "mouseAudio",
+		"type": "audio",
+		"path": "audio/mouse.mp3"
+	},
+	{
+		"name": "notificationAudio",
+		"type": "audio",
+		"path": "audio/notification.mp3"
+	},
+	{
+		"name": "phoneHangUpAudio",
+		"type": "audio",
+		"path": "audio/phone-hang-up.mp3"
+	},
+	{
+		"name": "phonePickUpAudio",
+		"type": "audio",
+		"path": "audio/phone-pick-up.mp3"
+	},
+	{
+		"name": "selectJoystickAudio",
+		"type": "audio",
+		"path": "audio/select-joystick.mp3"
+	},
+	{
+		"name": "taskCompleteAudio",
+		"type": "audio",
+		"path": "audio/task-completed.mp3"
+	},
+	{
+		"name": "taskErrorAudio",
+		"type": "audio",
+		"path": "audio/task-error.mp3"
 	}
 ]

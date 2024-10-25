@@ -1,39 +1,40 @@
-import gsap from "gsap"
-import EventEmitter from "./EventEmitter"
-import Experience from "./Experience";
-import { MeshBasicMaterial } from "three";
+import gsap from 'gsap'
+import EventEmitter from './EventEmitter'
+import Experience from './Experience'
+import { MeshBasicMaterial } from 'three'
 
 const PARAMS = [
 	{
 		index: 1,
-		duration: 120,
+		duration: 60,
 		workHours: [9, 17],
 		tasks: 3,
 		money: 10, // in K€
-		role: "Stagiaire",
+		role: 'Stagiaire',
 	},
 	{
 		index: 2,
-		duration: 120,
+		duration: 5,
 		workHours: [9, 19],
-		tasks: 4,
-		money: 100, // in K€
+		tasks: 0,
+		money: 0, // in K€
 		role: "Chef d'équipe",
 	},
 	{
 		index: 3,
 		duration: 120,
 		workHours: [9, 21],
-		tasks: 5,
+		tasks: 0,
 		money: 500, // in K€
-		role: "Bras droit du patron",
+		role: 'Bras droit du patron',
 	},
 ]
 
 export default class DayManager extends EventEmitter {
 	constructor() {
 		super()
-		this.experience = new Experience();
+		this.experience = new Experience()
+		this.audioManager = this.experience.audioManager
 		this.time = this.experience.time
 		this.moneyManager = this.experience.moneyManager
 		this.day = PARAMS[0]
@@ -60,7 +61,7 @@ export default class DayManager extends EventEmitter {
 		this._dayCounterElement.innerHTML = this.day.index
 		this._dayRoleElement.innerHTML = this.day.role
 
-		this.trigger('day:finished')
+		this.trigger('day:finished', this.day.index)
 		this.playChangeDayAnimation()
 	}
 
@@ -87,7 +88,7 @@ export default class DayManager extends EventEmitter {
 				duration: 0.25,
 				ease: 'sine.inOut',
 				onComplete: () => {
-					this.trigger('day:changed')
+					this.trigger('day:changed', this.day.index)
 					this.isDayStarted = true
 				},
 			},
@@ -98,45 +99,46 @@ export default class DayManager extends EventEmitter {
 	checkEndOfDay() {
 		if (this.timeCount > this.day.duration) {
 			if (this.tasksCount >= this.day.tasks && this.moneyManager.money >= this.day.money) {
-				const nextDayIndex = this.day.index + 1;
+				const nextDayIndex = this.day.index + 1
 				if (nextDayIndex <= PARAMS.length) {
-					this.reset();
-					this.setDay(nextDayIndex);
+					this.reset()
+					this.setDay(nextDayIndex)
 				} else {
-					console.log("All days completed.");
+					console.log('All days completed.')
 					// Handle what happens when all days are completed
 				}
 			} else {
-				console.log("Not enough tasks or money to proceed to the next day.");
+				console.log('Not enough tasks or money to proceed to the next day.')
 				this.moneyManager.stop()
 				this.trigger('day:gameOver')
+				this.experience.audioManager.play('gameOverAudio')
 			}
 		}
 	}
 
 	updateClock() {
-    // Get the start and end work hours from the current day
-    const startHour = this.day.workHours[0];
-    const endHour = this.day.workHours[1];
+		// Get the start and end work hours from the current day
+		const startHour = this.day.workHours[0]
+		const endHour = this.day.workHours[1]
 
-    // Calculate the total work hours for the day
-    const totalWorkHours = endHour - startHour;
+		// Calculate the total work hours for the day
+		const totalWorkHours = endHour - startHour
 
-    // Calculate the proportion of the day completed (timeCount / day duration)
-    const progress = this.timeCount / this.day.duration;
+		// Calculate the proportion of the day completed (timeCount / day duration)
+		const progress = this.timeCount / this.day.duration
 
-    // Calculate the current hour within the work hours
-    const currentHour = startHour + progress * totalWorkHours;
+		// Calculate the current hour within the work hours
+		const currentHour = startHour + progress * totalWorkHours
 
-    // Split the currentHour into hours and minutes
-    const hours = Math.floor(currentHour);
-    const minutes = Math.floor((currentHour - hours) * 60);
+		// Split the currentHour into hours and minutes
+		const hours = Math.floor(currentHour)
+		const minutes = Math.floor((currentHour - hours) * 60)
 
-    // Update the clock display in the HTML
-    const hoursDisplay = String(hours).padStart(2, '0');
-    const minutesDisplay = String(minutes).padStart(2, '0');
+		// Update the clock display in the HTML
+		const hoursDisplay = String(hours).padStart(2, '0')
+		const minutesDisplay = String(minutes).padStart(2, '0')
 
-    document.getElementById('horloge-hours').innerHTML = `${hoursDisplay}:${minutesDisplay}`;
+		document.getElementById('horloge-hours').innerHTML = `${hoursDisplay}:${minutesDisplay}`
 	}
 
 	stop() {

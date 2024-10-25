@@ -29,6 +29,8 @@ export default class Computer extends Task {
 	}
 
 	handleEndActivity(activity) {
+		console.log(activity);
+
 		activity.hide()
 		activity.reset()
 
@@ -130,6 +132,9 @@ export default class Computer extends Task {
 		// Update CSS3DRenderer if needed
 		if (this.css3dRenderer && this.css3dScene && this.camera.instance) {
 			this.css3dRenderer.render(this.css3dScene, this.camera.instance)
+		}
+		if(this.activeActivity) {
+			this.activeActivity.update()
 		}
 	}
 

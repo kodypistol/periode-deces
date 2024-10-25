@@ -55,7 +55,6 @@ export default class Fan extends Task {
 		this.NASButtonsMesh = this.scene.resources.items.nasButtonsModel.scene.clone()
 		this.NASButtonsMesh.traverse((child) => {
 			if (child.isMesh) {
-				console.log(child)
 				this.nasButtons.push(child)
 
 				child.material = new MeshBasicMaterial({ map: this.scene.resources.items.NASTexture })

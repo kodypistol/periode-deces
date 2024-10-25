@@ -141,7 +141,7 @@ export default class Main {
 					this.moneyManager.startIncrement()
 				},
 			},
-			1,
+			1
 		)
 	}
 

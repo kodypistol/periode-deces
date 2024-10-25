@@ -22,19 +22,11 @@ export default class AudioManager {
 			 * @type {{[key]: {volume: number, loop: boolean, refDistance?: number, buffer: AudioBuffer, position?: Vector3, autoplay: boolean}}}
 			 */
 			this.audios = {
-				foxPositional: {
-					buffer: this.resources.items.foxAudio,
-					refDistance: 20,
-					loop: false,
+				ambiant: {
+					buffer: this.resources.items.ambiantAudio,
+					loop: true,
 					volume: 1,
-					position: new Vector3(0, 0, 0),
-					autoplay: false,
-				},
-				fox: {
-					buffer: this.resources.items.foxAudio,
-					loop: false,
-					volume: 1,
-					autoplay: false,
+					autoplay: true,
 				},
 			}
 			this.setAudios()

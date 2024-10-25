@@ -186,7 +186,8 @@ body {
 	object-fit: contain;
 }
 
-.activityContainer .completed {
+.graph .completed,
+.graph .failed {
 	position: absolute;
 	top: 30%;
 	left: 10%;
@@ -198,7 +199,8 @@ body {
 	opacity: 0;
 }
 
-.activityContainer .completed img {
+.activityContainer .completed img,
+.activityContainer .failed img {
 	width: 100%;
 }
 

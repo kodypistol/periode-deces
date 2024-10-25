@@ -54,7 +54,9 @@ export default class Graph extends EventEmitter {
         </div>
         <div class="completed">
           <img src="/completed.png" alt="" />
-          <img src="/benef-graph.png" alt="" />
+        </div>
+				<div class="failed">
+          <img src="/failed.png" alt="" />
         </div>
       </div>
     `
@@ -65,6 +67,7 @@ export default class Graph extends EventEmitter {
 		this._graphCanvas = this._element.querySelector('.canvas')
 		this._scoreNumber = this._element.querySelector('.number')
 		this._completedElement = this._element.querySelector('.completed')
+		this._failedElement = this._element.querySelector('.failed')
 	}
 
 	showTask() {
@@ -109,7 +112,7 @@ export default class Graph extends EventEmitter {
 
 	gameOver() {
 		// Make element blink opacity 3 times
-		gsap.to(this._completedElement, {
+		gsap.to(this._failedElement, {
 			duration: 0.4,
 			autoAlpha: 1,
 			repeat: 4,
@@ -117,7 +120,7 @@ export default class Graph extends EventEmitter {
 			ease: 'steps(1)',
 			onComplete: () => {
 				this.moneyManager.subtractMoneyRate(0.05, 5)
-				this.trigger('end') // Notify parent
+				this.trigger('activity:end', [this]) // Notify parent
 			},
 		})
 	}
@@ -129,6 +132,10 @@ export default class Graph extends EventEmitter {
 		})
 
 		gsap.to(this._completedElement, {
+			opacity: 0,
+		})
+
+		gsap.to(this._failedElement, {
 			opacity: 0,
 		})
 	}
