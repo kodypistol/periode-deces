@@ -76,7 +76,7 @@ export default class Phone extends Task {
 		this.calling.pause()
 		this.answerAnim.play()
 
-		this.experience.subtitlesManager.playSubtitle('client')
+		this.experience.subtitlesManager.playSubtitle('client') // Ensure 'client' key exists in subtitles.json
 
 		const handleDown = (event) => {
 			if (event.key === 'a') {
