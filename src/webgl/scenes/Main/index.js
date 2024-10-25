@@ -31,6 +31,8 @@ export default class Main {
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
 		this.subtitlesManager = this.experience.subtitlesManager
+		this.winYeah = new Audio('/audio/yeaaah.mp3')
+		this.ahShit = new Audio('/audio/ahShit.mp3')
 
 		this.setMoneyCounter()
 		this.setObjectives()
@@ -69,6 +71,7 @@ export default class Main {
 
 		this.dayManager.on('day:gameOver', () => {
 			console.log('oh noooo')
+			this.ahShit.play()
 
 			this._isGameOver = true
 			this._playGameOverAnimation()
@@ -85,6 +88,7 @@ export default class Main {
 		})
 
 		this.dayManager.on('day:gameWin', () => {
+			this.winYeah.play()
 			this.dayManager.stop()
 			this.tasks.forEach((task) => {
 				task.reset()

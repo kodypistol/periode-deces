@@ -20,7 +20,7 @@ export default class Camera {
 		this.options = {
 			fov: 33,
 			frustum: { min: 1, max: 100 },
-			position: new Vector3(0, 2.6, 4),
+			position: new Vector3(0, 2.75, 4),
 			target: new Vector3(0, 1.9, 0),
 			currentCamera: 'sceneCamera',
 		}

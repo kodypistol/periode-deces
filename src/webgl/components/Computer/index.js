@@ -18,7 +18,7 @@ export default class Computer extends Task {
 		super.init()
 		this.experience.computer = this
 
-		// this.activities.push(new Graph())
+		this.activities.push(new Graph())
 		this.activities.push(new Call())
 
 		this.activities.forEach((activity) => {

@@ -98,7 +98,7 @@ export default class Horloge extends Component {
 	setScreenPoint() {
 		const screenPoint = new Mesh(new BoxGeometry(0.1, 0.1, 0.1), new MeshBasicMaterial({ color: 0xff0000 }))
 		// screenPoint.position.set(-0.97194, 0.24741, 1.466)
-		screenPoint.position.set(-0.97694, 1.426, -0.34741)
+		screenPoint.position.set(-0.97694, 1.412, -0.34741)
 		screenPoint.rotation.y = Math.PI / 6
 
 		this.scene.add(screenPoint)

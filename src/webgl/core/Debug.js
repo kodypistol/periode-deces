@@ -8,7 +8,7 @@ export default class Debug {
 	constructor() {
 		this.experience = new Experience()
 		this.axis = this.experience.axis
-		this.active = window.location.hash === ''
+		this.active = window.location.hash === '#debug'
 
 		if (this.active) {
 			this.ui = new Pane({ title: '⚙️ Debug' })
