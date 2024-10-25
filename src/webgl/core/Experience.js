@@ -11,6 +11,8 @@ import { SubtitleManager } from 'core/SubtitleManager.js'
 import DayManager from './DayManager.js'
 import MoneyManager from './MoneyManager.js'
 
+import AudioManager from '../utils/AudioManager.js'
+
 let instance = null
 
 export default class Experience {
@@ -41,6 +43,9 @@ export default class Experience {
 		this.sceneManager = new SceneManager()
 		this.activeScene = this.sceneManager.currentScene
 		this.renderer = new Renderer()
+		this.audioManager = new AudioManager()
+
+		this.subtitlesManager = new SubtitleManager()
 
 		// Resize event
 		this.sizes.on('resize', () => {

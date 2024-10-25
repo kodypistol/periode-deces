@@ -32,8 +32,6 @@ export default class Main {
 		this.moneyManager = this.experience.moneyManager
 		this.subtitlesManager = this.experience.subtitlesManager
 
-		this.audioManager = new AudioManager()
-
 		this.setMoneyCounter()
 		this.setObjectives()
 

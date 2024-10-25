@@ -1,7 +1,7 @@
-import gsap from "gsap"
-import EventEmitter from "./EventEmitter"
-import Experience from "./Experience";
-import { MeshBasicMaterial } from "three";
+import gsap from 'gsap'
+import EventEmitter from './EventEmitter'
+import Experience from './Experience'
+import { MeshBasicMaterial } from 'three'
 
 const PARAMS = [
 	{
@@ -33,7 +33,8 @@ const PARAMS = [
 export default class DayManager extends EventEmitter {
 	constructor() {
 		super()
-		this.experience = new Experience();
+		this.experience = new Experience()
+		this.audioManager = this.experience.audioManager
 		this.time = this.experience.time
 		this.moneyManager = this.experience.moneyManager
 		this.day = PARAMS[0]
@@ -100,46 +101,47 @@ export default class DayManager extends EventEmitter {
 	checkEndOfDay() {
 		if (this.timeCount > this.day.duration) {
 			if (this.tasksCount >= this.day.tasks && this.moneyManager.money >= this.day.money) {
-				const nextDayIndex = this.day.index + 1;
+				const nextDayIndex = this.day.index + 1
 				if (nextDayIndex <= PARAMS.length) {
-					this.reset();
-					this.setDay(nextDayIndex);
+					this.reset()
+					this.setDay(nextDayIndex)
 				} else {
-					console.log("All days completed.");
+					console.log('All days completed.')
 					// Handle what happens when all days are completed
 					this.trigger('day:gameWin')
 				}
 			} else {
-				console.log("Not enough tasks or money to proceed to the next day.");
+				console.log('Not enough tasks or money to proceed to the next day.')
 				this.moneyManager.stop()
 				this.trigger('day:gameOver')
+				this.experience.audioManager.play('gameOverAudio')
 			}
 		}
 	}
 
 	updateClock() {
-    // Get the start and end work hours from the current day
-    const startHour = this.day.workHours[0];
-    const endHour = this.day.workHours[1];
+		// Get the start and end work hours from the current day
+		const startHour = this.day.workHours[0]
+		const endHour = this.day.workHours[1]
 
-    // Calculate the total work hours for the day
-    const totalWorkHours = endHour - startHour;
+		// Calculate the total work hours for the day
+		const totalWorkHours = endHour - startHour
 
-    // Calculate the proportion of the day completed (timeCount / day duration)
-    const progress = this.timeCount / this.day.duration;
+		// Calculate the proportion of the day completed (timeCount / day duration)
+		const progress = this.timeCount / this.day.duration
 
-    // Calculate the current hour within the work hours
-    const currentHour = startHour + progress * totalWorkHours;
+		// Calculate the current hour within the work hours
+		const currentHour = startHour + progress * totalWorkHours
 
-    // Split the currentHour into hours and minutes
-    const hours = Math.floor(currentHour);
-    const minutes = Math.floor((currentHour - hours) * 60);
+		// Split the currentHour into hours and minutes
+		const hours = Math.floor(currentHour)
+		const minutes = Math.floor((currentHour - hours) * 60)
 
-    // Update the clock display in the HTML
-    const hoursDisplay = String(hours).padStart(2, '0');
-    const minutesDisplay = String(minutes).padStart(2, '0');
+		// Update the clock display in the HTML
+		const hoursDisplay = String(hours).padStart(2, '0')
+		const minutesDisplay = String(minutes).padStart(2, '0')
 
-    document.getElementById('horloge-hours').innerHTML = `${hoursDisplay}:${minutesDisplay}`;
+		document.getElementById('horloge-hours').innerHTML = `${hoursDisplay}:${minutesDisplay}`
 	}
 
 	stop() {
