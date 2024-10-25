@@ -16,7 +16,7 @@ export default class Call extends EventEmitter {
 
 		this.score = 1
 
-		this.TALKING_PHRASES = 30
+		this.TALKING_PHRASES = 10
 
 		this.init()
 	}
@@ -29,6 +29,16 @@ export default class Call extends EventEmitter {
       <div class="notification">
 				<img src="/call-notification.png" alt="" />
 			</div>
+				<div class="buttons">
+					<div class="btn">
+						<img class="btn-icon" src="/buttons/a-button.png" alt="button" />
+						<p class="text">ÊTRE ASSERTIF</p>
+					</div>
+					<div class="btn">
+						<img class="btn-icon" src="/buttons/i-button.png" alt="button" />
+						<p class="text">INSULTER</p>
+					</div>
+				</div>
       <div class="activity">
       	<img class="top" src="/call-top.png" alt="" />
         <div class="call-members">
@@ -65,7 +75,6 @@ export default class Call extends EventEmitter {
 				<div class="bottom">
 					<img class="cta" src="/micro.svg" alt="" />
 					<img class="logos" src="/logos.png" alt="" />
-
 				</div>
       </div>
       <div class="completed">
@@ -78,6 +87,11 @@ export default class Call extends EventEmitter {
 		this._activity = this._element.querySelector('.activity')
 		this._items = this._element.querySelectorAll('.call-item')
 		this._completed = this._element.querySelector('.completed')
+		this._micro = this._element.querySelector('.cta')
+		this._icons = this._element.querySelectorAll('.btn-icon')
+		this._buttons = this._element.querySelector('.buttons')
+
+		this.microIsActivated = false
 	}
 
 	showTask() {
@@ -94,6 +108,11 @@ export default class Call extends EventEmitter {
 		})
 
 		gsap.to(this._activity, {
+			duration: 0.2,
+			scale: 1,
+		})
+
+		gsap.to(this._buttons, {
 			duration: 0.2,
 			scale: 1,
 		})
@@ -119,7 +138,19 @@ export default class Call extends EventEmitter {
 	handleDown(event) {
 		if (this.isPlaying) {
 			if (event.key === 'a') {
-				console.log('down')
+				if (this.microIsActivated) {
+					// success
+					this.moneyManager.multiplyRate(1.1, 0.2)
+				} else {
+					// lose
+					this.moneyManager.subtractMoneyRate(0.005, 0.2)
+				}
+			} else if (event.key === 'i') {
+				if (this.microIsActivated) {
+					this.moneyManager.subtractMoneyRate(0.005, 0.2)
+				} else {
+					this.moneyManager.multiplyRate(1.1, 0.2)
+				}
 			}
 		}
 	}
@@ -128,6 +159,8 @@ export default class Call extends EventEmitter {
 		const endTimeline = gsap.timeline()
 
 		this.moneyManager.multiplyRate(this.score / 10, 5)
+		this.isPlaying = false
+		this.isGameActive = false
 		this.dayManager.tasksCount++
 		this.trigger('activity:end', [this])
 	}
@@ -163,6 +196,32 @@ export default class Call extends EventEmitter {
 			loopTalkTimeline.eventCallback('onComplete', this.end.bind(this))
 		}
 		loop()
+
+		function randomIntervalFunction() {
+			const randomInterval = Math.floor(Math.random() * (2000 - 200 + 1)) + 200
+
+			this.microIsActivated = !this.microIsActivated
+
+			if (this.microIsActivated) {
+				gsap.to(this._micro, {
+					opacity: 1,
+					backgroundColor: '#3DEB5D',
+					duration: 0.3,
+					ease: 'power3.inOut',
+				})
+			} else {
+				gsap.to(this._micro, {
+					opacity: 0.5,
+					backgroundColor: '#fff',
+					duration: 0.3,
+					ease: 'power3.inOut',
+				})
+			}
+
+			setTimeout(randomIntervalFunction.bind(this), randomInterval)
+		}
+
+		randomIntervalFunction.bind(this)()
 	}
 
 	reset() {
@@ -172,4 +231,6 @@ export default class Call extends EventEmitter {
 		console.log('reset')
 		this.axis.off('down:right', this.handleDown.bind(this))
 	}
+
+	update() {}
 }

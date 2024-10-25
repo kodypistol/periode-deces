@@ -152,6 +152,37 @@ body {
 	flex-direction: column;
 }
 
+.activityContainer .buttons {
+	position: absolute;
+	right: 5%;
+	top: 50%;
+	transform: translateY(-50%) scale(0);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.activityContainer .buttons .btn {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 2px;
+}
+
+.activityContainer .buttons .btn .btn-icon {
+	width: 8px;
+	height: 8px;
+	filter: saturate(0) brightness(3);
+}
+
+.activityContainer .buttons .btn .text {
+	font-size: 6px;
+	color: white;
+	padding: 1px 5px;
+	background-color: #150f00;
+}
+
 .activityContainer .activity canvas {
 	width: 100%;
 	height: 40px;
@@ -186,8 +217,8 @@ body {
 	object-fit: contain;
 }
 
-.graph .completed,
-.graph .failed {
+.activityContainer .completed,
+.activityContainer .failed {
 	position: absolute;
 	top: 30%;
 	left: 10%;
@@ -284,16 +315,16 @@ body {
 	width: 4px;
 	height: 4px;
 	object-fit: contain;
-	background-color: white;
+	background-color: #3deb5d;
 	padding: 0 0.5px;
 	border-radius: 1.5px;
 	opacity: 0.5;
 }
 
 .activityContainer.call .bottom .logos {
+	width: 17px;
 	height: 4px;
 	object-fit: contain;
-	width: fit-content;
 }
 
 .subtitle {

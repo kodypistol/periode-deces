@@ -18,10 +18,10 @@ export default class Computer extends Task {
 		super.init()
 		this.experience.computer = this
 
-		this.activities.push(new Graph())
+		// this.activities.push(new Graph())
 		this.activities.push(new Call())
 
-		this.activities[1].playTask()
+		// this.activities[1].playTask()
 
 		this.activities.forEach((activity) => {
 			activity.on('activity:end', this.handleEndActivity.bind(this))
@@ -29,7 +29,7 @@ export default class Computer extends Task {
 	}
 
 	handleEndActivity(activity) {
-		console.log(activity);
+		console.log(activity)
 
 		activity.hide()
 		activity.reset()
@@ -133,7 +133,7 @@ export default class Computer extends Task {
 		if (this.css3dRenderer && this.css3dScene && this.camera.instance) {
 			this.css3dRenderer.render(this.css3dScene, this.camera.instance)
 		}
-		if(this.activeActivity) {
+		if (this.activeActivity) {
 			this.activeActivity.update()
 		}
 	}

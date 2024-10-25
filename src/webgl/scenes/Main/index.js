@@ -110,16 +110,17 @@ export default class Main {
 		this.desk = new Desk()
 
 		// Instantiate tasks (do not call init yet)
-		this.fan = new Fan({ experience: this.experience })
+		// this.fan = new Fan({ experience: this.experience })
 		this.computer = new Computer({ experience: this.experience })
-		this.phone = new Phone({ experience: this.experience })
+		// this.phone = new Phone({ experience: this.experience })
 
 		// Instantiate the Head focus task
 		this.head = new Head({ experience: this.experience })
 
 		this.horloge = new Horloge()
 
-		this.tasks.push(this.fan, this.computer, this.phone)
+		// this.tasks.push(this.fan, this.computer, this.phone)
+		this.tasks.push(this.computer)
 		this.focusTasks.push(this.head)
 	}
 
@@ -141,7 +142,7 @@ export default class Main {
 					this.moneyManager.startIncrement()
 				},
 			},
-			1
+			1,
 		)
 	}
 
