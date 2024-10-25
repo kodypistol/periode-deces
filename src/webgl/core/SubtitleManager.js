@@ -144,4 +144,11 @@ export class SubtitleManager extends EventEmitter {
 			this.experience.axis.on('down', handleDown)
 		})
 	}
+
+	stop() {
+		this._subtitleElement.style.opacity = '0'
+		this._qteElement.style.opacity = '0'
+		this._nextElement.style.opacity = '0'
+		this.experience.axis.off('down')
+	}
 }

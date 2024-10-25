@@ -15,8 +15,10 @@ export default class Graph extends EventEmitter {
 		this.time = this.experience.time
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
+		this.subtitlesManager = this.experience.subtitlesManager
 		this.computer = this.experience.computer
 		this.computerScreenElement = this.experience.computer.screenElement.element
+		this.tutorial = true
 		this.init()
 
 		this.context = this._createContext()
@@ -82,6 +84,24 @@ export default class Graph extends EventEmitter {
 		gsap.to(this._notification, {
 			duration: 0.01,
 			scale: 0,
+			onComplete: () => {
+				if (this.tutorial) {
+					this.subtitlesManager.playSubtitle('graphTuto')
+					const handleDown = (event) => {
+						if (event.key === 'a') {
+							this.subtitlesManager.next()
+						}
+					}
+					this.axis.on(`down:left`, handleDown)
+					this.subtitlesManager.on('finish', () => {
+						this.axis.off(`down:left`, handleDown)
+						this.tutorial = false
+						this.isPlaying = true
+					})
+				} else {
+					this.isPlaying = true
+				}
+			}
 		})
 
 		gsap.to(this._activity, {
@@ -90,7 +110,6 @@ export default class Graph extends EventEmitter {
 		})
 
 		this.isGameActive = true
-		this.isPlaying = true
 		this._draw()
 	}
 
@@ -106,6 +125,7 @@ export default class Graph extends EventEmitter {
 				this.moneyManager.multiplyRate(this.score / 10, 5)
 				this.dayManager.tasksCount++
 				this.trigger('activity:end', [this])
+				this.reset()
 			},
 		})
 	}
@@ -121,6 +141,7 @@ export default class Graph extends EventEmitter {
 			onComplete: () => {
 				this.moneyManager.subtractMoneyRate(0.05, 5)
 				this.trigger('activity:end', [this]) // Notify parent
+				this.reset()
 			},
 		})
 	}

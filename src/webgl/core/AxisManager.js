@@ -35,7 +35,9 @@ export default class AxisManager extends EventEmitter {
 		// Initialize
 		this.controls = {}
 		this.leds = this.instance.ledManager.leds
+
 		this.setControls()
+		this.setLedsColor()
 		this.setValues()
 		this.setEvents()
 		this.setDebug()
@@ -303,6 +305,16 @@ export default class AxisManager extends EventEmitter {
 			...evt,
 			position: this.values[side].stick.position.set(pos.x, pos.y),
 		}
+	}
+
+	/**
+	 * Set Leds color
+	 */
+	setLedsColor() {
+		// set 5 first leds to pink and the rest to blue
+		this.leds.forEach((led, index) => {
+			led.color = index < 5 ? 0xff00ff : 0x0000ff
+		})
 	}
 
 	/**

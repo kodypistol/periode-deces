@@ -28,6 +28,16 @@ export default class AudioManager {
 					volume: 1,
 					autoplay: true,
 				},
+				taskComplete: {
+					buffer: this.resources.items.taskCompleteAudio,
+					volume: 1,
+					autoplay: false,
+				},
+				taskFailed: {
+					buffer: this.resources.items.taskErrorAudio,
+					volume: 1,
+					autoplay: false,
+				},
 			}
 			this.setAudios()
 			if (this.debug.active) this.setDebug()
