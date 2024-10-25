@@ -58,7 +58,7 @@ export default class MoneyManager {
 		this.rateModifiers.push(modifier)
 		this.updateCurrentRate()
 
-		this.audioManager.play('taskCompleteAudio')
+		this.audioManager.play('taskComplete')
 
 		// Programar la reversión del multiplicador
 		modifier.timeoutId = setTimeout(() => {
@@ -85,7 +85,7 @@ export default class MoneyManager {
 		this.additionalRates.push(modifier)
 		this.updateCurrentRate()
 
-		this.audioManager.play('taskErrorAudio')
+		this.audioManager.play('taskFailed')
 		if (this.element) {
 			this.element.style.color = 'red'
 		}
