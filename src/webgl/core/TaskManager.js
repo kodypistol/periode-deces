@@ -28,7 +28,7 @@ export default class TaskManager {
 	}
 
 	_startTaskScheduler() {
-		const interval = 1000 // Adjust interval as needed
+		const interval = 15000 // Adjust interval as needed
 		this.taskInterval = setInterval(() => {
 			const availableTasks = this.tasks.filter((task) => !task.isPlaying && !task.isAvailable)
 			if (availableTasks.length > 0) {
@@ -40,7 +40,7 @@ export default class TaskManager {
 	}
 
 	_startFocusTaskScheduler() {
-		const interval = 30000 // Adjust interval as needed
+		const interval = 40000 // Adjust interval as needed
 		this.focusTaskTimeout = setInterval(this._triggerFocusTask.bind(this), interval)
 	}
 

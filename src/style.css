@@ -72,6 +72,7 @@ body {
 
 .overlay-objectives {
 	opacity: 0;
+	pointer-events: none;
 	position: fixed;
 	top: 24px;
 	right: 24px;
@@ -568,7 +569,7 @@ body {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: #07B22C;
+		background-color: #07b22c;
 		padding: 20px;
 	}
 

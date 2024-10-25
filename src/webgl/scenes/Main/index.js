@@ -26,7 +26,7 @@ export default class Main {
 		this.axis = this.experience.axis
 		this.leaderboard = this.axis.instance.createLeaderboard({
 			id: PARAMS.axisKey,
-		});
+		})
 
 		this.dayManager = this.experience.dayManager
 		this.moneyManager = this.experience.moneyManager
@@ -68,7 +68,7 @@ export default class Main {
 		})
 
 		this.dayManager.on('day:gameOver', () => {
-			console.log('oh noooo');
+			console.log('oh noooo')
 
 			this._isGameOver = true
 			this._playGameOverAnimation()
@@ -85,8 +85,6 @@ export default class Main {
 		})
 
 		this.dayManager.on('day:gameWin', () => {
-			console.log('oueeessss');
-
 			this.dayManager.stop()
 			this.tasks.forEach((task) => {
 				task.reset()
@@ -99,30 +97,30 @@ export default class Main {
 			})
 
 			this.leaderboard
-			.postScore({
-        username: "JuloPipooooo",
-        value: this.moneyManager.money,
-    	})
-    	.then(() => {
-        // Get all scores
-        this.leaderboard.getScores().then((response) => {
-          console.log(response);
-					this.games = []
-					this.top10 = []
-					response.forEach((game, index) => {
-						this.games.push(game)
-					});
-					this.games.sort((a, b) => b.value - a.value)
-					this.top10 = this.games.slice(0, 10)
+				.postScore({
+					username: 'JuloPipooooo',
+					value: this.moneyManager.money,
+				})
+				.then(() => {
+					// Get all scores
+					this.leaderboard.getScores().then((response) => {
+						console.log(response)
+						this.games = []
+						this.top10 = []
+						response.forEach((game, index) => {
+							this.games.push(game)
+						})
+						this.games.sort((a, b) => b.value - a.value)
+						this.top10 = this.games.slice(0, 10)
 
-					this.top10.forEach((game, index) => {
-						const score = document.createElement('div')
-						score.classList.add('score')
-						score.innerHTML = `<span>${index + 1}. ${game.username}</span> <span>${game.value}k €</span>`
-						document.querySelector('#leaderboard').appendChild(score)
-					});
-        });
-    	});
+						this.top10.forEach((game, index) => {
+							const score = document.createElement('div')
+							score.classList.add('score')
+							score.innerHTML = `<span>${index + 1}. ${game.username}</span> <span>${game.value}k €</span>`
+							document.querySelector('#leaderboard').appendChild(score)
+						})
+					})
+				})
 
 			this._playWinAnimation()
 		})
@@ -147,37 +145,9 @@ export default class Main {
 			task.init()
 			this.scene.add(task)
 		})
-
-		// // Initialize the JoystickSelectionManager
-		// this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
-
-		// // Initialize the TaskManager
-		// this.taskManager = new TaskManager({
-		// 	tasks: this.tasks,
-		// 	focusTasks: this.focusTasks,
-		// 	axis: this.axis,
-		// 	selectionManager: this.joystickSelectionManager,
-		// })
 	}
 
 	_start() {
-		// this._startMenuElement = document.getElementById('start-menu')
-		// this._dayPanelElement = document.getElementById('day-panel')
-		// this._gameOverElement = document.getElementById('game-over')
-		// this._overlayElement = document.getElementById('overlay')
-
-		// this._createSceneComponents()
-
-		// Initialize tasks after resources are loaded
-		// this.tasks.forEach((task) => {
-		// 	task.init()
-		// 	this.scene.add(task)
-		// })
-		// this.focusTasks.forEach((task) => {
-		// 	task.init()
-		// 	this.scene.add(task)
-		// })
-
 		// Initialize the JoystickSelectionManager
 		this.joystickSelectionManager = new JoystickSelectionManager(this.tasks)
 
@@ -211,17 +181,17 @@ export default class Main {
 		this.desk = new Desk()
 
 		// Instantiate tasks (do not call init yet)
-		// this.fan = new Fan({ experience: this.experience })
+		this.fan = new Fan({ experience: this.experience })
 		this.computer = new Computer({ experience: this.experience })
-		// this.phone = new Phone({ experience: this.experience })
+		this.phone = new Phone({ experience: this.experience })
 
 		// Instantiate the Head focus task
 		this.head = new Head({ experience: this.experience })
 
 		this.horloge = new Horloge()
 
-		// this.tasks.push(this.fan, this.computer, this.phone)
-		this.tasks.push(this.computer)
+		this.tasks.push(this.fan, this.computer, this.phone)
+		// this.tasks.push(this.computer)
 		this.focusTasks.push(this.head)
 	}
 
@@ -256,7 +226,7 @@ export default class Main {
 			duration: 0.5,
 			ease: 'sine.inOut',
 			onComplete: () => {
-				console.log('You win');
+				console.log('You win')
 				this.axis.on('down', this._handleRestart.bind(this))
 			},
 		})
@@ -275,7 +245,7 @@ export default class Main {
 			duration: 0.5,
 			ease: 'sine.inOut',
 			onComplete: () => {
-				console.log('Game over');
+				console.log('Game over')
 
 				this.axis.on('down', this._handleRestart.bind(this))
 			},
@@ -326,7 +296,7 @@ export default class Main {
 				this.axis.on('down', handleDown)
 
 				this.experience.subtitlesManager.on('finish', () => {
-					console.log('Intro finished');
+					console.log('Intro finished')
 
 					if (this._isIntroFinished) return
 					positionTl.kill()
@@ -368,23 +338,11 @@ export default class Main {
 						this.experience.camera.headAnimation()
 						this._isIntroStarted = true
 						this._bossTalking()
-					}
+					},
 				},
-				0
+				0,
 			)
-
 		}
-
-		// if (e.key === 'a' && !this._isGameStarted && this._isIntroFinished) {
-		// 	this.dayManager.setDay(1)
-		// 	this._playStartAnimation()
-		// 	this._isGameStarted = true
-		// }
-
-		// if (e.key === 'w' && this._isGameStarted && !this._isGameOver) {
-		// 	this._playGameOverAnimation()
-		// 	this._isGameOver = true
-		// }
 	}
 
 	_addEventListeners() {

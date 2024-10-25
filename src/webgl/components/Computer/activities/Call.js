@@ -140,7 +140,7 @@ export default class Call extends EventEmitter {
 			if (event.key === 'a') {
 				if (this.microIsActivated) {
 					// success
-					this.moneyManager.multiplyRate(1.1, 0.2)
+					this.moneyManager.multiplyRate(1.05, 0.2)
 				} else {
 					// lose
 					this.moneyManager.subtractMoneyRate(0.005, 0.2)
@@ -149,7 +149,7 @@ export default class Call extends EventEmitter {
 				if (this.microIsActivated) {
 					this.moneyManager.subtractMoneyRate(0.005, 0.2)
 				} else {
-					this.moneyManager.multiplyRate(1.1, 0.2)
+					this.moneyManager.multiplyRate(1.05, 0.2)
 				}
 			}
 		}
@@ -158,7 +158,13 @@ export default class Call extends EventEmitter {
 	end() {
 		const endTimeline = gsap.timeline()
 
-		this.moneyManager.multiplyRate(this.score / 10, 5)
+		console.log('end')
+
+		gsap.to(this._buttons, {
+			duration: 0.2,
+			scale: 0,
+		})
+
 		this.isPlaying = false
 		this.isGameActive = false
 		this.dayManager.tasksCount++
@@ -209,12 +215,24 @@ export default class Call extends EventEmitter {
 					duration: 0.3,
 					ease: 'power3.inOut',
 				})
+				gsap.to(this._icons[0], {
+					filter: 'saturate(1) brightness(1)',
+				})
+				gsap.to(this._icons[1], {
+					filter: 'saturate(0) brightness(3)',
+				})
 			} else {
 				gsap.to(this._micro, {
 					opacity: 0.5,
 					backgroundColor: '#fff',
 					duration: 0.3,
 					ease: 'power3.inOut',
+				})
+				gsap.to(this._icons[1], {
+					filter: 'saturate(1) brightness(1)',
+				})
+				gsap.to(this._icons[0], {
+					filter: 'saturate(0) brightness(3)',
 				})
 			}
 
@@ -228,7 +246,6 @@ export default class Call extends EventEmitter {
 		this.isGameActive = false
 		this.isPlaying = false
 
-		console.log('reset')
 		this.axis.off('down:right', this.handleDown.bind(this))
 	}
 

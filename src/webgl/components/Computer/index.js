@@ -21,8 +21,6 @@ export default class Computer extends Task {
 		// this.activities.push(new Graph())
 		this.activities.push(new Call())
 
-		// this.activities[1].playTask()
-
 		this.activities.forEach((activity) => {
 			activity.on('activity:end', this.handleEndActivity.bind(this))
 		})
